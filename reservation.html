@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Réservation - Taxi Paris Service 24</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18085067368"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-18085067368');
+  </script>
+
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+</head>
+
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">
+      <span class="logo-main">Taxi Paris</span>
+      <span class="logo-accent">Service 24</span>
+    </a>
+
+    <nav class="navbar" id="navbar">
+      <a href="index.html">Accueil</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#tarifs">Tarifs</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="reservation.html" class="nav-btn">Réservation</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="tel:+33184802305" class="phone-btn">
+      <i class="fa-solid fa-phone-volume"></i>
+      01 84 80 23 05
+    </a>
+
+    <button class="burger" id="burger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <section class="reservation-page">
+  <div class="reservation-container">
+
+    <div class="trip-card">
+      <h1>Résumé du trajet</h1>
+
+      <div class="address-grid">
+        <div class="form-group">
+          <label>Adresse de départ</label>
+          <input id="start" type="text" placeholder="Ex : Gare de Lyon, Paris">
+          <div id="startSuggestions" class="suggestions-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Adresse d’arrivée</label>
+          <input id="end" type="text" placeholder="Ex : Aéroport CDG">
+          <div id="endSuggestions" class="suggestions-list"></div>
+        </div>
+      </div>
+
+      <div id="map"></div>
+
+      <button id="calculateRoute" class="calculate-btn" type="button">
+        Calculer le trajet
+      </button>
+
+      <div class="trip-summary">
+        <div>
+          <span>Distance</span>
+          <strong id="distanceText">—</strong>
+        </div>
+
+        <div>
+          <span>Durée</span>
+          <strong id="durationText">—</strong>
+        </div>
+
+        <div>
+          <span>Prix estimé</span>
+          <strong id="priceText">—</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <h2>Vos coordonnées</h2>
+
+        <form id="reservationForm"
+        action="https://api.web3forms.com/submit"
+        method="POST">
+
+        <input
+        type="hidden"
+        name="access_key"
+        value="1033b88f-161d-4cc4-a436-ee622d7d614a">
+
+        <input
+        type="hidden"
+        name="subject"
+        value="Nouvelle réservation Taxi Paris Service 24">
+
+        <input
+        type="hidden"
+        name="redirect"
+        value="https://taxi-paris-service24.fr/confirmation.html">
+
+        <input type="hidden" name="Adresse de départ" id="hiddenStart">
+        <input type="hidden" name="Adresse d'arrivée" id="hiddenEnd">
+        <input type="hidden" name="Distance" id="hiddenDistance">
+        <input type="hidden" name="Durée" id="hiddenDuration">
+        <input type="hidden" name="Prix estimé" id="hiddenPrice">
+
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" name="name" placeholder="Nom complet" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="exemple@domaine.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Téléphone</label>
+          <input type="tel" name="phone" placeholder="06 12 34 56 78" required>
+        </div>
+
+        <h3>Choisissez votre véhicule</h3>
+
+        <div class="vehicle-options">
+          <label class="vehicle-option active">
+            <input type="radio" name="vehicle" value="eco" data-rate="1.70" checked>
+            <strong>Éco</strong>
+            <span>4 passagers · 2 bagages · 1,70€/km</span>
+          </label>
+
+          <label class="vehicle-option">
+            <input type="radio" name="vehicle" value="berline" data-rate="2.00">
+            <strong>Berline</strong>
+            <span>4 passagers · 3 bagages · 2,00€/km</span>
+          </label>
+
+          <label class="vehicle-option">
+            <input type="radio" name="vehicle" value="van" data-rate="2.50">
+            <strong>Van</strong>
+            <span>7 passagers · 5 bagages · 2,50€/km</span>
+          </label>
+        </div>
+
+        <fieldset>
+              <legend>Quand est la course ?</legend>
+
+              <div class="time-choice">
+                <button type="button" class="choice-btn active" id="nowBtn">
+                  Maintenant
+                </button>
+
+                <button type="button" class="choice-btn" id="laterBtn">
+                  Plus tard
+                </button>
+              </div>
+            </fieldset>
+
+            <div class="date-time-box" id="dateTimeBox">
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" />
+              </div>
+
+              <div class="form-group">
+                <label for="heure">Heure</label>
+                <input type="time" id="heure" name="heure" />
+              </div>
+            </div>
+        </fieldset>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label>Passagers</label>
+            <input type="number" name="passengers" min="1" max="7" value="1">
+          </div>
+
+          <div class="form-group">
+            <label>Bagages</label>
+            <input type="number" name="luggage" min="0" max="6" value="0">
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          Confirmer la réservation
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+  <!-- FOOTER -->
+<footer class="footer">
+
+  <div class="footer-left">
+    <h3>Taxi Paris Service 24</h3>
+    <p>Taxi premium à Paris et en Île-de-France.</p>
+  </div>
+
+  <div class="footer-center">
+    <p><i class="fa-solid fa-phone"></i> 01 84 80 23 05</p>
+    <p><i class="fa-solid fa-envelope"></i> taxiparisservice24@gmail.com</p>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="mentions-legales.html">Mentions légales</a></p>
+
+    <p>
+      <a href="politique-confidentialite.html">
+        Politique de confidentialité
+      </a>
+    </p>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 Taxi Paris Service 24. Tous droits réservés.</p>
+  </div>
+
+</footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="./main.js"></script>
+  <script src="./reservation.js"></script>
+</body>
+</html>

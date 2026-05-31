@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Réservation - Taxi Paris Service 24</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18085067368"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'AW-18085067368');
+  </script>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">
+      <span class="logo-main">Taxi Paris</span>
+      <span class="logo-accent">Service 24</span>
+    </a>
+
+    <nav class="navbar" id="navbar">
+      <a href="index.html">Accueil</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#tarifs">Tarifs</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="reservation.html" class="nav-btn">Réservation</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="tel:+33184802305" class="phone-btn">
+      <i class="fa-solid fa-phone-volume"></i>
+      01 84 80 23 05
+    </a>
+
+    <button class="burger" id="burger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <main class="reservation-airport">
+
+    <section class="reservation-hero-airport">
+      <span>Transfert Aéroport</span>
+
+      <h1>Votre taxi vers les aéroports parisiens</h1>
+
+      <p>
+        Taxi Paris Service 24 vous accompagne vers
+        Roissy CDG, Orly et Beauvais avec un service
+        ponctuel, confortable et disponible 24h/24.
+      </p>
+    </section>
+
+    <section class="reservation-card-section">
+      <div class="reservation-card-simple">
+
+        <div class="reservation-card-header">
+          <div>
+            <h2>Réservation aéroport</h2>
+            <p>Orly, Roissy CDG, Beauvais : un chauffeur ponctuel pour vos départs et arrivées.</p>
+          </div>
+
+          <div class="reservation-icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+        </div>
+
+        <form id="reservationForm" action="https://api.web3forms.com/submit" method="POST">
+
+          <input type="hidden" name="access_key" value="1033b88f-161d-4cc4-a436-ee622d7d614a">
+
+          <input type="hidden" name="subject" value="Nouvelle réservation Taxi Paris Service 24">
+
+          <input type="hidden" name="redirect" value="https://taxi-paris-service24.fr/confirmation.html">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <div class="input-icon">
+                <input type="text" id="nom" name="nom" placeholder="Votre nom" required />
+                <i class="fa-solid fa-user"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <div class="input-icon">
+                <input type="email" id="email" name="email" placeholder="Votre email" required />
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="depart">Adresse de départ</label>
+              <div class="input-icon">
+                <input type="text" id="depart" name="depart" placeholder="Saisir l'adresse de départ" required />
+                <div id="departSuggestions" class="suggestions"></div>
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="arrivee">Adresse d'arrivée</label>
+              <div class="input-icon">
+                <input type="text" id="arrivee" name="arrivee" placeholder="Saisir l'adresse d'arrivée" required />
+                <div id="arriveeSuggestions" class="suggestions"></div>
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="telephone">Téléphone</label>
+              <div class="phone-input">
+                <span>FR +33</span>
+                <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="vehicule">Véhicule</label>
+              <select id="vehicule" name="vehicule">
+                <option value="eco">Gamme Éco</option>
+                <option value="berline">Gamme Berline</option>
+                <option value="van">Gamme Van</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Quand est la course ?</label>
+
+            <div class="time-choice">
+              <input type="hidden" name="_subject" value="Nouvelle réservation - Taxi Paris Service 24">
+              <input type="hidden" name="_next" value="https://taxi-paris-service24.fr/confirmation.html">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" id="momentHero" name="moment" value="Maintenant">
+              <button type="button" class="choice-btn active" id="nowBtn">
+                Maintenant
+              </button>
+
+              <button type="button" class="choice-btn" id="laterBtn">
+                Plus tard
+              </button>
+            </div>
+          </div>
+
+          <div class="date-time-box" id="dateTimeBox">
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" />
+            </div>
+
+            <div class="form-group">
+              <label for="heure">Heure</label>
+              <input type="time" id="heure" name="heure" />
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">
+            Réserver mon taxi
+          </button>
+
+          <p class="reservation-small-note">
+            Confirmation rapide par téléphone.
+          </p>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+
+    <div class="footer-left">
+      <h3>Taxi Paris Service 24</h3>
+      <p>Taxi premium à Paris et en Île-de-France.</p>
+    </div>
+
+    <div class="footer-center">
+      <p><i class="fa-solid fa-phone"></i> 01 84 80 23 05</p>
+      <p><i class="fa-solid fa-envelope"></i> taxiparisservice24@gmail.com</p>
+    </div>
+
+    <div class="footer-right">
+      <p><a href="mentions-legales.html">Mentions légales</a></p>
+
+      <p>
+        <a href="politique-confidentialite.html">
+          Politique de confidentialité
+        </a>
+      </p>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 Taxi Paris Service 24. Tous droits réservés.</p>
+    </div>
+
+  </footer>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+  <script src="main.js"></script>
+
+</body>
+
+</html>

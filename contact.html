@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Contact - Taxi Paris Service 24</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18085067368"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-18085067368');
+  </script>
+
+  <link rel="stylesheet" href="style.css"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+</head>
+
+<body>
+
+  <!-- HEADER: можешь скопировать свой готовый header с index.html -->
+  <header class="header">
+    <a href="index.html" class="logo">
+      <span class="logo-main">Taxi Paris</span>
+      <span class="logo-accent">Service 24</span>
+    </a>
+
+    <nav class="navbar" id="navbar">
+      <a href="index.html">Accueil</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#tarifs">Tarifs</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="reservation.html" class="nav-btn">Réservation</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="tel:+33184802305" class="phone-btn">
+      <i class="fa-solid fa-phone-volume"></i>
+      01 84 80 23 05
+    </a>
+
+    <button class="burger" id="burger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <main class="contact-page">
+
+    <section class="contact-hero">
+      <span>Contact</span>
+      <h1>Une question ? Un trajet urgent ?</h1>
+      <p>
+        Contactez Taxi Paris Service 24 pour une réservation, un transfert aéroport
+        ou une demande personnalisée.
+      </p>
+    </section>
+
+    <section class="contact-wrapper">
+
+      <div class="contact-info-card">
+        <h2>Parlez-nous de votre trajet</h2>
+        <p>
+          Notre équipe vous répond rapidement pour confirmer votre course
+          et vous accompagner à Paris et en Île-de-France.
+        </p>
+
+        <div class="contact-mini-card">
+          <i class="fa-solid fa-phone-volume"></i>
+          <div>
+            <h3>Appelez-nous</h3>
+            <a href="tel:+33184802305">01 84 80 23 05</a>
+          </div>
+        </div>
+
+        <div class="contact-mini-card">
+          <i class="fa-solid fa-envelope"></i>
+          <div>
+            <h3>Email</h3>
+            <a href="mailto:taxiparisservice24@gmail.com">taxiparisservice24@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="contact-mini-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            <h3>Zone desservie</h3>
+            <p>Paris & Île-de-France</p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form-card"
+        action="https://formsubmit.co/taxiparisservice24@gmail.com"
+        method="POST">
+
+        <input type="hidden" name="_subject" value="Nouveau message - Taxi Paris Service 24">
+        <input type="hidden" name="_next" value="https://taxi-paris-service24.fr/confirmation.html">
+        <input type="hidden" name="_captcha" value="false">
+
+        <h2>Envoyer un message</h2>
+
+        <div class="contact-row">
+          <input type="text" name="nom" placeholder="Votre nom" required>
+          <input type="tel" name="telephone" placeholder="Téléphone" required>
+        </div>
+
+        <input type="email" name="email" placeholder="Votre email">
+
+        <select name="demande" required>
+          <option value="">Type de demande</option>
+          <option>Réservation immédiate</option>
+          <option>Réservation pour plus tard</option>
+          <option>Transfert aéroport</option>
+          <option>Longue distance</option>
+          <option>Autre demande</option>
+        </select>
+
+        <textarea name="message" rows="6" placeholder="Votre message..." required></textarea>
+
+        <button type="submit">Envoyer le message</button>
+      </form>
+
+    </section>
+
+    <section class="contact-cta">
+  <div class="contact-cta-content">
+    <span>Disponibilité 24/7</span>
+
+    <h2>Besoin d’un taxi maintenant ?</h2>
+
+    <p>
+      Réservez votre chauffeur en quelques secondes ou appelez-nous directement.
+      Service rapide, fiable et disponible à tout moment à Paris et en Île-de-France.
+    </p>
+
+    <div class="contact-cta-buttons">
+      <a href="reservation.html" class="cta-main">Réserver maintenant</a>
+      <a href="tel:+33184802305" class="cta-secondary">
+        <i class="fa-solid fa-phone"></i>
+        Appeler
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+
+  <div class="footer-left">
+    <h3>Taxi Paris Service 24</h3>
+    <p>Taxi premium à Paris et en Île-de-France.</p>
+  </div>
+
+  <div class="footer-center">
+    <p><i class="fa-solid fa-phone"></i> 01 84 80 23 05</p>
+    <p><i class="fa-solid fa-envelope"></i> taxiparisservice24@gmail.com</p>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="mentions-legales.html">Mentions légales</a></p>
+
+    <p>
+      <a href="politique-confidentialite.html">
+        Politique de confidentialité
+      </a>
+    </p>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 Taxi Paris Service 24. Tous droits réservés.</p>
+  </div>
+
+</footer>  
+
+    <script src="main.js"></script>
+
+</body>
+</html>
