@@ -1,55 +1,50 @@
-Taxi Paris Service24
+# Taxi Paris Service 24
 
 Site web professionnel de réservation de taxi à Paris et en Île-de-France.
 
-Description
+## Aperçu du projet
 
-Taxi Paris Service24 est une plateforme de réservation en ligne permettant aux clients de réserver facilement un trajet vers :
+Taxi Paris Service 24 est un site vitrine développé pour un client réel.
 
-Les aéroports (CDG, Orly, Beauvais)
-Les gares parisiennes
-Les déplacements professionnels
-Les trajets longue distance
+Le projet permet aux utilisateurs de consulter les services proposés, choisir un véhicule et effectuer une réservation en ligne.
 
-Le site propose un formulaire de réservation dynamique, une estimation du trajet et une interface responsive adaptée aux mobiles et ordinateurs.
+## Capture d'écran - Accueil
 
-Technologies utilisées
+![Accueil](assets/screenshots/home-page.png)
 
-HTML5
-CSS3
-JavaScript
-Mapbox API
-FormSubmit
+## Capture d'écran - Réservation
 
-Fonctionnalités
+![Réservation](assets/screenshots/reservation-page.png)
 
-Réservation en ligne
+## Fonctionnalités
 
-Formulaire de réservation complet
-Sélection du véhicule
-Informations passager
-Confirmation de réservation
+- Réservation en ligne
+- Choix du véhicule
+- Formulaire dynamique
+- Pages dédiées :
+  - Aéroport
+  - Gare
+  - Business
+- Responsive Design
+- SEO optimisé
+- Mentions légales
+- Politique de confidentialité
 
-Services proposés
+## Compétences démontrées
 
-Transfert aéroport
-Transfert gare
-Réservation business
-Longue distance
+- HTML5
+- CSS3
+- JavaScript
+- Responsive Design
+- UX/UI Design
+- SEO
+- Git
+- GitHub
 
-Expérience utilisateur
-
-Design responsive
-Navigation intuitive
-Interface moderne
-Optimisation mobile
-
-Auteur
-
-Alisa Zamkova
-
-Projet réalisé dans le cadre de mon apprentissage du développement web ainsi que pour un client réel.
-
-Démonstration
+## Site en ligne
 
 https://taxi-paris-service24.fr
+
+## Auteur
+
+Projet réalisé par Alisa Zamkova.
