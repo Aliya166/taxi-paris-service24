@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: "mysql://taxi_app:taxi_dev_password@database:3306/taxi_service24?serverVersion=mariadb-10.6.0&charset=utf8mb4"
+      MAILER_DSN: "smtp://mailpit:1025"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mariadb:10.6
+    environment:
+      MARIADB_DATABASE: taxi_service24
+      MARIADB_USER: taxi_app
+      MARIADB_PASSWORD: taxi_dev_password
+      MARIADB_ROOT_PASSWORD: root_dev_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - database_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  database_data:
