@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Créer un compte | Taxi Paris Service 24
+{% endblock %}
+
+{% block body %}
+    <main class="auth-page">
+        <section class="auth-card">
+            <header class="auth-header">
+                <p class="auth-eyebrow">Espace client</p>
+
+                <h1>Créer votre compte</h1>
+
+                <p>
+                    Retrouvez vos réservations, gérez vos coordonnées
+                    et profitez de vos avantages fidélité.
+                </p>
+            </header>
+
+            {{ form_start(registrationForm, {
+                attr: {
+                    class: 'auth-form'
+                }
+            }) }}
+                {{ form_errors(registrationForm) }}
+
+                <div class="auth-form__row">
+                    {{ form_row(registrationForm.firstName) }}
+                    {{ form_row(registrationForm.lastName) }}
+                </div>
+
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.phone) }}
+
+                {{ form_row(registrationForm.plainPassword.first) }}
+                {{ form_row(registrationForm.plainPassword.second) }}
+
+                <fieldset class="auth-consents">
+                    <legend>Vos préférences de communication</legend>
+
+                    {{ form_row(
+                        registrationForm.emailMarketingConsent
+                    ) }}
+
+                    {{ form_row(
+                        registrationForm.smsMarketingConsent
+                    ) }}
+                </fieldset>
+
+                <div class="auth-terms">
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
+
+                <button class="auth-submit" type="submit">
+                    Créer mon compte
+                </button>
+            {{ form_end(registrationForm) }}
+
+            <p class="auth-switch">
+                Vous avez déjà un compte ?
+                <a href="{{ path('app_login') }}">
+                    Se connecter
+                </a>
+            </p>
+        </section>
+    </main>
+{% endblock %}
