@@ -162,6 +162,9 @@ class Reservation
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cancellationReason = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $loyaltyDiscountApplied = false;
+
     public function __construct()
     {
         $now = new DateTimeImmutable();
@@ -565,5 +568,17 @@ class Reservation
     public function updateTimestamp(): void
     {
         $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function isLoyaltyDiscountApplied(): bool
+    {
+        return $this->loyaltyDiscountApplied;
+    }
+
+    public function setLoyaltyDiscountApplied(bool $loyaltyDiscountApplied): static
+    {
+        $this->loyaltyDiscountApplied = $loyaltyDiscountApplied;
+
+        return $this;
     }
 }

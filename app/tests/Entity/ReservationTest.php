@@ -91,4 +91,19 @@ final class ReservationTest extends TestCase
             $reservation->getCancelledAt()
         );
     }
+
+    public function testLoyaltyDiscountIsDisabledByDefaultAndCanBeApplied(): void
+    {
+        $reservation = new Reservation();
+
+        self::assertFalse(
+            $reservation->isLoyaltyDiscountApplied()
+        );
+
+        $reservation->setLoyaltyDiscountApplied(true);
+
+        self::assertTrue(
+            $reservation->isLoyaltyDiscountApplied()
+        );
+    }
 }
