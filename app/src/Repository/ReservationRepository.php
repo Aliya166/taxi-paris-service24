@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Reservation;
+use App\Entity\User;
 use App\Enum\ReservationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -58,6 +59,27 @@ class ReservationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return (int) $result > 0;
+    }
+
+    /**
+     * @return list<Reservation>
+     */
+    public function findForCustomerAccount(User $user): array
+    {
+        return $this->createQueryBuilder('reservation')
+            ->andWhere(
+                'reservation.customer = :customer
+            OR LOWER(reservation.email) = :email'
+            )
+            ->setParameter('customer', $user)
+            ->setParameter(
+                'email',
+                $this->normalizeEmail($user->getEmail())
+            )
+            ->orderBy('reservation.scheduledAt', 'DESC')
+            ->addOrderBy('reservation.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     private function normalizeEmail(string $email): string

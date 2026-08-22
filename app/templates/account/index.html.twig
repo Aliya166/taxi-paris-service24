@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte | Taxi Paris Service 24{% endblock %}
+
+{% block body %}
+<main>
+    <header>
+        <p>Espace client</p>
+
+        <h1>Bonjour {{ user.firstName }}</h1>
+
+        <p>
+            Retrouvez vos informations personnelles,
+            vos réservations et vos avantages fidélité.
+        </p>
+
+        <a href="{{ path('app_logout') }}">
+            Se déconnecter
+        </a>
+    </header>
+
+    {% for message in app.flashes('success') %}
+    <div role="status">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    <section aria-labelledby="profile-title">
+        <h2 id="profile-title">Mes coordonnées</h2>
+
+        <dl>
+            <div>
+                <dt>Prénom</dt>
+                <dd>{{ user.firstName }}</dd>
+            </div>
+
+            <div>
+                <dt>Nom</dt>
+                <dd>{{ user.lastName }}</dd>
+            </div>
+
+            <div>
+                <dt>Adresse email</dt>
+                <dd>{{ user.email }}</dd>
+            </div>
+
+            <div>
+                <dt>Téléphone</dt>
+                <dd>{{ user.phone }}</dd>
+            </div>
+
+            <div>
+                <dt>Statut du compte</dt>
+                <dd>
+                    {% if user.isVerified %}
+                    Adresse email vérifiée
+                    {% else %}
+                    Adresse email à vérifier
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+
+        <a href="{{ path('app_account_edit') }}">
+            Modifier mes coordonnées
+        </a>
+    </section>
+
+    <section aria-labelledby="reservations-title">
+        <h2 id="reservations-title">Mes réservations</h2>
+
+        {% if reservations is empty %}
+        <p>
+            Vous n’avez encore aucune réservation enregistrée
+            sur votre compte.
+        </p>
+        {% else %}
+        <div>
+            {% for reservation in reservations %}
+            <article>
+                <header>
+                    <h3>
+                        Réservation {{ reservation.reference }}
+                    </h3>
+
+                    <p>
+                        Statut :
+                        <strong>
+                            {{ reservation.status.value
+                            |replace({'_': ' '})
+                            |capitalize }}
+                        </strong>
+                    </p>
+                </header>
+
+                <dl>
+                    <div>
+                        <dt>Date du trajet</dt>
+                        <dd>
+                            <time datetime="{{ reservation.scheduledAt|date('c') }}">
+                                {{ reservation.scheduledAt
+                                |date('d/m/Y à H:i') }}
+                            </time>
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt>Type de réservation</dt>
+                        <dd>
+                            {{ reservation.type.value
+                            |replace({'_': ' '})
+                            |capitalize }}
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt>Adresse de départ</dt>
+                        <dd>{{ reservation.pickupAddress }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Adresse d’arrivée</dt>
+                        <dd>{{ reservation.dropoffAddress }}</dd>
+                    </div>
+                </dl>
+            </article>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+
+    <section aria-labelledby="loyalty-title">
+        <h2 id="loyalty-title">Mon avantage fidélité</h2>
+
+        <p>
+            {{ completedRides }} trajet(s) terminé(s) sur 5.
+        </p>
+
+        <progress value="{{ completedRides > 5 ? 5 : completedRides }}" max="5">
+            {{ completedRides }} sur 5
+        </progress>
+
+        {% if ridesUntilDiscount > 0 %}
+        <p>
+            Plus que {{ ridesUntilDiscount }} trajet(s) terminé(s)
+            avant de bénéficier de 10 % de réduction.
+        </p>
+        {% else %}
+        <p>
+            Le seuil fidélité a été atteint. Votre réduction de
+            10 % sera appliquée automatiquement lorsqu’elle sera
+            disponible sur votre prochaine réservation.
+        </p>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

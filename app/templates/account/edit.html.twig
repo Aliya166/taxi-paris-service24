@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mes coordonnées | Taxi Paris Service 24{% endblock %}
+
+{% block body %}
+    <main class="account-page">
+        <header class="account-header">
+            <p>Espace client</p>
+
+            <h1>Modifier mes coordonnées</h1>
+
+            <p>
+                Mettez à jour vos informations personnelles
+                et vos préférences de communication.
+            </p>
+        </header>
+
+        <section aria-labelledby="profile-form-title">
+            <h2 id="profile-form-title">Mes informations</h2>
+
+            <p>
+                Adresse email actuelle :
+                <strong>{{ user.email }}</strong>
+            </p>
+
+            {{ form_start(profileForm) }}
+                {{ form_errors(profileForm) }}
+
+                <div>
+                    {{ form_label(profileForm.firstName) }}
+                    {{ form_widget(profileForm.firstName) }}
+                    {{ form_errors(profileForm.firstName) }}
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.lastName) }}
+                    {{ form_widget(profileForm.lastName) }}
+                    {{ form_errors(profileForm.lastName) }}
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.phone) }}
+                    {{ form_widget(profileForm.phone) }}
+                    {{ form_errors(profileForm.phone) }}
+                </div>
+
+                <fieldset>
+                    <legend>Mes préférences de communication</legend>
+
+                    <div>
+                        {{ form_widget(profileForm.emailMarketingConsent) }}
+                        {{ form_label(profileForm.emailMarketingConsent) }}
+                        {{ form_errors(profileForm.emailMarketingConsent) }}
+                    </div>
+
+                    <div>
+                        {{ form_widget(profileForm.smsMarketingConsent) }}
+                        {{ form_label(profileForm.smsMarketingConsent) }}
+                        {{ form_errors(profileForm.smsMarketingConsent) }}
+                    </div>
+                </fieldset>
+
+                <button type="submit">
+                    Enregistrer mes modifications
+                </button>
+            {{ form_end(profileForm) }}
+
+            <p>
+                <a href="{{ path('app_account') }}">
+                    Annuler et revenir à mon espace
+                </a>
+            </p>
+        </section>
+    </main>
+{% endblock %}
