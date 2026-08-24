@@ -86,9 +86,7 @@
                     <p>
                         Statut :
                         <strong>
-                            {{ reservation.status.value
-                            |replace({'_': ' '})
-                            |capitalize }}
+                            {{ reservation.status.label() }}
                         </strong>
                     </p>
                 </header>
@@ -98,19 +96,29 @@
                         <dt>Date du trajet</dt>
                         <dd>
                             <time datetime="{{ reservation.scheduledAt|date('c') }}">
-                                {{ reservation.scheduledAt
-                                |date('d/m/Y à H:i') }}
+                                {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
                             </time>
                         </dd>
                     </div>
 
                     <div>
                         <dt>Type de réservation</dt>
-                        <dd>
-                            {{ reservation.type.value
-                            |replace({'_': ' '})
-                            |capitalize }}
-                        </dd>
+                        <dd>{{ reservation.type.label() }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Véhicule</dt>
+                        <dd>{{ reservation.vehicleType.label() }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Passagers</dt>
+                        <dd>{{ reservation.passengers }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Bagages</dt>
+                        <dd>{{ reservation.luggage }}</dd>
                     </div>
 
                     <div>
@@ -121,6 +129,44 @@
                     <div>
                         <dt>Adresse d’arrivée</dt>
                         <dd>{{ reservation.dropoffAddress }}</dd>
+                    </div>
+
+                    {% if reservation.distanceKm is not null %}
+                    <div>
+                        <dt>Distance</dt>
+                        <dd>
+                            {{ reservation.distanceKm|number_format(2, ',', ' ') }} km
+                        </dd>
+                    </div>
+                    {% endif %}
+
+                    {% if reservation.durationMinutes is not null %}
+                    <div>
+                        <dt>Durée estimée</dt>
+                        <dd>{{ reservation.durationMinutes }} minutes</dd>
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <dt>Prix</dt>
+                        <dd>
+                            {% if reservation.finalPrice is not null %}
+                            <strong>
+                                {{ reservation.finalPrice
+                                |number_format(2, ',', ' ') }} €
+                            </strong>
+
+                            {% if reservation.discountPercentage > 0 %}
+                            <span>
+                                Réduction de
+                                {{ reservation.discountPercentage }} %
+                                appliquée
+                            </span>
+                            {% endif %}
+                            {% else %}
+                            Prix à confirmer
+                            {% endif %}
+                        </dd>
                     </div>
                 </dl>
             </article>
