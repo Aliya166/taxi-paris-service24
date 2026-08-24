@@ -61,6 +61,59 @@ class ReservationRepository extends ServiceEntityRepository
         return (int) $result > 0;
     }
 
+    public function countCompletedInCurrentLoyaltyCycleByEmail(
+        string $email
+    ): int {
+        $normalizedEmail = $this->normalizeEmail($email);
+
+        $lastDiscountedReservationId = $this
+            ->createQueryBuilder('discountedReservation')
+            ->select('MAX(discountedReservation.id)')
+            ->andWhere(
+                'LOWER(discountedReservation.email) = :discountEmail'
+            )
+            ->andWhere(
+                'discountedReservation.loyaltyDiscountApplied = :applied'
+            )
+            ->andWhere(
+                'discountedReservation.status != :cancelledStatus'
+            )
+            ->setParameter('discountEmail', $normalizedEmail)
+            ->setParameter('applied', true)
+            ->setParameter(
+                'cancelledStatus',
+                ReservationStatus::CANCELLED->value
+            )
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $queryBuilder = $this
+            ->createQueryBuilder('reservation')
+            ->select('COUNT(reservation.id)')
+            ->andWhere('LOWER(reservation.email) = :email')
+            ->andWhere('reservation.status = :completedStatus')
+            ->setParameter('email', $normalizedEmail)
+            ->setParameter(
+                'completedStatus',
+                ReservationStatus::COMPLETED->value
+            );
+
+        if ($lastDiscountedReservationId !== null) {
+            $queryBuilder
+                ->andWhere(
+                    'reservation.id >= :lastDiscountedReservationId'
+                )
+                ->setParameter(
+                    'lastDiscountedReservationId',
+                    (int) $lastDiscountedReservationId
+                );
+        }
+
+        return (int) $queryBuilder
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @return list<Reservation>
      */

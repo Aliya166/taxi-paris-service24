@@ -20,15 +20,9 @@ final class LoyaltyDiscountServiceTest extends TestCase
 
         $repository
             ->expects(self::once())
-            ->method('countCompletedByEmail')
+            ->method('countCompletedInCurrentLoyaltyCycleByEmail')
             ->with('client@example.com')
             ->willReturn(5);
-
-        $repository
-            ->expects(self::once())
-            ->method('hasActiveOrUsedLoyaltyDiscountByEmail')
-            ->with('client@example.com')
-            ->willReturn(false);
 
         $service = new LoyaltyDiscountService(
             $repository,
@@ -56,13 +50,9 @@ final class LoyaltyDiscountServiceTest extends TestCase
 
         $repository
             ->expects(self::once())
-            ->method('countCompletedByEmail')
+            ->method('countCompletedInCurrentLoyaltyCycleByEmail')
+            ->with('client@example.com')
             ->willReturn(4);
-
-        $repository
-            ->expects(self::once())
-            ->method('hasActiveOrUsedLoyaltyDiscountByEmail')
-            ->willReturn(false);
 
         $service = new LoyaltyDiscountService(
             $repository,
@@ -82,7 +72,7 @@ final class LoyaltyDiscountServiceTest extends TestCase
         );
     }
 
-    public function testDiscountIsNotAppliedWhenAlreadyUsed(): void
+    public function testDiscountCanBeEarnedAgainInANewCycle(): void
     {
         $repository = $this->createMock(
             ReservationRepository::class
@@ -90,13 +80,9 @@ final class LoyaltyDiscountServiceTest extends TestCase
 
         $repository
             ->expects(self::once())
-            ->method('countCompletedByEmail')
+            ->method('countCompletedInCurrentLoyaltyCycleByEmail')
+            ->with('client@example.com')
             ->willReturn(5);
-
-        $repository
-            ->expects(self::once())
-            ->method('hasActiveOrUsedLoyaltyDiscountByEmail')
-            ->willReturn(true);
 
         $service = new LoyaltyDiscountService(
             $repository,
@@ -106,12 +92,12 @@ final class LoyaltyDiscountServiceTest extends TestCase
         $reservation = (new Reservation())
             ->setEmail('client@example.com');
 
-        self::assertFalse($service->applyTo($reservation));
+        self::assertTrue($service->applyTo($reservation));
         self::assertSame(
-            0,
+            10,
             $reservation->getDiscountPercentage()
         );
-        self::assertFalse(
+        self::assertTrue(
             $reservation->isLoyaltyDiscountApplied()
         );
     }
@@ -124,11 +110,7 @@ final class LoyaltyDiscountServiceTest extends TestCase
 
         $repository
             ->expects(self::never())
-            ->method('countCompletedByEmail');
-
-        $repository
-            ->expects(self::never())
-            ->method('hasActiveOrUsedLoyaltyDiscountByEmail');
+            ->method('countCompletedInCurrentLoyaltyCycleByEmail');
 
         $service = new LoyaltyDiscountService(
             $repository,

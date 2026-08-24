@@ -15,17 +15,21 @@ final class LoyaltyDiscountService
     ) {
     }
 
+    public function getCompletedRidesInCurrentCycleForEmail(
+        string $email
+    ): int {
+        return $this->reservationRepository
+            ->countCompletedInCurrentLoyaltyCycleByEmail($email);
+    }
+
     public function getDiscountPercentageForEmail(string $email): int
     {
-        $completedRides = $this->reservationRepository
-            ->countCompletedByEmail($email);
-
-        $discountAlreadyUsed = $this->reservationRepository
-            ->hasActiveOrUsedLoyaltyDiscountByEmail($email);
+        $completedRides = $this
+            ->getCompletedRidesInCurrentCycleForEmail($email);
 
         return $this->policy->getDiscountPercentage(
             $completedRides,
-            $discountAlreadyUsed
+            false
         );
     }
 
