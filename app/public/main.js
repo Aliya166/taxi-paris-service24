@@ -146,4 +146,3 @@ fleetTabs.forEach((tab) => {
     fleetBags.textContent = data.bags;
   });
 });
-

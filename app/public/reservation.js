@@ -20,88 +20,92 @@ const endInput = document.getElementById("end");
 const calculateBtn = document.getElementById("calculateRoute");
 
 const startSuggestions =
-document.getElementById("startSuggestions");
+  document.getElementById("startSuggestions");
 
 const endSuggestions =
-document.getElementById("endSuggestions");
+  document.getElementById("endSuggestions");
 
 
 async function searchAddressSuggestions(query) {
   if (query.length < 4) return [];
 
-  const url =
-    `https://api.openrouteservice.org/geocode/search`+
-    `?api_key=${window.API_KEY}` +
-    `&text=${encodeURIComponent(query)}` +
-    `&boundary.country=FR` +
-    `&boundary.rect.min_lon=1.45` +
-    `&boundary.rect.min_lat=48.10` +
-    `&boundary.rect.max_lon=3.55` +
-    `&boundary.rect.max_lat=49.25` +
-    `&focus.point.lon=2.3522` +
-    `&focus.point.lat=48.8566` +
-    `&size=7` +
-    `&lang=fr`;
+  try {
+    const response = await fetch(
+      `/api/address-suggestions?q=${encodeURIComponent(query)}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
 
-  const response = await fetch(url);
-  const data = await response.json();
+    if (!response.ok) {
+      return [];
+    }
 
-  return data.features || [];
+    const data = await response.json();
+
+    return data.features || [];
+  } catch (error) {
+    console.error("Address suggestions error:", error);
+
+    return [];
+  }
 }
 
 
 function setupAutocomplete(
-input,
-suggestionsBox
-){
+  input,
+  suggestionsBox
+) {
 
-input.addEventListener(
-"input",
-async()=>{
+  input.addEventListener(
+    "input",
+    async () => {
 
-const query=input.value.trim();
+      const query = input.value.trim();
 
-suggestionsBox.innerHTML="";
+      suggestionsBox.innerHTML = "";
 
-const suggestions=
-await searchAddressSuggestions(query);
+      const suggestions =
+        await searchAddressSuggestions(query);
 
-suggestions.forEach((item)=>{
+      suggestions.forEach((item) => {
 
-const div=
-document.createElement("div");
+        const div =
+          document.createElement("div");
 
-div.className=
-"suggestion-item";
+        div.className =
+          "suggestion-item";
 
-div.textContent=
-item.properties.label;
+        div.textContent =
+          item.properties.label;
 
-div.addEventListener("click",()=>{
+        div.addEventListener("click", () => {
 
-input.value=
-item.properties.label;
+          input.value =
+            item.properties.label;
 
-suggestionsBox.innerHTML="";
+          suggestionsBox.innerHTML = "";
 
-});
+        });
 
-suggestionsBox.appendChild(div);
+        suggestionsBox.appendChild(div);
 
-});
+      });
 
-});
+    });
 
 }
 
 setupAutocomplete(
-startInput,
-startSuggestions
+  startInput,
+  startSuggestions
 );
 
 setupAutocomplete(
-endInput,
-endSuggestions
+  endInput,
+  endSuggestions
 );
 
 const distanceText = document.getElementById("distanceText");
@@ -113,17 +117,26 @@ const vehicleOptions = document.querySelectorAll(".vehicle-option");
 
 // 4. Поиск координат по адресу
 async function getCoordinates(address) {
-  const url =
-    `https://api.openrouteservice.org/geocode/search?api_key=${window.API_KEY}&text=${encodeURIComponent(address)}&boundary.country=FR`;
+  const response = await fetch(
+    `/api/address-suggestions?q=${encodeURIComponent(address)}`,
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  );
 
-  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Service de recherche indisponible");
+  }
+
   const data = await response.json();
 
   if (!data.features || data.features.length === 0) {
     throw new Error("Adresse introuvable");
   }
 
-  return data.features[0].geometry.coordinates; // [lon, lat]
+  return data.features[0].geometry.coordinates;
 }
 
 // 5. Получить тариф выбранной машины
@@ -135,22 +148,22 @@ function getSelectedRate() {
 // 6. Обновить цену
 function updatePrice() {
 
-    const rate = getSelectedRate();
+  const rate = getSelectedRate();
 
-    const minimumFinalPrice = 39;
+  const minimumFinalPrice = 39;
 
-    const reservationFee = 15;
-    const pricePerMinute = 0.30;
+  const reservationFee = 15;
+  const pricePerMinute = 0.30;
 
-    const ridePrice = currentDistanceKm * rate;
-    const durationPrice = currentDurationMin * pricePerMinute;
+  const ridePrice = currentDistanceKm * rate;
+  const durationPrice = currentDurationMin * pricePerMinute;
 
-    const finalPrice = Math.max(
-        ridePrice + durationPrice + reservationFee,
-        minimumFinalPrice
-    );
+  const finalPrice = Math.max(
+    ridePrice + durationPrice + reservationFee,
+    minimumFinalPrice
+  );
 
-    priceText.textContent =
+  priceText.textContent =
     `${finalPrice.toFixed(2).replace(".", ",")} €`;
 }
 
@@ -216,118 +229,118 @@ async function calculateRoute() {
     const fixedPrice = getFixedPrice(startAddress, endAddress);
 
     const allowed = [
-    "paris",
+      "paris",
 
-    // Seine-Saint-Denis (93)
-    "saint-denis",
-    "bobigny",
-    "montreuil",
-    "aubervilliers",
-    "pantin",
-    "noisy",
-    "aulnay",
-    "drancy",
-    "bondy",
-    "livry",
-    "rosny",
+      // Seine-Saint-Denis (93)
+      "saint-denis",
+      "bobigny",
+      "montreuil",
+      "aubervilliers",
+      "pantin",
+      "noisy",
+      "aulnay",
+      "drancy",
+      "bondy",
+      "livry",
+      "rosny",
 
-    // Val-de-Marne (94)
-    "creteil",
-    "vitry",
-    "ivry",
-    "champigny",
-    "choisy",
-    "villejuif",
-    "nogent",
-    "vincennes",
-    "fontenay",
-    "joinville",
+      // Val-de-Marne (94)
+      "creteil",
+      "vitry",
+      "ivry",
+      "champigny",
+      "choisy",
+      "villejuif",
+      "nogent",
+      "vincennes",
+      "fontenay",
+      "joinville",
 
-    // Hauts-de-Seine (92)
-    "nanterre",
-    "boulogne",
-    "courbevoie",
-    "colombes",
-    "asnieres",
-    "levallois",
-    "puteaux",
-    "clamart",
-    "meudon",
-    "issy",
+      // Hauts-de-Seine (92)
+      "nanterre",
+      "boulogne",
+      "courbevoie",
+      "colombes",
+      "asnieres",
+      "levallois",
+      "puteaux",
+      "clamart",
+      "meudon",
+      "issy",
 
-    // Yvelines (78)
-    "versailles",
-    "saint-germain",
-    "mantes",
-    "poissy",
-    "sartrouville",
-    "chatou",
-    "houilles",
+      // Yvelines (78)
+      "versailles",
+      "saint-germain",
+      "mantes",
+      "poissy",
+      "sartrouville",
+      "chatou",
+      "houilles",
 
-    // Essonne (91)
-    "evry",
-    "corbeil",
-    "massy",
-    "palaiseau",
-    "savigny",
-    "viry",
-    "ris-orangis",
-    "grigny",
-    "etampes",
+      // Essonne (91)
+      "evry",
+      "corbeil",
+      "massy",
+      "palaiseau",
+      "savigny",
+      "viry",
+      "ris-orangis",
+      "grigny",
+      "etampes",
 
-    // Seine-et-Marne (77)
-    "melun",
-    "chelles",
-    "meaux",
-    "pontault",
-    "torcy",
-    "serris",
-    "fontainebleau",
-    "coulommiers",
+      // Seine-et-Marne (77)
+      "melun",
+      "chelles",
+      "meaux",
+      "pontault",
+      "torcy",
+      "serris",
+      "fontainebleau",
+      "coulommiers",
 
-    // Val-d'Oise (95)
-    "pontoise",
-    "cergy",
-    "argenteuil",
-    "sarcelles",
-    "franconville",
-    "garges",
-    "bezons",
-    "ermont",
-    "noisy-le-grand",
-    "montreuil",
-    "saint-denis",
-    "creteil",
-    "champigny-sur-marne",
-    "bry-sur-marne",
-    "fontenay-sous-bois",
-    "neuilly-plaisance",
-    "bondy",
-    "aulnay-sous-bois",
-    "issy-les-moulineaux",
-    "boulogne-billancourt",
-    "vitry-sur-seine",
-    "saint-maurice",
-    "orly",
-    "roissy",
-    "cdg",
-    "beauvais",
-    "disneyland",
-    "gare de lyon"
+      // Val-d'Oise (95)
+      "pontoise",
+      "cergy",
+      "argenteuil",
+      "sarcelles",
+      "franconville",
+      "garges",
+      "bezons",
+      "ermont",
+      "noisy-le-grand",
+      "montreuil",
+      "saint-denis",
+      "creteil",
+      "champigny-sur-marne",
+      "bry-sur-marne",
+      "fontenay-sous-bois",
+      "neuilly-plaisance",
+      "bondy",
+      "aulnay-sous-bois",
+      "issy-les-moulineaux",
+      "boulogne-billancourt",
+      "vitry-sur-seine",
+      "saint-maurice",
+      "orly",
+      "roissy",
+      "cdg",
+      "beauvais",
+      "disneyland",
+      "gare de lyon"
     ];
 
     const isValid =
-    allowed.some(city =>
-    startAddress.toLowerCase().includes(city)
-    ) &&
-    allowed.some(city =>
-    endAddress.toLowerCase().includes(city)
-    );
+      allowed.some(city =>
+        startAddress.toLowerCase().includes(city)
+      ) &&
+      allowed.some(city =>
+        endAddress.toLowerCase().includes(city)
+      );
 
     if (!isValid) {
-    alert("Veuillez choisir une adresse en Île-de-France");
-    return;
-   }
+      alert("Veuillez choisir une adresse en Île-de-France");
+      return;
+    }
 
     if (!startAddress || !endAddress) {
       alert("Veuillez renseigner les deux adresses.");
@@ -340,19 +353,20 @@ async function calculateRoute() {
     const startCoords = await getCoordinates(startAddress);
     const endCoords = await getCoordinates(endAddress);
 
-    const routeResponse = await fetch(
-      `https://api.openrouteservice.org/v2/directions/driving-car/geojson?api_key=${window.API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: window.API_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          coordinates: [startCoords, endCoords]
-        })
-      }
-    );
+    const routeResponse = await fetch("/api/route", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        coordinates: [startCoords, endCoords],
+      }),
+    });
+
+    if (!routeResponse.ok) {
+      throw new Error("Service de calcul indisponible");
+    }
 
     const routeData = await routeResponse.json();
 
@@ -373,9 +387,9 @@ async function calculateRoute() {
     durationText.textContent = `${Math.round(durationMin)} min`;
 
     if (fixedPrice !== null) {
-        priceText.textContent = `${fixedPrice.toFixed(2).replace(".", ",")} €`;
+      priceText.textContent = `${fixedPrice.toFixed(2).replace(".", ",")} €`;
     } else {
-        updatePrice();
+      updatePrice();
     }
 
     if (routeLayer) map.removeLayer(routeLayer);
