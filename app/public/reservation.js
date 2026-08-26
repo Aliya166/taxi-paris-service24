@@ -26,8 +26,23 @@ const endSuggestions =
   document.getElementById("endSuggestions");
 
 
-async function searchAddressSuggestions(query) {
-  if (query.length < 4) return [];
+const suggestionsCache = new Map();
+const coordinatesCache = new Map();
+
+function normalizeAddress(value) {
+  return value.trim().toLocaleLowerCase("fr-FR");
+}
+
+async function searchAddressSuggestions(query, signal) {
+  const normalizedQuery = normalizeAddress(query);
+
+  if (normalizedQuery.length < 4) {
+    return [];
+  }
+
+  if (suggestionsCache.has(normalizedQuery)) {
+    return suggestionsCache.get(normalizedQuery);
+  }
 
   try {
     const response = await fetch(
@@ -36,6 +51,7 @@ async function searchAddressSuggestions(query) {
         headers: {
           Accept: "application/json",
         },
+        signal,
       }
     );
 
@@ -44,58 +60,79 @@ async function searchAddressSuggestions(query) {
     }
 
     const data = await response.json();
+    const features = data.features || [];
 
-    return data.features || [];
+    suggestionsCache.set(normalizedQuery, features);
+
+    return features;
   } catch (error) {
-    console.error("Address suggestions error:", error);
+    if (error.name !== "AbortError") {
+      console.error("Address suggestions error:", error);
+    }
 
     return [];
   }
 }
 
+function setupAutocomplete(input, suggestionsBox) {
+  let debounceTimer = null;
+  let requestController = null;
 
-function setupAutocomplete(
-  input,
-  suggestionsBox
-) {
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
 
-  input.addEventListener(
-    "input",
-    async () => {
+    suggestionsBox.innerHTML = "";
 
-      const query = input.value.trim();
+    clearTimeout(debounceTimer);
+
+    if (requestController !== null) {
+      requestController.abort();
+      requestController = null;
+    }
+
+    if (query.length < 4) {
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      requestController = new AbortController();
+
+      const suggestions = await searchAddressSuggestions(
+        query,
+        requestController.signal
+      );
+
+      if (
+        requestController.signal.aborted
+        || input.value.trim() !== query
+      ) {
+        return;
+      }
 
       suggestionsBox.innerHTML = "";
 
-      const suggestions =
-        await searchAddressSuggestions(query);
-
       suggestions.forEach((item) => {
+        const div = document.createElement("div");
 
-        const div =
-          document.createElement("div");
-
-        div.className =
-          "suggestion-item";
-
-        div.textContent =
-          item.properties.label;
+        div.className = "suggestion-item";
+        div.textContent = item.properties.label;
 
         div.addEventListener("click", () => {
+          const selectedAddress = item.properties.label;
 
-          input.value =
-            item.properties.label;
-
+          input.value = selectedAddress;
           suggestionsBox.innerHTML = "";
 
+          coordinatesCache.set(
+            normalizeAddress(selectedAddress),
+            item.geometry.coordinates
+          );
         });
 
         suggestionsBox.appendChild(div);
-
       });
-
-    });
-
+    }, 500);
+  });
 }
 
 setupAutocomplete(
@@ -117,6 +154,12 @@ const vehicleOptions = document.querySelectorAll(".vehicle-option");
 
 // 4. Поиск координат по адресу
 async function getCoordinates(address) {
+  const normalizedAddress = normalizeAddress(address);
+
+  if (coordinatesCache.has(normalizedAddress)) {
+    return coordinatesCache.get(normalizedAddress);
+  }
+
   const response = await fetch(
     `/api/address-suggestions?q=${encodeURIComponent(address)}`,
     {
@@ -136,7 +179,11 @@ async function getCoordinates(address) {
     throw new Error("Adresse introuvable");
   }
 
-  return data.features[0].geometry.coordinates;
+  const coordinates = data.features[0].geometry.coordinates;
+
+  coordinatesCache.set(normalizedAddress, coordinates);
+
+  return coordinates;
 }
 
 // 5. Получить тариф выбранной машины

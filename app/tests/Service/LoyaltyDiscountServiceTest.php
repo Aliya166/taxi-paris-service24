@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Reservation;
+use App\Entity\User;
 use App\Repository\ReservationRepository;
 use App\Service\LoyaltyDiscountPolicy;
 use App\Service\LoyaltyDiscountService;
@@ -126,6 +127,44 @@ final class LoyaltyDiscountServiceTest extends TestCase
         self::assertSame(
             10,
             $reservation->getDiscountPercentage()
+        );
+    }
+
+    public function testAuthenticatedCustomerDiscountDoesNotDependOnReservationEmail(): void
+    {
+        $repository = $this->createMock(
+            ReservationRepository::class
+        );
+
+        $customer = (new User())
+            ->setEmail('account@example.com');
+
+        $repository
+            ->expects(self::once())
+            ->method('countCompletedInCurrentLoyaltyCycleByCustomer')
+            ->with(self::identicalTo($customer))
+            ->willReturn(5);
+
+        $repository
+            ->expects(self::never())
+            ->method('countCompletedInCurrentLoyaltyCycleByEmail');
+
+        $service = new LoyaltyDiscountService(
+            $repository,
+            new LoyaltyDiscountPolicy()
+        );
+
+        $reservation = (new Reservation())
+            ->setCustomer($customer)
+            ->setEmail('different-contact@example.com');
+
+        self::assertTrue($service->applyTo($reservation));
+        self::assertSame(
+            10,
+            $reservation->getDiscountPercentage()
+        );
+        self::assertTrue(
+            $reservation->isLoyaltyDiscountApplied()
         );
     }
 }

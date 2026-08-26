@@ -26,16 +26,19 @@ final class AccountController extends AbstractController
         $reservations = $reservationRepository
             ->findForCustomerAccount($user);
 
-        $completedRides = $reservationRepository
-            ->countCompletedByEmail($user->getEmail());
+        $completedRidesInCurrentCycle = $reservationRepository
+            ->countCompletedInCurrentLoyaltyCycleByCustomer($user);
+
+        $loyaltyProgress = min(5, $completedRidesInCurrentCycle);
+
 
         return $this->render('account/index.html.twig', [
             'user' => $user,
             'reservations' => $reservations,
-            'completedRides' => $completedRides,
+            'completedRides' => $loyaltyProgress,
             'ridesUntilDiscount' => max(
                 0,
-                5 - $completedRides
+                5 - $loyaltyProgress
             ),
         ]);
     }

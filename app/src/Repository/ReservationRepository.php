@@ -114,6 +114,55 @@ class ReservationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function countCompletedInCurrentLoyaltyCycleByCustomer(
+        User $customer
+    ): int {
+        $lastDiscountedReservationId = $this
+            ->createQueryBuilder('discountedReservation')
+            ->select('MAX(discountedReservation.id)')
+            ->andWhere('discountedReservation.customer = :customer')
+            ->andWhere(
+                'discountedReservation.loyaltyDiscountApplied = :applied'
+            )
+            ->andWhere(
+                'discountedReservation.status != :cancelledStatus'
+            )
+            ->setParameter('customer', $customer)
+            ->setParameter('applied', true)
+            ->setParameter(
+                'cancelledStatus',
+                ReservationStatus::CANCELLED->value
+            )
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $queryBuilder = $this
+            ->createQueryBuilder('reservation')
+            ->select('COUNT(reservation.id)')
+            ->andWhere('reservation.customer = :customer')
+            ->andWhere('reservation.status = :completedStatus')
+            ->setParameter('customer', $customer)
+            ->setParameter(
+                'completedStatus',
+                ReservationStatus::COMPLETED->value
+            );
+
+        if ($lastDiscountedReservationId !== null) {
+            $queryBuilder
+                ->andWhere(
+                    'reservation.id >= :lastDiscountedReservationId'
+                )
+                ->setParameter(
+                    'lastDiscountedReservationId',
+                    (int) $lastDiscountedReservationId
+                );
+        }
+
+        return (int) $queryBuilder
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @return list<Reservation>
      */
