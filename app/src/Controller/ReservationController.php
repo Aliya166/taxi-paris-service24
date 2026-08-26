@@ -9,6 +9,9 @@ use App\Entity\User;
 use App\Enum\ReservationType;
 use App\Enum\VehicleType;
 use App\Service\LoyaltyDiscountService;
+use App\Service\ReservationConfirmationMailer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +31,8 @@ final class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         LoyaltyDiscountService $loyaltyDiscountService,
+        ReservationConfirmationMailer $confirmationMailer,
+        LoggerInterface $logger
     ): JsonResponse {
         $fullName = $this->getValue($request, 'name');
         $email = mb_strtolower($this->getValue($request, 'email'));
@@ -174,6 +179,18 @@ final class ReservationController extends AbstractController
 
         $entityManager->persist($reservation);
         $entityManager->flush();
+
+        try {
+            $confirmationMailer->send($reservation);
+        } catch (TransportExceptionInterface $exception) {
+            $logger->error(
+                'Reservation confirmation email could not be sent.',
+                [
+                    'reservationReference' => $reservation->getReference(),
+                    'exception' => $exception,
+                ]
+            );
+        }
 
         return $this->json(
             [
