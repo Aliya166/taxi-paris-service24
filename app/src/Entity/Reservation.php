@@ -76,6 +76,9 @@ class Reservation
     #[ORM\Column]
     private ?DateTimeImmutable $scheduledAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $reminderSentAt = null;
+
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\Range(
         min: 1,
@@ -327,6 +330,19 @@ class Reservation
     public function setScheduledAt(DateTimeImmutable $scheduledAt): static
     {
         $this->scheduledAt = $scheduledAt;
+
+        return $this;
+    }
+
+    public function getReminderSentAt(): ?DateTimeImmutable
+    {
+        return $this->reminderSentAt;
+    }
+
+    public function markReminderAsSent(
+        ?DateTimeImmutable $sentAt = null
+    ): static {
+        $this->reminderSentAt = $sentAt ?? new DateTimeImmutable();
 
         return $this;
     }

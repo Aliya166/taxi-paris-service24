@@ -10,6 +10,7 @@ use App\Enum\ReservationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
+use DateTimeImmutable;
 
 /**
  * @extends ServiceEntityRepository<Reservation>
@@ -161,6 +162,38 @@ class ReservationRepository extends ServiceEntityRepository
         return (int) $queryBuilder
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<Reservation>
+     */
+    public function findReservationsAwaitingReminder(
+        DateTimeImmutable $from,
+        DateTimeImmutable $until
+    ): array {
+        if ($until <= $from) {
+            throw new InvalidArgumentException(
+                'The reminder period end must be after its start.'
+            );
+        }
+
+        return $this->createQueryBuilder('reservation')
+            ->andWhere('reservation.scheduledAt >= :from')
+            ->andWhere('reservation.scheduledAt < :until')
+            ->andWhere('reservation.reminderSentAt IS NULL')
+            ->andWhere('reservation.status IN (:statuses)')
+            ->setParameter('from', $from)
+            ->setParameter('until', $until)
+            ->setParameter(
+                'statuses',
+                [
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                ]
+            )
+            ->orderBy('reservation.scheduledAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

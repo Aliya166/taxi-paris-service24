@@ -1,0 +1,70 @@
+</td>
+                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                    {{ reservation.vehicleType.label }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                    Passagers
+                                </td>
+                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                    {{ reservation.passengers }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                    Bagages
+                                </td>
+                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                    {{ reservation.luggage }}
+                                </td>
+                            </tr>
+                        </table>
+
+                        {% if reservation.discountPercentage > 0 %}
+                            <div style="margin-top:22px;padding:15px;background:#ecfdf5;color:#065f46;border-radius:10px;">
+                                Votre avantage fidélité de
+                                <strong>
+                                    {{ reservation.discountPercentage }} %
+                                </strong>
+                                est bien appliqué.
+                            </div>
+                        {% endif %}
+
+                        <div style="margin-top:22px;padding:20px;background:#111827;color:#ffffff;border-radius:10px;text-align:center;">
+                            <div style="font-size:14px;color:#d1d5db;">
+                                Prix estimé
+                            </div>
+                            <div style="margin-top:6px;font-size:28px;font-weight:700;">
+                                {% if reservation.finalPrice is not null %}
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                {% else %}
+                                    À confirmer
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div style="margin-top:24px;padding:16px;background:#fffbeb;color:#92400e;border-radius:10px;line-height:1.5;">
+                            En cas de changement ou d’annulation,
+                            merci de prévenir notre équipe dès que possible.
+                        </div>
+
+                        <p style="margin:24px 0 0;line-height:1.6;color:#4b5563;">
+                            Merci pour votre confiance et à très bientôt.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px;background:#f9fafb;text-align:center;color:#6b7280;font-size:13px;">
+                        Taxi Paris Service24 · Paris et Île-de-France
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
