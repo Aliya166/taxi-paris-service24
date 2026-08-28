@@ -45,6 +45,32 @@ services:
       mailpit:
         condition: service_started
 
+  scheduler:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command:
+      - sh
+      - -c
+      - |
+        while true; do
+          php bin/console app:reservations:send-reminders --no-interaction
+          sleep 3600
+        done
+    restart: unless-stopped
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: "mysql://taxi_app:taxi_dev_password@database:3306/taxi_service24?serverVersion=mariadb-10.6.0&charset=utf8mb4"
+      MAILER_DSN: "smtp://mailpit:1025"
+      TAXI_NOTIFICATION_EMAIL: "owner@example.com"
+    depends_on:
+      database:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+
   database:
     image: mariadb:10.6
     environment:
