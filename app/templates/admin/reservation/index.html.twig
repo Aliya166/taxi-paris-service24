@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% block title %}Réservations | Administration{% endblock %}
+{% block stylesheets %}
+{% endblock %}
+{% block body %}
+    <a href="{{ path('app_account') }}">
+        Retour à mon compte
+    </a>
+</header>
+
+{% if reservations is empty %}
+    <p>Aucune réservation enregistrée.</p>
+{% else %}
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Statut</th>
+                    <th>Client</th>
+                    <th>Trajet</th>
+                    <th>Date</th>
+                    <th>Véhicule</th>
+                    <th>Prix</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for reservation in reservations %}
+                    <tr>
+                        <td>
+                            <strong>{{ reservation.reference }}</strong>
+                        </td>
+
+                        <td>
+                            <span class="status status--{{ reservation.status.value }}">
+                                {{ reservation.status.label() }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ reservation.firstName }}
+                            {{ reservation.lastName }}
+                            <br>
+                            <a href="mailto:{{ reservation.email }}">
+                                {{ reservation.email }}
+                            </a>
+                            <br>
+                            <a href="tel:{{ reservation.phone }}">
+                                {{ reservation.phone }}
+                            </a>
+                        </td>
+
+                        <td>
+                            {{ reservation.pickupAddress }}
+                            <br>
+                            →
+                            {{ reservation.dropoffAddress }}
+                        </td>
+
+                        <td>
+                            {{ reservation.scheduledAt
+                                |date('d/m/Y à H:i') }}
+                        </td>
+
+                        <td>
+                            {{ reservation.vehicleType.label() }}
+                        </td>
+
+                        <td>
+                            {% if reservation.finalPrice is not null %}
+                                <strong>
+                                    {{ reservation.finalPrice
+                                        |number_format(2, ',', ' ') }} €
+                                </strong>
+                            {% else %}
+                                À confirmer
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+</main>
+{% endblock %}
