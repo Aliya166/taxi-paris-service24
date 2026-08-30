@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Réservation annulée</title>
+</head>
+
+<body style="margin:0;background:#f3f4f6;font-family:Arial,sans-serif;color:#111827;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" style="padding:30px 15px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+                    style="max-width:650px;background:#ffffff;border-radius:14px;overflow:hidden;">
+
+                    <tr>
+                        <td style="padding:26px;background:#111827;color:#ffffff;text-align:center;">
+                            <div style="font-size:23px;font-weight:700;">
+                                RÉSERVATION ANNULÉE
+                            </div>
+                            <div style="margin-top:8px;color:#d1d5db;">
+                                Taxi Paris Service24
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:30px;">
+                            <div style="padding:16px;background:#f3f4f6;border-radius:10px;margin-bottom:24px;">
+                                <strong>Référence :</strong>
+                                {{ reservation.reference }}
+                            </div>
+
+                            <div style="
+                                     padding:14px;
+                                     background:#fef2f2;
+                                     color:#991b1b;
+                                     border-radius:10px;
+                                     margin-bottom:24px;
+                                     text-align:center;
+                                     font-weight:600;
+                                     ">
+                                Le client a annulé cette réservation
+                                depuis son espace personnel.
+                            </div>
+
+                            <h2 style="font-size:19px;margin:0 0 14px;">
+                                Coordonnées du client
+                            </h2>
+
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="8"
+                                style="border-collapse:collapse;margin-bottom:24px;">
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Client
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.firstName }}
+                                        {{ reservation.lastName }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Téléphone
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        <a href="tel:{{ reservation.phone }}" style="color:#111827;">
+                                            {{ reservation.phone }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Email
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        <a href="mailto:{{ reservation.email }}" style="color:#111827;">
+                                            {{ reservation.email }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h2 style="font-size:19px;margin:0 0 14px;">
+                                Détails du trajet
+                            </h2>
+
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="8"
+                                style="border-collapse:collapse;">
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Date
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Départ
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.pickupAddress }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Arrivée
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.dropoffAddress }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Type
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.type.label }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Véhicule
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.vehicleType.label }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Passagers / Bagages
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.passengers }}
+                                        /
+                                        {{ reservation.luggage }}
+                                    </td>
+                                </tr>
+
+                                {% if reservation.distanceKm is not null %}
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Distance
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.distanceKm|number_format(2, ',', ' ') }} km
+                                    </td>
+                                </tr>
+                                {% endif %}
+
+                                {% if reservation.durationMinutes is not null %}
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Durée
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.durationMinutes }} minutes
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+
+                            {% if reservation.discountPercentage > 0 %}
+                            <div
+                                style="margin-top:20px;padding:14px;background:#ecfdf5;color:#065f46;border-radius:10px;">
+                                Réduction fidélité appliquée :
+                                <strong>
+                                    {{ reservation.discountPercentage }} %
+                                </strong>
+                            </div>
+                            {% endif %}
+
+                            <div
+                                style="margin-top:22px;padding:20px;background:#111827;color:#ffffff;border-radius:10px;text-align:center;">
+                                <div style="color:#d1d5db;font-size:14px;">
+                                    Prix final estimé
+                                </div>
+                                <div style="margin-top:6px;font-size:28px;font-weight:700;">
+                                    {% if reservation.finalPrice is not null %}
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                    {% else %}
+                                    À confirmer
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <p style="margin:24px 0 0;color:#6b7280;font-size:13px;text-align:center;">
+                                Cette course ne doit plus être planifiée.
+                                Vous pouvez répondre à cet email
+                                pour contacter le client si nécessaire.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

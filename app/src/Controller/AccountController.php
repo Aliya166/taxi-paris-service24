@@ -10,6 +10,8 @@ use App\Enum\ReservationStatus;
 use App\Form\ProfileFormType;
 use App\Repository\ReservationRepository;
 use App\Security\ReservationAccessChecker;
+use App\Service\ReservationCancellationMailer;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +88,9 @@ final class AccountController extends AbstractController
         Reservation $reservation,
         Request $request,
         EntityManagerInterface $entityManager,
-        ReservationAccessChecker $accessChecker
+        ReservationAccessChecker $accessChecker,
+        ReservationCancellationMailer $cancellationMailer,
+        LoggerInterface $logger
     ): Response {
         $user = $this->getAuthenticatedUser();
 
@@ -132,6 +136,30 @@ final class AccountController extends AbstractController
         );
 
         $entityManager->flush();
+
+        try {
+                $cancellationMailer->sendToCustomer($reservation);
+            } catch (\Throwable $exception) {
+                $logger->error(
+                    'Reservation cancellation email could not be sent.',
+                    [
+                        'reservationReference' => $reservation->getReference(),
+                        'exception' => $exception,
+                    ]
+                );
+            }
+
+            try {
+                $cancellationMailer->sendToOwner($reservation);
+            } catch (\Throwable $exception) {
+                $logger->error(
+                    'Reservation cancellation owner notification could not be sent.',
+                    [
+                        'reservationReference' => $reservation->getReference(),
+                        'exception' => $exception,
+                    ]
+                );
+            }
 
         $this->addFlash(
             'success',
