@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\Reservation;
 use App\Repository\ReservationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,6 +38,72 @@ final class AdminReservationController extends AbstractController
             [
                 'reservations' => $reservations,
             ]
+        );
+    }
+
+    #[Route(
+        '/admin/reservations/{id}/statut/{action}',
+        name: 'app_admin_reservation_status',
+        requirements: [
+            'id' => '\d+',
+            'action' => 'confirm|complete|cancel',
+        ],
+        methods: ['POST']
+    )]
+    public function changeStatus(
+        Reservation $reservation,
+        string $action,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $csrfToken = $request->request->getString('_token');
+
+        if (
+            !$this->isCsrfTokenValid(
+                'admin_reservation_status_'
+                . $reservation->getId()
+                . '_'
+                . $action,
+                $csrfToken
+            )
+        ) {
+            throw $this->createAccessDeniedException(
+                'Le jeton de sécurité est invalide.'
+            );
+        }
+
+        try {
+            match ($action) {
+                'confirm' => $reservation->confirm(),
+                'complete' => $reservation->complete(),
+                'cancel' => $reservation->cancel(
+                    'Annulation effectuée par l’administrateur.'
+                ),
+                default => throw $this->createNotFoundException(),
+            };
+        } catch (DomainException $exception) {
+            $this->addFlash(
+                'warning',
+                $exception->getMessage()
+            );
+
+            return $this->redirectToRoute(
+                'app_admin_reservations'
+            );
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            sprintf(
+                'Le statut de la réservation %s a été mis à jour.',
+                $reservation->getReference()
+            )
+        );
+
+        return $this->redirectToRoute(
+            'app_admin_reservations'
         );
     }
 }
