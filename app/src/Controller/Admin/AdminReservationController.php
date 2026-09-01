@@ -6,8 +6,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\Reservation;
 use App\Repository\ReservationRepository;
+use App\Service\ReservationCancellationMailer;
+use App\Service\ReservationStatusMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,16 +57,19 @@ final class AdminReservationController extends AbstractController
         Reservation $reservation,
         string $action,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ReservationStatusMailer $statusMailer,
+        ReservationCancellationMailer $cancellationMailer,
+        LoggerInterface $logger
     ): Response {
         $csrfToken = $request->request->getString('_token');
 
         if (
             !$this->isCsrfTokenValid(
                 'admin_reservation_status_'
-                . $reservation->getId()
-                . '_'
-                . $action,
+                    . $reservation->getId()
+                    . '_'
+                    . $action,
                 $csrfToken
             )
         ) {
@@ -93,6 +99,31 @@ final class AdminReservationController extends AbstractController
         }
 
         $entityManager->flush();
+
+        try {
+            match ($action) {
+                'confirm' => $statusMailer->sendConfirmed(
+                    $reservation
+                ),
+                'complete' => $statusMailer->sendCompleted(
+                    $reservation
+                ),
+                'cancel' => $cancellationMailer->sendToCustomer(
+                    $reservation
+                ),
+                default => null,
+            };
+        } catch (\Throwable $exception) {
+            $logger->error(
+                'Reservation status email could not be sent.',
+                [
+                    'reservationReference' =>
+                    $reservation->getReference(),
+                    'action' => $action,
+                    'exception' => $exception,
+                ]
+            );
+        }
 
         $this->addFlash(
             'success',

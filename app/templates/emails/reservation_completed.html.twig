@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Trajet terminé</title>
+</head>
+
+<body style="margin:0;background:#f3f4f6;font-family:Arial,sans-serif;color:#111827;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" style="padding:30px 15px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+                    style="max-width:620px;background:#ffffff;border-radius:14px;overflow:hidden;">
+
+                    <tr>
+                        <td style="padding:28px;background:#111827;color:#ffffff;text-align:center;">
+                            <div style="font-size:24px;font-weight:700;">
+                                TAXI PARIS SERVICE24
+                            </div>
+                            <div style="margin-top:8px;color:#d1d5db;">
+                                Votre trajet, notre priorité
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:30px;">
+                            <h1 style="margin:0 0 15px;font-size:24px;">
+                                Trajet terminé
+                            </h1>
+
+                            <p style="margin:0 0 20px;line-height:1.6;">
+                                Bonjour {{ reservation.firstName }},
+                                votre trajet est maintenant terminé.
+                                Merci d'avoir choisi Taxi Paris Service24.
+                            </p>
+
+                            <div style="padding:16px;background:#f3f4f6;border-radius:10px;margin-bottom:24px;">
+                                <strong>Référence :</strong>
+                                {{ reservation.reference }}
+                            </div>
+
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="8"
+                                style="border-collapse:collapse;">
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Date du trajet
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Départ
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.pickupAddress }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Arrivée
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.dropoffAddress }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Type
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.type.label }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Véhicule
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.vehicleType.label }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Passagers
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.passengers }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Bagages
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.luggage }}
+                                    </td>
+                                </tr>
+
+                                {% if reservation.distanceKm is not null %}
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Distance estimée
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.distanceKm|number_format(2, ',', ' ') }} km
+                                    </td>
+                                </tr>
+                                {% endif %}
+
+                                {% if reservation.durationMinutes is not null %}
+                                <tr>
+                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
+                                        Durée estimée
+                                    </td>
+                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
+                                        {{ reservation.durationMinutes }} minutes
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+
+                            {% if reservation.discountPercentage > 0 %}
+                            <div
+                                style="margin-top:24px;padding:16px;background:#ecfdf5;color:#065f46;border-radius:10px;">
+                                Avantage fidélité appliqué :
+                                <strong>
+                                    −{{ reservation.discountPercentage }} %
+                                </strong>
+                            </div>
+                            {% endif %}
+
+                            <div
+                                style="margin-top:24px;padding:20px;background:#111827;color:#ffffff;border-radius:10px;text-align:center;">
+                                <div style="font-size:14px;color:#d1d5db;">
+                                    Prix estimé
+                                </div>
+
+                                <div style="margin-top:6px;font-size:28px;font-weight:700;">
+                                    {% if reservation.finalPrice is not null %}
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                    {% else %}
+                                    À confirmer
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <p style="margin:24px 0 0;line-height:1.6;color:#4b5563;">
+                                Nous espérons que votre trajet s'est bien déroulé
+                                et serons heureux de vous accompagner à nouveau.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:20px;background:#f9fafb;text-align:center;color:#6b7280;font-size:13px;">
+                            Taxi Paris Service24 · Paris et Île-de-France
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
