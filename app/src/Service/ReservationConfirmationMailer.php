@@ -38,7 +38,7 @@ final class ReservationConfirmationMailer
                 )
             )
             ->subject(
-                'Confirmation de votre réservation '
+                'Demande de réservation enregistrée '
                 . $reservation->getReference()
             )
             ->htmlTemplate(

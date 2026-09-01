@@ -33,7 +33,7 @@ final class ReservationConfirmationMailerTest extends TestCase
                         );
 
                         self::assertSame(
-                            'Confirmation de votre réservation '
+                            'Demande de réservation enregistrée '
                             . $reservation->getReference(),
                             $message->getSubject()
                         );
