@@ -95,7 +95,12 @@
                 {% for reservation in reservations %}
                 <tr>
                     <td>
-                        <strong>{{ reservation.reference }}</strong>
+                        <a href="{{ path(
+                            'app_admin_reservation_show',
+                            { id: reservation.id }
+                        ) }}">
+                            <strong>{{ reservation.reference }}</strong>
+                        </a>
                     </td>
 
                     <td>

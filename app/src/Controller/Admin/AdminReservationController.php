@@ -45,6 +45,22 @@ final class AdminReservationController extends AbstractController
     }
 
     #[Route(
+        '/admin/reservations/{id}',
+        name: 'app_admin_reservation_show',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
+    public function show(Reservation $reservation): Response
+    {
+        return $this->render(
+            'admin/reservation/show.html.twig',
+            [
+                'reservation' => $reservation,
+            ]
+        );
+    }
+
+    #[Route(
         '/admin/reservations/{id}/statut/{action}',
         name: 'app_admin_reservation_status',
         requirements: [
