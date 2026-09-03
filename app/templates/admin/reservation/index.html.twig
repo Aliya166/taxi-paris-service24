@@ -47,6 +47,68 @@
         background: #fef3c7;
         color: #92400e;
     }
+
+    .admin-filters {
+        display: grid;
+        grid-template-columns: minmax(240px, 1fr) 220px auto auto;
+        align-items: end;
+        gap: 12px;
+        margin: 24px 0;
+        padding: 18px;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .admin-filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .admin-filter-field label {
+        font-weight: 600;
+    }
+
+    .admin-filter-field input,
+    .admin-filter-field select {
+        min-height: 42px;
+        padding: 9px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: #ffffff;
+        font: inherit;
+    }
+
+    .admin-filter-submit,
+    .admin-filter-reset {
+        min-height: 42px;
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 7px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .admin-filter-submit {
+        color: #ffffff;
+        background: #2563eb;
+    }
+
+    .admin-filter-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #334155;
+        background: #e2e8f0;
+    }
+
+    @media (max-width: 850px) {
+        .admin-filters {
+            grid-template-columns: 1fr;
+            align-items: stretch;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -65,6 +127,43 @@
         </a>
     </header>
 
+    <form class="admin-filters" method="get" action="{{ path('app_admin_reservations') }}">
+        <div class="admin-filter-field">
+            <label for="reservation-search">
+                Rechercher
+            </label>
+
+            <input id="reservation-search" type="search" name="q" value="{{ search }}"
+                placeholder="Référence, client, email ou téléphone">
+        </div>
+
+        <div class="admin-filter-field">
+            <label for="reservation-status">
+                Statut
+            </label>
+
+            <select id="reservation-status" name="status">
+                <option value="" {% if selectedStatus is null %}selected{% endif %}>
+                    Tous les statuts
+                </option>
+
+                {% for status in statuses %}
+                <option value="{{ status.value }}" {% if selectedStatus==status.value %} selected {% endif %}>
+                    {{ status.label() }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="admin-filter-submit" type="submit">
+            Rechercher
+        </button>
+
+        <a class="admin-filter-reset" href="{{ path('app_admin_reservations') }}">
+            Réinitialiser
+        </a>
+    </form>
+
     {% for label, messages in app.flashes %}
     {% for message in messages %}
     <div class="flash-{{ label }}" role="alert">
@@ -74,7 +173,7 @@
     {% endfor %}
 
     {% if reservations is empty %}
-    <p>Aucune réservation enregistrée.</p>
+    <p>Aucune réservation ne correspond à votre recherche.</p>
     {% else %}
     <div class="admin-table-wrapper">
         <table class="admin-table">

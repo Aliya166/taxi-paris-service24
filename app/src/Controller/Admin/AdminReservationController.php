@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Reservation;
+use App\Enum\ReservationStatus;
 use App\Repository\ReservationRepository;
 use App\Service\ReservationCancellationMailer;
 use App\Service\ReservationStatusMailer;
@@ -26,20 +27,26 @@ final class AdminReservationController extends AbstractController
         methods: ['GET']
     )]
     public function index(
+        Request $request,
         ReservationRepository $reservationRepository
     ): Response {
-        $reservations = $reservationRepository->findBy(
-            [],
-            [
-                'scheduledAt' => 'DESC',
-                'createdAt' => 'DESC',
-            ]
+        $search = trim($request->query->getString('q'));
+        $statusValue = $request->query->getString('status');
+
+        $selectedStatus = ReservationStatus::tryFrom($statusValue);
+
+        $reservations = $reservationRepository->findForAdmin(
+            $search,
+            $selectedStatus
         );
 
         return $this->render(
             'admin/reservation/index.html.twig',
             [
                 'reservations' => $reservations,
+                'search' => $search,
+                'selectedStatus' => $selectedStatus?->value,
+                'statuses' => ReservationStatus::cases(),
             ]
         );
     }

@@ -217,6 +217,45 @@ class ReservationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return list<Reservation>
+     */
+    public function findForAdmin(
+        string $search = '',
+        ?ReservationStatus $status = null
+    ): array {
+        $queryBuilder = $this
+            ->createQueryBuilder('reservation')
+            ->orderBy('reservation.scheduledAt', 'DESC')
+            ->addOrderBy('reservation.createdAt', 'DESC');
+
+        $search = mb_strtolower(trim($search));
+
+        if ($search !== '') {
+            $queryBuilder
+                ->andWhere(
+                    $queryBuilder->expr()->orX(
+                        'LOWER(reservation.reference) LIKE :search',
+                        'LOWER(reservation.firstName) LIKE :search',
+                        'LOWER(reservation.lastName) LIKE :search',
+                        'LOWER(reservation.email) LIKE :search',
+                        'LOWER(reservation.phone) LIKE :search'
+                    )
+                )
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        if ($status !== null) {
+            $queryBuilder
+                ->andWhere('reservation.status = :status')
+                ->setParameter('status', $status->value);
+        }
+
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
+
     private function normalizeEmail(string $email): string
     {
         $normalizedEmail = mb_strtolower(trim($email));
