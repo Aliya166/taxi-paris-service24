@@ -11,6 +11,7 @@ use App\Service\ReservationCancellationMailer;
 use App\Service\ReservationStatusMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
+use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,13 +33,32 @@ final class AdminReservationController extends AbstractController
     ): Response {
         $search = trim($request->query->getString('q'));
         $statusValue = $request->query->getString('status');
+        $dateFromValue = $request->query->getString('date_from');
+        $dateToValue = $request->query->getString('date_to');
 
         $selectedStatus = ReservationStatus::tryFrom($statusValue);
+        $dateFrom = $this->parseDate($dateFromValue);
+        $dateTo = $this->parseDate($dateToValue);
 
-        $reservations = $reservationRepository->findForAdmin(
-            $search,
-            $selectedStatus
-        );
+        $invalidDateRange = $dateFrom !== null
+            && $dateTo !== null
+            && $dateFrom > $dateTo;
+
+        if ($invalidDateRange) {
+            $this->addFlash(
+                'warning',
+                'La date de début doit être antérieure à la date de fin.'
+            );
+
+            $reservations = [];
+        } else {
+            $reservations = $reservationRepository->findForAdmin(
+                $search,
+                $selectedStatus,
+                $dateFrom,
+                $dateTo?->modify('+1 day')
+            );
+        }
 
         return $this->render(
             'admin/reservation/index.html.twig',
@@ -46,6 +66,8 @@ final class AdminReservationController extends AbstractController
                 'reservations' => $reservations,
                 'search' => $search,
                 'selectedStatus' => $selectedStatus?->value,
+                'selectedDateFrom' => $dateFromValue,
+                'selectedDateTo' => $dateToValue,
                 'statuses' => ReservationStatus::cases(),
             ]
         );
@@ -159,5 +181,34 @@ final class AdminReservationController extends AbstractController
         return $this->redirectToRoute(
             'app_admin_reservations'
         );
+    }
+
+    private function parseDate(string $value): ?DateTimeImmutable
+    {
+        if ($value === '') {
+            return null;
+        }
+
+        $date = DateTimeImmutable::createFromFormat(
+            '!Y-m-d',
+            $value
+        );
+
+        $errors = DateTimeImmutable::getLastErrors();
+
+        if (
+            $date === false
+            || (
+                $errors !== false
+                && (
+                    $errors['warning_count'] > 0
+                    || $errors['error_count'] > 0
+                )
+            )
+        ) {
+            return null;
+        }
+
+        return $date;
     }
 }

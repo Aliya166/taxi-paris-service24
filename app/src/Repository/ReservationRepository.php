@@ -222,7 +222,9 @@ class ReservationRepository extends ServiceEntityRepository
      */
     public function findForAdmin(
         string $search = '',
-        ?ReservationStatus $status = null
+        ?ReservationStatus $status = null,
+        ?DateTimeImmutable $scheduledFrom = null,
+        ?DateTimeImmutable $scheduledUntil = null
     ): array {
         $queryBuilder = $this
             ->createQueryBuilder('reservation')
@@ -249,6 +251,18 @@ class ReservationRepository extends ServiceEntityRepository
             $queryBuilder
                 ->andWhere('reservation.status = :status')
                 ->setParameter('status', $status->value);
+        }
+
+        if ($scheduledFrom !== null) {
+            $queryBuilder
+                ->andWhere('reservation.scheduledAt >= :scheduledFrom')
+                ->setParameter('scheduledFrom', $scheduledFrom);
+        }
+
+        if ($scheduledUntil !== null) {
+            $queryBuilder
+                ->andWhere('reservation.scheduledAt < :scheduledUntil')
+                ->setParameter('scheduledUntil', $scheduledUntil);
         }
 
         return $queryBuilder

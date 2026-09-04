@@ -50,7 +50,7 @@
 
     .admin-filters {
         display: grid;
-        grid-template-columns: minmax(240px, 1fr) 220px auto auto;
+        grid-template-columns: minmax(240px, 1fr) 190px 155px 155px auto auto;
         align-items: end;
         gap: 12px;
         margin: 24px 0;
@@ -103,6 +103,12 @@
         background: #e2e8f0;
     }
 
+    @media (max-width: 1200px) {
+        .admin-filters {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
     @media (max-width: 850px) {
         .admin-filters {
             grid-template-columns: 1fr;
@@ -153,6 +159,24 @@
                 </option>
                 {% endfor %}
             </select>
+        </div>
+
+        <div class="admin-filter-field">
+            <label for="reservation-date-from">
+                Du
+            </label>
+
+            <input id="reservation-date-from" type="date" name="date_from" value="{{ selectedDateFrom }}" {% if
+                selectedDateTo %} max="{{ selectedDateTo }}" {% endif %}>
+        </div>
+
+        <div class="admin-filter-field">
+            <label for="reservation-date-to">
+                Au
+            </label>
+
+            <input id="reservation-date-to" type="date" name="date_to" value="{{ selectedDateTo }}" {% if
+                selectedDateFrom %} min="{{ selectedDateFrom }}" {% endif %}>
         </div>
 
         <button class="admin-filter-submit" type="submit">
