@@ -145,6 +145,98 @@ final class AdminReservationControllerTest extends WebTestCase
         );
     }
 
+        public function testAdminCanCompleteConfirmedReservation(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $reservation = $this->createReservation(
+            'complete-action@example.com',
+            new DateTimeImmutable('2026-09-21 14:00'),
+            true
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations'
+        );
+
+        $form = $crawler
+            ->filter(sprintf(
+                'form[action$="/admin/reservations/%d/statut/complete"]',
+                $reservation->getId()
+            ))
+            ->form();
+
+        $this->client->submit($form);
+
+        self::assertResponseRedirects('/admin/reservations');
+
+        $storedReservation = $this->entityManager?->find(
+            Reservation::class,
+            $reservation->getId()
+        );
+
+        self::assertInstanceOf(
+            Reservation::class,
+            $storedReservation
+        );
+
+        self::assertSame(
+            ReservationStatus::COMPLETED,
+            $storedReservation->getStatus()
+        );
+    }
+
+    public function testAdminCanCancelPendingReservation(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $reservation = $this->createReservation(
+            'cancel-action@example.com',
+            new DateTimeImmutable('2026-09-21 15:00')
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations'
+        );
+
+        $form = $crawler
+            ->filter(sprintf(
+                'form[action$="/admin/reservations/%d/statut/cancel"]',
+                $reservation->getId()
+            ))
+            ->form();
+
+        $this->client->submit($form);
+
+        self::assertResponseRedirects('/admin/reservations');
+
+        $storedReservation = $this->entityManager?->find(
+            Reservation::class,
+            $reservation->getId()
+        );
+
+        self::assertInstanceOf(
+            Reservation::class,
+            $storedReservation
+        );
+
+        self::assertSame(
+            ReservationStatus::CANCELLED,
+            $storedReservation->getStatus()
+        );
+
+        self::assertSame(
+            'Annulation effectuée par l’administrateur.',
+            $storedReservation->getCancellationReason()
+        );
+    }
+
     public function testRegularUserCannotAccessAdminReservations(): void
     {
         $user = $this->createUser(['ROLE_USER']);
