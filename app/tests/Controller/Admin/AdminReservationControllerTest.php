@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Entity\Reservation;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -36,8 +38,8 @@ final class AdminReservationControllerTest extends WebTestCase
         if (
             $this->entityManager !== null
             && $this->entityManager
-                ->getConnection()
-                ->isTransactionActive()
+            ->getConnection()
+            ->isTransactionActive()
         ) {
             $this->entityManager
                 ->getConnection()
@@ -105,6 +107,117 @@ final class AdminReservationControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testAdminCanSearchReservationsByEmail(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $this->createReservation(
+            'search-target@example.com',
+            new DateTimeImmutable('2026-09-15 10:00')
+        );
+
+        $this->createReservation(
+            'search-hidden@example.com',
+            new DateTimeImmutable('2026-09-16 10:00')
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations?q=search-target'
+        );
+
+        self::assertResponseIsSuccessful();
+
+        $pageContent = $crawler->filter('body')->text();
+
+        self::assertStringContainsString(
+            'search-target@example.com',
+            $pageContent
+        );
+
+        self::assertStringNotContainsString(
+            'search-hidden@example.com',
+            $pageContent
+        );
+    }
+
+    public function testAdminCanFilterReservationsByStatus(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $this->createReservation(
+            'pending-filter@example.com',
+            new DateTimeImmutable('2026-09-15 11:00')
+        );
+
+        $this->createReservation(
+            'confirmed-filter@example.com',
+            new DateTimeImmutable('2026-09-15 12:00'),
+            true
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations?status=confirmed'
+        );
+
+        self::assertResponseIsSuccessful();
+
+        $pageContent = $crawler->filter('body')->text();
+
+        self::assertStringContainsString(
+            'confirmed-filter@example.com',
+            $pageContent
+        );
+
+        self::assertStringNotContainsString(
+            'pending-filter@example.com',
+            $pageContent
+        );
+    }
+
+    public function testAdminCanFilterReservationsByDate(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $this->createReservation(
+            'inside-date-filter@example.com',
+            new DateTimeImmutable('2026-09-15 18:30')
+        );
+
+        $this->createReservation(
+            'outside-date-filter@example.com',
+            new DateTimeImmutable('2026-10-01 10:00')
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations'
+                . '?date_from=2026-09-10'
+                . '&date_to=2026-09-20'
+        );
+
+        self::assertResponseIsSuccessful();
+
+        $pageContent = $crawler->filter('body')->text();
+
+        self::assertStringContainsString(
+            'inside-date-filter@example.com',
+            $pageContent
+        );
+
+        self::assertStringNotContainsString(
+            'outside-date-filter@example.com',
+            $pageContent
+        );
+    }
+
     /**
      * @param list<string> $roles
      */
@@ -128,5 +241,31 @@ final class AdminReservationControllerTest extends WebTestCase
         $this->entityManager?->flush();
 
         return $user;
+    }
+
+    private function createReservation(
+        string $email,
+        DateTimeImmutable $scheduledAt,
+        bool $confirmed = false
+    ): Reservation {
+        $reservation = (new Reservation())
+            ->setFirstName('Client')
+            ->setLastName('Filtre')
+            ->setEmail($email)
+            ->setPhone('0612345678')
+            ->setPickupAddress('10 rue de Rivoli, Paris')
+            ->setDropoffAddress('Aéroport Paris-Orly')
+            ->setScheduledAt($scheduledAt)
+            ->setPassengers(1)
+            ->setLuggage(0);
+
+        if ($confirmed) {
+            $reservation->confirm();
+        }
+
+        $this->entityManager?->persist($reservation);
+        $this->entityManager?->flush();
+
+        return $reservation;
     }
 }
