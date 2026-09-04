@@ -6,6 +6,7 @@ namespace App\Tests\Controller\Admin;
 
 use App\Entity\Reservation;
 use App\Entity\User;
+use App\Enum\ReservationStatus;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -59,6 +60,89 @@ final class AdminReservationControllerTest extends WebTestCase
         );
 
         self::assertResponseRedirects('/login');
+    }
+
+    public function testAdminCanConfirmReservationWithValidCsrfToken(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $reservation = $this->createReservation(
+            'confirm-action@example.com',
+            new DateTimeImmutable('2026-09-20 14:00')
+        );
+
+        $this->client->loginUser($admin);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/admin/reservations'
+        );
+
+        $form = $crawler
+            ->filter(sprintf(
+                'form[action$="/admin/reservations/%d/statut/confirm"]',
+                $reservation->getId()
+            ))
+            ->form();
+
+        $this->client->submit($form);
+
+        self::assertResponseRedirects('/admin/reservations');
+
+        $storedReservation = $this->entityManager?->find(
+            Reservation::class,
+            $reservation->getId()
+        );
+
+        self::assertInstanceOf(
+            Reservation::class,
+            $storedReservation
+        );
+
+        self::assertSame(
+            ReservationStatus::CONFIRMED,
+            $storedReservation->getStatus()
+        );
+    }
+
+    public function testInvalidCsrfTokenCannotChangeReservationStatus(): void
+    {
+        $admin = $this->createUser(['ROLE_ADMIN']);
+
+        $reservation = $this->createReservation(
+            'invalid-csrf@example.com',
+            new DateTimeImmutable('2026-09-20 15:00')
+        );
+
+        $this->client->loginUser($admin);
+
+        $this->client->request(
+            'POST',
+            sprintf(
+                '/admin/reservations/%d/statut/confirm',
+                $reservation->getId()
+            ),
+            [
+                '_token' => 'invalid-token',
+            ]
+        );
+
+        self::assertResponseStatusCodeSame(403);
+
+        $storedReservation = $this->entityManager?->find(
+            Reservation::class,
+            $reservation->getId()
+        );
+
+        self::assertInstanceOf(
+            Reservation::class,
+            $storedReservation
+        );
+
+        self::assertSame(
+            ReservationStatus::PENDING,
+            $storedReservation->getStatus()
+        );
     }
 
     public function testRegularUserCannotAccessAdminReservations(): void
