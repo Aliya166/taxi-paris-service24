@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Erreur {{ status_code }} | Taxi Paris Service 24
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        color: #172033;
+        background:
+            radial-gradient(
+                circle at top left,
+                rgba(73, 196, 223, 0.35),
+                transparent 42%
+            ),
+            linear-gradient(135deg, #eafaff 0%, #f8fcff 55%, #e5f7fb 100%);
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .error-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 32px 20px;
+    }
+
+    .error-card {
+        width: 100%;
+        max-width: 720px;
+        padding: 54px 45px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 24px 70px rgba(22, 77, 94, 0.16);
+        text-align: center;
+        backdrop-filter: blur(12px);
+    }
+
+    .error-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
+        color: #14778f;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .error-brand-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: #14778f;
+        font-size: 18px;
+    }
+
+    .error-code {
+        margin: 0;
+        color: #38aeca;
+        font-size: clamp(78px, 18vw, 150px);
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: -0.06em;
+    }
+
+    .error-card h1 {
+        margin: 26px 0 14px;
+        color: #172033;
+        font-size: clamp(27px, 5vw, 42px);
+        line-height: 1.15;
+    }
+
+    .error-description {
+        max-width: 540px;
+        margin: 0 auto;
+        color: #667085;
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    .error-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 34px;
+    }
+
+    .error-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 22px;
+        border-radius: 10px;
+        font-weight: 750;
+        text-decoration: none;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .error-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .error-button-primary {
+        color: #ffffff;
+        background: #14778f;
+        box-shadow: 0 10px 22px rgba(20, 119, 143, 0.24);
+    }
+
+    .error-button-secondary {
+        border: 1px solid #cadde2;
+        color: #2e6472;
+        background: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+        .error-card {
+            padding: 40px 22px;
+            border-radius: 20px;
+        }
+
+        .error-description {
+            font-size: 16px;
+        }
+
+        .error-actions {
+            flex-direction: column;
+        }
+
+        .error-button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="error-page">
+    <section class="error-card">
+        <div class="error-brand">
+            <span class="error-brand-mark">T</span>
+            Taxi Paris Service 24
+        </div>
+
+        <p class="error-code">{{ status_code }}</p>
+
+        {% if status_code == 403 %}
+            <h1>Accès refusé</h1>
+
+            <p class="error-description">
+                Vous ne disposez pas des autorisations nécessaires
+                pour accéder à cette page.
+            </p>
+        {% elseif status_code == 404 %}
+            <h1>Page introuvable</h1>
+
+            <p class="error-description">
+                La page que vous recherchez n’existe pas,
+                a été déplacée ou n’est plus disponible.
+            </p>
+        {% else %}
+            <h1>Une erreur est survenue</h1>
+
+            <p class="error-description">
+                Notre service rencontre momentanément un problème.
+                Veuillez réessayer dans quelques instants.
+            </p>
+        {% endif %}
+
+        <div class="error-actions">
+            <a
+                class="error-button error-button-primary"
+                href="{{ path('app_home') }}"
+            >
+                Retour à l’accueil
+            </a>
+
+            {% if app.user %}
+                <a
+                    class="error-button error-button-secondary"
+                    href="{{ path('app_account') }}"
+                >
+                    Mon compte
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}
