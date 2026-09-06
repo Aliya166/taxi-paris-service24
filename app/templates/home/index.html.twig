@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Taxi Paris Service 24 | Taxi et chauffeur privé
+Taxi Paris Service 24 | Taxi et chauffeur privé
 {% endblock %}
 
 {% block meta_description %}
-    Réservez votre taxi ou chauffeur privé à Paris 24h/24
-    et 7j/7, avec des tarifs fixes et transparents.
+Réservez votre taxi ou chauffeur privé à Paris 24h/24
+et 7j/7, avec des tarifs fixes et transparents.
 {% endblock %}
 
 {% block body_class %}home-body{% endblock %}
@@ -15,22 +15,13 @@
 <div class="home-page">
     <header class="site-header">
         <div class="site-header__inner">
-            <a
-                class="site-brand"
-                href="{{ path('app_home') }}"
-                aria-label="Taxi Paris Service 24 - Accueil"
-            >
+            <a class="site-brand" href="{{ path('app_home') }}" aria-label="Taxi Paris Service 24 - Accueil">
                 <strong>Taxi Paris</strong>
                 <span>Service 24</span>
             </a>
 
-            <button
-                class="site-menu-toggle"
-                type="button"
-                aria-expanded="false"
-                aria-controls="main-navigation"
-                aria-label="Ouvrir le menu"
-            >
+            <button class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"
+                aria-label="Ouvrir le menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -65,49 +56,34 @@
                     </a>
 
                     {% if app.user %}
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a
-                                class="header-button header-button--outline"
-                                href="{{ path('app_admin_reservations') }}"
-                            >
-                                Administration
-                            </a>
-                        {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a class="header-button header-button--outline" href="{{ path('app_admin_reservations') }}">
+                        Administration
+                    </a>
+                    {% endif %}
 
-                        <a
-                            class="header-button header-button--outline"
-                            href="{{ path('app_account') }}"
-                        >
-                            Mon compte
-                        </a>
+                    <a class="header-button header-button--outline" href="{{ path('app_account') }}">
+                        Mon compte
+                    </a>
 
-                        <a
-                            class="header-button header-button--primary"
-                            href="{{ path('app_logout') }}"
-                        >
-                            Déconnexion
-                        </a>
+                    <a class="header-button header-button--primary" href="{{ path('app_logout') }}">
+                        Déconnexion
+                    </a>
                     {% else %}
-                        <a
-                            class="header-button header-button--outline"
-                            href="{{ path('app_login') }}"
-                        >
-                            <span aria-hidden="true">●</span>
-                            Connexion
-                        </a>
+                    <a class="header-button header-button--outline" href="{{ path('app_login') }}">
+                        <span aria-hidden="true">●</span>
+                        Connexion
+                    </a>
 
-                        <div class="register-action">
-                            <div class="register-hint">
-                                Nouveau ? Créez votre compte ici
-                            </div>
-
-                            <a
-                                class="header-button header-button--primary"
-                                href="{{ path('app_register') }}"
-                            >
-                                Créer un compte
-                            </a>
+                    <div class="register-action">
+                        <div class="register-hint">
+                            Nouveau ? Créez votre compte ici
                         </div>
+
+                        <a class="header-button header-button--primary" href="{{ path('app_register') }}">
+                            Créer un compte
+                        </a>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -141,17 +117,11 @@
                     </p>
 
                     <div class="hero-actions">
-                        <a
-                            class="hero-button hero-button--primary"
-                            href="/reservation.html"
-                        >
+                        <a class="hero-button hero-button--primary" href="/reservation.html">
                             Réserver maintenant
                         </a>
 
-                        <a
-                            class="hero-button hero-button--outline"
-                            href="tel:+33184802305"
-                        >
+                        <a class="hero-button hero-button--outline" href="tel:+33184802305">
                             <span aria-hidden="true">☎</span>
                             Appeler
                         </a>
@@ -177,11 +147,108 @@
             </div>
         </section>
 
-        <section class="home-preview" id="services">
-            <div class="home-container">
-                <p>La suite de la page arrive à l’étape suivante.</p>
+        <section class="loyalty-section" aria-labelledby="loyalty-title">
+            {% set progress = loyaltyProgress ?? 0 %}
+
+            <div class="home-container loyalty-layout">
+                <div class="loyalty-copy">
+                    <p class="section-label">
+                        Service_24
+                    </p>
+
+                    <h2 id="loyalty-title">
+                        Un compte qui<br>
+                        vous récompense
+                    </h2>
+
+                    <p>
+                        Après 5 trajets terminés, profitez automatiquement
+                        de 10 % de réduction sur votre 6ᵉ course.
+                    </p>
+
+                    {% if app.user %}
+                    <a class="loyalty-button" href="{{ path('app_account') }}">
+                        Voir mon compte
+                        <span aria-hidden="true">››</span>
+                    </a>
+                    {% else %}
+                    <a class="loyalty-button" href="{{ path('app_register') }}">
+                        Créer mon compte
+                        <span aria-hidden="true">››</span>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="loyalty-card">
+                    <div class="loyalty-card__header">
+                        <div>
+                            <p>Progression membre</p>
+
+                            {% if app.user %}
+                            <span>
+                                {{ progress }}/5 trajets terminés
+                            </span>
+                            {% else %}
+                            <span>
+                                Inscription gratuite
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <span class="loyalty-card__badge">
+                            −10 %
+                        </span>
+                    </div>
+
+                    <div class="loyalty-steps" aria-label="Progression de la fidélité">
+                        {% for ride in 1..5 %}
+                        <div class="loyalty-step
+                            {{ ride <= progress
+                                ? 'is-complete'
+                                : ''
+                            }}">
+                            <span>{{ ride }}</span>
+                        </div>
+                        {% endfor %}
+
+                        <div class="loyalty-step loyalty-step--reward
+                        {{ progress >= 5 ? 'is-ready' : '' }}">
+                            <span>6</span>
+                        </div>
+                    </div>
+
+                    <div class="loyalty-card__message">
+                        {% if not app.user %}
+                        <strong>Votre 6ᵉ course à −10 %</strong>
+
+                        <p>
+                            Créez votre compte pour commencer
+                            à cumuler vos trajets.
+                        </p>
+                        {% elseif progress >= 5 %}
+                        <strong>Votre remise est prête !</strong>
+
+                        <p>
+                            10 % seront automatiquement appliqués
+                            à votre prochaine réservation.
+                        </p>
+                        {% else %}
+                        <strong>
+                            Encore {{ ridesUntilDiscount }}
+                            trajet{{ ridesUntilDiscount > 1 ? 's' : '' }}
+                        </strong>
+
+                        <p>
+                            avant de profiter de 10 % de réduction
+                            sur votre prochaine course.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </section>
+
+        <section id="services"></section>
     </main>
 </div>
 
