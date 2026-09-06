@@ -22,11 +22,60 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ReservationController extends AbstractController
 {
+
+    #[Route(
+        '/reservation/aeroport',
+        name: 'app_reservation_airport',
+        methods: ['GET']
+    )]
+    public function airport(): Response
+    {
+        return $this->renderReservationPage(
+            ReservationType::AIRPORT
+        );
+    }
+
+    #[Route(
+        '/reservation/gare',
+        name: 'app_reservation_station',
+        methods: ['GET']
+    )]
+    public function station(): Response
+    {
+        return $this->renderReservationPage(
+            ReservationType::STATION
+        );
+    }
+
+    #[Route(
+        '/reservation/professionnelle',
+        name: 'app_reservation_business',
+        methods: ['GET']
+    )]
+    public function business(): Response
+    {
+        return $this->renderReservationPage(
+            ReservationType::BUSINESS
+        );
+    }
+
+    #[Route(
+        '/reservation/longue-distance',
+        name: 'app_reservation_long_distance',
+        methods: ['GET']
+    )]
+    public function longDistance(): Response
+    {
+        return $this->renderReservationPage(
+            ReservationType::LONG_DISTANCE
+        );
+    }
     #[Route(
         '/api/reservations',
         name: 'app_reservation_create',
         methods: ['POST']
     )]
+
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -213,6 +262,18 @@ final class ReservationController extends AbstractController
                 'redirect' => '/confirmation.html',
             ],
             Response::HTTP_CREATED
+        );
+    }
+
+        private function renderReservationPage(
+        ReservationType $reservationType
+    ): Response {
+        return $this->render(
+            'reservation/index.html.twig',
+            [
+                'reservationType' => $reservationType,
+                'reservationTypeLabel' => $reservationType->label(),
+            ]
         );
     }
 

@@ -248,7 +248,146 @@ et 7j/7, avec des tarifs fixes et transparents.
             </div>
         </section>
 
-        <section id="services"></section>
+        <section class="services-section" id="services" aria-labelledby="services-title">
+            <div class="home-container">
+                <header class="services-heading">
+                    <div>
+                        <p class="section-label">
+                            Nos services
+                        </p>
+
+                        <h2 id="services-title">
+                            Le bon service<br>
+                            pour chaque trajet
+                        </h2>
+                    </div>
+
+                    <p class="services-heading__text">
+                        Taxi et chauffeur privé disponibles 24h/24 et 7j/7
+                        pour vos déplacements à Paris, en Île-de-France
+                        et au-delà, avec des tarifs fixes et transparents.
+                    </p>
+                </header>
+
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="service-card__image">
+                            <img src="/images/services/airport-transfer.png"
+                                alt="Chauffeur accueillant une cliente à l’aéroport" width="1672" height="941"
+                                loading="lazy">
+
+                            <span class="service-card__number">01</span>
+                        </div>
+
+                        <div class="service-card__content">
+                            <p class="service-card__label">
+                                Aéroports parisiens
+                            </p>
+
+                            <h3>Transferts aéroports</h3>
+
+                            <p>
+                                Voyagez sereinement vers ou depuis Orly,
+                                Roissy–Charles-de-Gaulle et Beauvais.
+                                Votre chauffeur vous accueille à l’heure convenue.
+                            </p>
+
+                            <a href="{{ path('app_reservation_airport') }}">
+                                Réserver un transfert
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-card__image">
+                            <img src="/images/services/station-transfer.png"
+                                alt="Chauffeur accueillant une cliente devant une gare parisienne" width="1672"
+                                height="941" loading="lazy">
+
+                            <span class="service-card__number">02</span>
+                        </div>
+
+                        <div class="service-card__content">
+                            <p class="service-card__label">
+                                Gares de Paris
+                            </p>
+
+                            <h3>Gares parisiennes</h3>
+
+                            <p>
+                                Rejoignez Gare du Nord, Gare de Lyon,
+                                Montparnasse, Saint-Lazare et les autres
+                                gares parisiennes sans stress.
+                            </p>
+
+                            <a href="{{ path('app_reservation_station') }}">
+                                Réserver vers une gare
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-card__image">
+                            <img src="/images/services/business-transfer.png"
+                                alt="Chauffeur privé accompagnant une cliente professionnelle" width="1672" height="941"
+                                loading="lazy">
+
+                            <span class="service-card__number">03</span>
+                        </div>
+
+                        <div class="service-card__content">
+                            <p class="service-card__label">
+                                Service professionnel
+                            </p>
+
+                            <h3>Trajets professionnels</h3>
+
+                            <p>
+                                Un chauffeur discret et ponctuel pour
+                                vos rendez-vous, séminaires, événements
+                                et déplacements professionnels.
+                            </p>
+
+                            <a href="{{ path('app_reservation_business') }}">
+                                Réserver un trajet
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-card__image">
+                            <img src="/images/services/long-distance.png"
+                                alt="Passagère voyageant confortablement sur une longue distance" width="1672"
+                                height="941" loading="lazy">
+
+                            <span class="service-card__number">04</span>
+                        </div>
+
+                        <div class="service-card__content">
+                            <p class="service-card__label">
+                                France et Europe
+                            </p>
+
+                            <h3>Longues distances</h3>
+
+                            <p>
+                                Partez depuis Paris ou l’Île-de-France
+                                vers la destination de votre choix,
+                                partout en France et en Europe.
+                            </p>
+
+                            <a href="{{ path('app_reservation_long_distance') }}">
+                                Réserver longue distance
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
 
