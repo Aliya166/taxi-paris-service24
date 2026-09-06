@@ -388,26 +388,331 @@ et 7j/7, avec des tarifs fixes et transparents.
                 </div>
             </div>
         </section>
+
+        <section class="fleet-section" id="fleet" aria-labelledby="fleet-title">
+            <div class="home-container">
+                <header class="fleet-heading">
+                    <div>
+                        <p class="section-label section-label--dark">
+                            Notre flotte
+                        </p>
+
+                        <h2 id="fleet-title">
+                            Le confort adapté<br>
+                            à votre trajet
+                        </h2>
+                    </div>
+
+                    <p class="fleet-heading__text">
+                        Choisissez le véhicule qui correspond à votre trajet,
+                        au nombre de passagers et à vos bagages.
+                    </p>
+                </header>
+
+                <div class="fleet-carousel" data-fleet-carousel aria-roledescription="carousel"
+                    aria-label="Choix du véhicule">
+                    <div class="fleet-carousel__viewport">
+                        <div class="fleet-carousel__track">
+                            <article class="fleet-card is-active" data-fleet-slide aria-hidden="false">
+                                <div class="fleet-card__visual">
+                                    <span class="fleet-card__number">01</span>
+
+                                    <span class="fleet-card__category">
+                                        Éco électrique
+                                    </span>
+
+                                    <img src="/images/vehicles/tesla-model-3-2026.png" alt="Tesla Model 3 noire 2026"
+                                        width="1536" height="1024" loading="lazy">
+                                </div>
+
+                                <div class="fleet-card__content">
+                                    <p class="fleet-card__eyebrow">
+                                        Silencieuse · Moderne · Électrique
+                                    </p>
+
+                                    <h3>Tesla Model 3</h3>
+
+                                    <p class="fleet-card__year">Modèle 2026</p>
+
+                                    <p class="fleet-card__description">
+                                        Une berline électrique silencieuse et moderne,
+                                        idéale pour vos trajets quotidiens à Paris
+                                        et en Île-de-France.
+                                    </p>
+
+                                    <div class="fleet-card__specs">
+                                        <span>4 passagers</span>
+                                        <span>3 bagages</span>
+                                    </div>
+
+                                    <a class="fleet-card__button" href="/reservation.html?vehicle=eco">
+                                        Choisir ce véhicule
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+                                </div>
+                            </article>
+
+                            <article class="fleet-card" data-fleet-slide aria-hidden="true">
+                                <div class="fleet-card__visual">
+                                    <span class="fleet-card__number">02</span>
+
+                                    <span class="fleet-card__category">
+                                        Berline premium
+                                    </span>
+
+                                    <img src="/images/vehicles/mercedes-classe-e-2026.png"
+                                        alt="Mercedes Classe E noire 2026" width="1536" height="1024" loading="lazy">
+                                </div>
+
+                                <div class="fleet-card__content">
+                                    <p class="fleet-card__eyebrow">
+                                        Élégante · Spacieuse · Premium
+                                    </p>
+
+                                    <h3>Mercedes Classe E</h3>
+
+                                    <p class="fleet-card__year">Modèle 2026</p>
+
+                                    <p class="fleet-card__description">
+                                        Une berline haut de gamme pour voyager avec
+                                        élégance, confort et discrétion lors de vos
+                                        déplacements privés ou professionnels.
+                                    </p>
+
+                                    <div class="fleet-card__specs">
+                                        <span>4 passagers</span>
+                                        <span>3 bagages</span>
+                                    </div>
+
+                                    <a class="fleet-card__button" href="/reservation.html?vehicle=berline">
+                                        Choisir ce véhicule
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+                                </div>
+                            </article>
+
+                            <article class="fleet-card" data-fleet-slide aria-hidden="true">
+                                <div class="fleet-card__visual">
+                                    <span class="fleet-card__number">03</span>
+
+                                    <span class="fleet-card__category">
+                                        Van premium
+                                    </span>
+
+                                    <img src="/images/vehicles/mercedes-classe-v-2026.png"
+                                        alt="Mercedes Classe V noir 2026" width="1536" height="1024" loading="lazy">
+                                </div>
+
+                                <div class="fleet-card__content">
+                                    <p class="fleet-card__eyebrow">
+                                        Spacieux · Confortable · Polyvalent
+                                    </p>
+
+                                    <h3>Mercedes Classe V</h3>
+
+                                    <p class="fleet-card__year">Modèle 2026</p>
+
+                                    <p class="fleet-card__description">
+                                        L’espace idéal pour les familles, les groupes
+                                        et les voyageurs avec plusieurs bagages,
+                                        sans renoncer au confort premium.
+                                    </p>
+
+                                    <div class="fleet-card__specs">
+                                        <span>7 passagers</span>
+                                        <span>7 bagages</span>
+                                    </div>
+
+                                    <a class="fleet-card__button" href="/reservation.html?vehicle=van">
+                                        Choisir ce véhicule
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="fleet-carousel__controls">
+                        <button class="fleet-carousel__arrow" type="button" data-fleet-previous
+                            aria-label="Afficher le véhicule précédent">
+                            ←
+                        </button>
+
+                        <div class="fleet-carousel__pagination">
+                            <span data-fleet-current>01</span>
+                            <span class="fleet-carousel__separator"></span>
+                            <span>03</span>
+                        </div>
+
+                        <div class="fleet-carousel__dots" aria-label="Choisir un véhicule">
+                            <button class="is-active" type="button" data-fleet-dot="0"
+                                aria-label="Afficher la Tesla Model 3" aria-current="true"></button>
+
+                            <button type="button" data-fleet-dot="1" aria-label="Afficher la Mercedes Classe E"
+                                aria-current="false"></button>
+
+                            <button type="button" data-fleet-dot="2" aria-label="Afficher la Mercedes Classe V"
+                                aria-current="false"></button>
+                        </div>
+
+                        <button class="fleet-carousel__arrow" type="button" data-fleet-next
+                            aria-label="Afficher le véhicule suivant">
+                            →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const button = document.querySelector('.site-menu-toggle');
+        const menuButton = document.querySelector('.site-menu-toggle');
         const menu = document.querySelector('.site-menu');
 
-        if (!button || !menu) {
+        if (menuButton && menu) {
+            menuButton.addEventListener('click', () => {
+                const isOpen = menu.classList.toggle('is-open');
+
+                menuButton.setAttribute(
+                    'aria-expanded',
+                    isOpen ? 'true' : 'false'
+                );
+            });
+        }
+
+        const carousel = document.querySelector('[data-fleet-carousel]');
+
+        if (!carousel) {
             return;
         }
 
-        button.addEventListener('click', () => {
-            const isOpen = menu.classList.toggle('is-open');
+        const track = carousel.querySelector('.fleet-carousel__track');
+        const viewport = carousel.querySelector(
+            '.fleet-carousel__viewport'
+        );
+        const slides = Array.from(
+            carousel.querySelectorAll('[data-fleet-slide]')
+        );
+        const dots = Array.from(
+            carousel.querySelectorAll('[data-fleet-dot]')
+        );
+        const previousButton = carousel.querySelector(
+            '[data-fleet-previous]'
+        );
+        const nextButton = carousel.querySelector('[data-fleet-next]');
+        const currentIndicator = carousel.querySelector(
+            '[data-fleet-current]'
+        );
 
-            button.setAttribute(
-                'aria-expanded',
-                isOpen ? 'true' : 'false'
-            );
+        let currentIndex = 0;
+        let pointerStartX = null;
+
+        const displaySlide = (requestedIndex) => {
+            currentIndex = (
+                requestedIndex + slides.length
+            ) % slides.length;
+
+            slides.forEach((slide, index) => {
+                const previousIndex = (
+                    currentIndex - 1 + slides.length
+                ) % slides.length;
+
+                const nextIndex = (
+                    currentIndex + 1
+                ) % slides.length;
+
+                const isActive = index === currentIndex;
+
+                slide.classList.remove(
+                    'is-active',
+                    'is-previous',
+                    'is-next'
+                );
+
+                if (isActive) {
+                    slide.classList.add('is-active');
+                } else if (index === previousIndex) {
+                    slide.classList.add('is-previous');
+                } else if (index === nextIndex) {
+                    slide.classList.add('is-next');
+                }
+
+                slide.setAttribute(
+                    'aria-hidden',
+                    isActive ? 'false' : 'true'
+                );
+
+                slide.toggleAttribute('inert', !isActive);
+            });
+
+            dots.forEach((dot, index) => {
+                const isActive = index === currentIndex;
+
+                dot.classList.toggle('is-active', isActive);
+                dot.setAttribute(
+                    'aria-current',
+                    isActive ? 'true' : 'false'
+                );
+            });
+
+            currentIndicator.textContent = String(
+                currentIndex + 1
+            ).padStart(2, '0');
+        };
+
+        previousButton?.addEventListener('click', () => {
+            displaySlide(currentIndex - 1);
         });
+
+        nextButton?.addEventListener('click', () => {
+            displaySlide(currentIndex + 1);
+        });
+
+        dots.forEach((dot) => {
+            dot.addEventListener('click', () => {
+                displaySlide(Number(dot.dataset.fleetDot));
+            });
+        });
+
+        carousel.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                displaySlide(currentIndex - 1);
+            }
+
+            if (event.key === 'ArrowRight') {
+                displaySlide(currentIndex + 1);
+            }
+        });
+
+        viewport.addEventListener('pointerdown', (event) => {
+            pointerStartX = event.clientX;
+        });
+
+        viewport.addEventListener('pointerup', (event) => {
+            if (pointerStartX === null) {
+                return;
+            }
+
+            const movement = event.clientX - pointerStartX;
+
+            if (Math.abs(movement) >= 50) {
+                displaySlide(
+                    movement < 0
+                        ? currentIndex + 1
+                        : currentIndex - 1
+                );
+            }
+
+            pointerStartX = null;
+        });
+
+        viewport.addEventListener('pointercancel', () => {
+            pointerStartX = null;
+        });
+
+        displaySlide(0);
     });
 </script>
 {% endblock %}
