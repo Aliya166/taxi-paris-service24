@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Reservation;
+use App\Service\RouteCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class ReservationControllerTest extends WebTestCase
 {
@@ -37,8 +40,8 @@ final class ReservationControllerTest extends WebTestCase
         if (
             $this->entityManager !== null
             && $this->entityManager
-                ->getConnection()
-                ->isTransactionActive()
+            ->getConnection()
+            ->isTransactionActive()
         ) {
             $this->entityManager
                 ->getConnection()
@@ -57,6 +60,40 @@ final class ReservationControllerTest extends WebTestCase
             bin2hex(random_bytes(6))
         );
 
+        $routeResponse = new MockResponse(
+            json_encode(
+                [
+                    'features' => [
+                        [
+                            'properties' => [
+                                'summary' => [
+                                    'distance' => 117800,
+                                    'duration' => 5220,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                JSON_THROW_ON_ERROR
+            ),
+            [
+                'http_code' => 200,
+                'response_headers' => [
+                    'content-type: application/geo+json',
+                ],
+            ]
+        );
+
+        $routeCalculationService = new RouteCalculationService(
+            new MockHttpClient($routeResponse),
+            'test-api-key'
+        );
+
+        static::getContainer()->set(
+            RouteCalculationService::class,
+            $routeCalculationService
+        );
+
         $this->client->request(
             'POST',
             '/api/reservations',
@@ -65,9 +102,14 @@ final class ReservationControllerTest extends WebTestCase
                 'email' => $email,
                 'phone' => '0612345678',
                 'pickupAddress' =>
-                    'Aéroport de Paris-Orly, Paray-Vieille-Poste, France',
+                'Aéroport de Paris-Orly, Paray-Vieille-Poste, France',
                 'dropoffAddress' =>
-                    'Aéroport Paris Beauvais, Tillé, France',
+                'Aéroport Paris Beauvais, Tillé, France',
+                'pickupLongitude' => '2.3652',
+                'pickupLatitude' => '48.7262',
+                'dropoffLongitude' => '2.1128',
+                'dropoffLatitude' => '49.4544',
+                'Aéroport Paris Beauvais, Tillé, France',
                 'date' => '2026-09-20',
                 'heure' => '14:30',
                 'vehicle' => 'eco',

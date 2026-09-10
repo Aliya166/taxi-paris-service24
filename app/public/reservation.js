@@ -13,6 +13,9 @@ let startMarker = null;
 let endMarker = null;
 let currentDistanceKm = 0;
 let currentDurationMin = 0;
+let currentStartCoordinates = null;
+let currentEndCoordinates = null;
+let calculatedRouteKey = null;
 
 // 3. Элементы страницы
 const startInput = document.getElementById("start");
@@ -31,6 +34,13 @@ const coordinatesCache = new Map();
 
 function normalizeAddress(value) {
   return value.trim().toLocaleLowerCase("fr-FR");
+}
+
+function createRouteKey(startAddress, endAddress) {
+  return [
+    normalizeAddress(startAddress),
+    normalizeAddress(endAddress),
+  ].join("|");
 }
 
 async function searchAddressSuggestions(query, signal) {
@@ -79,6 +89,14 @@ function setupAutocomplete(input, suggestionsBox) {
   let requestController = null;
 
   input.addEventListener("input", () => {
+    calculatedRouteKey = null;
+
+    if (input === startInput) {
+      currentStartCoordinates = null;
+    } else {
+      currentEndCoordinates = null;
+    }
+
     const query = input.value.trim();
 
     suggestionsBox.innerHTML = "";
@@ -293,6 +311,9 @@ async function calculateRoute() {
     const startCoords = await getCoordinates(startAddress);
     const endCoords = await getCoordinates(endAddress);
 
+    currentStartCoordinates = startCoords;
+    currentEndCoordinates = endCoords;
+
     const routeResponse = await fetch("/api/route", {
       method: "POST",
       headers: {
@@ -322,6 +343,11 @@ async function calculateRoute() {
 
     currentDistanceKm = distanceKm;
     currentDurationMin = durationMin;
+
+    calculatedRouteKey = createRouteKey(
+      startAddress,
+      endAddress
+    );
 
     distanceText.textContent = `${distanceKm.toFixed(1)} km`;
     durationText.textContent = `${Math.round(durationMin)} min`;
@@ -377,8 +403,36 @@ const reservationForm = document.getElementById("reservationForm");
 reservationForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const currentRouteKey = createRouteKey(
+    startInput.value,
+    endInput.value
+  );
+
+  if (
+    currentStartCoordinates === null
+    || currentEndCoordinates === null
+    || calculatedRouteKey !== currentRouteKey
+  ) {
+    alert(
+      "Veuillez calculer le trajet après avoir choisi les deux adresses."
+    );
+
+    return;
+  }
+
   document.getElementById("hiddenStart").value = startInput.value;
   document.getElementById("hiddenEnd").value = endInput.value;
+  document.getElementById("hiddenPickupLongitude").value =
+    currentStartCoordinates[0];
+
+  document.getElementById("hiddenPickupLatitude").value =
+    currentStartCoordinates[1];
+
+  document.getElementById("hiddenDropoffLongitude").value =
+    currentEndCoordinates[0];
+
+  document.getElementById("hiddenDropoffLatitude").value =
+    currentEndCoordinates[1];
   document.getElementById("hiddenDistance").value = distanceText.textContent;
   document.getElementById("hiddenDuration").value = durationText.textContent;
   document.getElementById("hiddenPrice").value = priceText.textContent;

@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\RouteCalculationService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Psr\Log\LoggerInterface;
 
 #[AsController]
 final class RouteCalculationController extends AbstractController
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        #[Autowire('%env(OPENROUTESERVICE_API_KEY)%')]
-        private readonly string $apiKey,
+        private readonly RouteCalculationService $routeCalculationService,
         private readonly LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     #[Route(
         '/api/route',
@@ -46,21 +44,11 @@ final class RouteCalculationController extends AbstractController
                 );
             }
 
-            $response = $this->httpClient->request(
-                'POST',
-                'https://api.openrouteservice.org/v2/directions/driving-car/geojson',
-                [
-                    'headers' => [
-                        'Authorization' => $this->apiKey,
-                        'Accept' => 'application/geo+json',
-                    ],
-                    'json' => [
-                        'coordinates' => $coordinates,
-                    ],
-                ]
+            $route = $this->routeCalculationService->calculate(
+                $coordinates
             );
 
-            return $this->json($response->toArray());
+            return $this->json($route);
         } catch (\Throwable $exception) {
             $this->logger->error(
                 'OpenRouteService route calculation failed.',

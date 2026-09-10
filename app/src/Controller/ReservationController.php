@@ -11,6 +11,7 @@ use App\Enum\VehicleType;
 use App\Service\LoyaltyDiscountService;
 use App\Service\ReservationConfirmationMailer;
 use App\Service\ReservationPricingService;
+use App\Service\RouteCalculationService;
 use App\Service\ReservationNotificationMailer;
 use Psr\Log\LoggerInterface;
 use DateTimeImmutable;
@@ -84,6 +85,7 @@ final class ReservationController extends AbstractController
         ReservationConfirmationMailer $confirmationMailer,
         ReservationNotificationMailer $notificationMailer,
         ReservationPricingService $pricingService,
+        RouteCalculationService $routeCalculationService,
         LoggerInterface $logger
     ): JsonResponse {
         $fullName = $this->getValue($request, 'name');
@@ -165,17 +167,92 @@ final class ReservationController extends AbstractController
             min(6, (int) $this->getValue($request, 'luggage'))
         );
 
-        $distanceKm = $this->extractDecimal(
-            $this->getValue($request, 'distanceKm', 'Distance')
+        $pickupLongitudeValue = $this->getValue(
+            $request,
+            'pickupLongitude'
+        );
+        $pickupLatitudeValue = $this->getValue(
+            $request,
+            'pickupLatitude'
+        );
+        $dropoffLongitudeValue = $this->getValue(
+            $request,
+            'dropoffLongitude'
+        );
+        $dropoffLatitudeValue = $this->getValue(
+            $request,
+            'dropoffLatitude'
         );
 
-        $durationMinutes = $this->extractInteger(
-            $this->getValue($request, 'durationMinutes', 'Durée')
-        );
-
-        if ($distanceKm === null || $durationMinutes === null) {
+        if (
+            !is_numeric($pickupLongitudeValue)
+            || !is_numeric($pickupLatitudeValue)
+            || !is_numeric($dropoffLongitudeValue)
+            || !is_numeric($dropoffLatitudeValue)
+        ) {
             return $this->errorResponse(
                 'Veuillez calculer votre trajet avant de réserver.'
+            );
+        }
+
+        $pickupLongitude = (float) $pickupLongitudeValue;
+        $pickupLatitude = (float) $pickupLatitudeValue;
+        $dropoffLongitude = (float) $dropoffLongitudeValue;
+        $dropoffLatitude = (float) $dropoffLatitudeValue;
+
+        if (
+            $pickupLongitude < -180
+            || $pickupLongitude > 180
+            || $dropoffLongitude < -180
+            || $dropoffLongitude > 180
+            || $pickupLatitude < -90
+            || $pickupLatitude > 90
+            || $dropoffLatitude < -90
+            || $dropoffLatitude > 90
+        ) {
+            return $this->errorResponse(
+                'Les coordonnées du trajet sont invalides.'
+            );
+        }
+
+        try {
+            $routeData = $routeCalculationService->calculate([
+                [$pickupLongitude, $pickupLatitude],
+                [$dropoffLongitude, $dropoffLatitude],
+            ]);
+
+            $summary = $routeData['features'][0]['properties']['summary']
+                ?? null;
+
+            if (
+                !is_array($summary)
+                || !is_numeric($summary['distance'] ?? null)
+                || !is_numeric($summary['duration'] ?? null)
+            ) {
+                throw new \RuntimeException(
+                    'OpenRouteService returned an invalid route.'
+                );
+            }
+
+            $distanceKm = number_format(
+                (float) $summary['distance'] / 1000,
+                2,
+                '.',
+                ''
+            );
+
+            $durationMinutes = max(
+                1,
+                (int) round((float) $summary['duration'] / 60)
+            );
+        } catch (\Throwable $exception) {
+            $logger->error(
+                'Reservation route recalculation failed.',
+                ['exception' => $exception]
+            );
+
+            return $this->errorResponse(
+                'Le calcul du trajet est temporairement indisponible.'
             );
         }
 
