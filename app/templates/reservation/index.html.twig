@@ -1,20 +1,698 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ReservationController!{% endblock %}
+{% block title %}
+Réservation | Taxi Paris Service 24
+{% endblock %}
+
+{% block meta_description %}
+Réservez votre taxi ou chauffeur privé à Paris et en Île-de-France.
+Estimation immédiate et service disponible 24h/24.
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="home-page reservation-page">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {# HEADER IDENTIQUE À LA PAGE D’ACCUEIL #}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/ReservationController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/reservation/index.html.twig</code></li>
-    </ul>
+    <header class="site-header">
+        <div class="site-header__inner">
+
+            <a class="site-brand" href="{{ path('app_home') }}" aria-label="Taxi Paris Service 24 - Accueil">
+                <strong>Taxi Paris</strong>
+                <span>Service 24</span>
+            </a>
+
+            <button class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"
+                aria-label="Ouvrir le menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="site-menu" id="main-navigation">
+                <nav class="site-nav" aria-label="Navigation principale">
+                    <a href="{{ path('app_home') }}">
+                        Accueil
+                    </a>
+
+                    <a href="{{ path('app_home') }}#services">
+                        Services
+                    </a>
+
+                    <a href="{{ path('app_home') }}#tarifs">
+                        Tarifs
+                    </a>
+
+                    <a href="{{ path('app_home') }}#faq">
+                        FAQ
+                    </a>
+
+                    <a class="is-active" href="/reservation.html">
+                        Réservation
+                    </a>
+
+                    <a href="{{ path('app_home') }}#contact">
+                        Contact
+                    </a>
+                </nav>
+
+                <div class="site-header__actions">
+                    <a class="header-phone" href="tel:+33184802305">
+                        <span aria-hidden="true">☎</span>
+                        01 84 80 23 05
+                    </a>
+
+                    {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a class="header-button header-button--outline" href="{{ path('app_admin_reservations') }}">
+                        Administration
+                    </a>
+                    {% endif %}
+
+                    <a class="header-button header-button--outline" href="{{ path('app_account') }}">
+                        Mon compte
+                    </a>
+
+                    <a class="header-button header-button--primary" href="{{ path('app_logout') }}">
+                        Déconnexion
+                    </a>
+                    {% else %}
+                    <a class="header-button header-button--outline" href="{{ path('app_login') }}">
+                        <span aria-hidden="true">●</span>
+                        Connexion
+                    </a>
+
+                    <div class="register-action">
+                        <div class="register-hint">
+                            Nouveau ? Créez votre compte ici
+                        </div>
+
+                        <a class="header-button header-button--primary" href="{{ path('app_register') }}">
+                            Créer un compte
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        {# HERO #}
+
+        <section class="reservation-hero">
+            <div class="reservation-hero__background" aria-hidden="true"></div>
+
+            <div class="home-container reservation-hero__inner">
+                <div class="reservation-hero__copy">
+                    <p class="reservation-hero__label">
+                        Réservation en ligne
+                    </p>
+
+                    <h1>
+                        Votre trajet.<br>
+                        <span>Notre priorité.</span>
+                    </h1>
+
+                    <p class="reservation-hero__description">
+                        Indiquez votre itinéraire, choisissez votre
+                        véhicule et réservez votre chauffeur en quelques
+                        instants.
+                    </p>
+                </div>
+
+                <div class="reservation-hero__status">
+                    <div>
+                        <span class="reservation-hero__status-icon">
+                            24
+                        </span>
+
+                        <p>
+                            <strong>Service 24h/24</strong>
+                            Disponible à Paris et en Île-de-France
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="reservation-hero__status-icon">
+                            ✓
+                        </span>
+
+                        <p>
+                            <strong>Prix transparent</strong>
+                            Estimation affichée avant réservation
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="reservation-hero__status-icon">
+                            →
+                        </span>
+
+                        <p>
+                            <strong>Confirmation rapide</strong>
+                            Votre demande est envoyée immédiatement
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# ZONE DE RÉSERVATION #}
+
+        <section class="reservation-workspace">
+            <div class="home-container">
+
+                <div class="reservation-intro">
+                    <div>
+                        <p class="reservation-section-label">
+                            Réservation
+                        </p>
+
+                        <h2>
+                            Organisez votre course
+                        </h2>
+                    </div>
+
+                    <div class="reservation-steps">
+                        <span class="is-active">01 Itinéraire</span>
+                        <span>02 Véhicule</span>
+                        <span>03 Confirmation</span>
+                    </div>
+                </div>
+
+                <div class="reservation-layout">
+
+                    {# COLONNE ITINÉRAIRE #}
+
+                    <section class="route-card">
+                        <div class="reservation-card-heading">
+                            <div>
+                                <span>01 · Itinéraire</span>
+                                <h2>Où souhaitez-vous aller ?</h2>
+                            </div>
+
+                            <p class="live-calculation">
+                                <span></span>
+                                Calcul en direct
+                            </p>
+                        </div>
+
+                        <div class="address-grid">
+                            <div class="form-group address-field">
+                                <label for="start">
+                                    Adresse de départ
+                                </label>
+
+                                <div class="input-with-icon">
+                                    <span class="input-icon input-icon--start" aria-hidden="true"></span>
+
+                                    <input id="start" type="text" placeholder="Ex : 10 rue de Rivoli, Paris"
+                                        autocomplete="off">
+                                </div>
+
+                                <div id="startSuggestions" class="suggestions-list"></div>
+                            </div>
+
+                            <div class="route-direction" aria-hidden="true">
+                                →
+                            </div>
+
+                            <div class="form-group address-field">
+                                <label for="end">
+                                    Adresse d’arrivée
+                                </label>
+
+                                <div class="input-with-icon">
+                                    <span class="input-icon input-icon--end" aria-hidden="true"></span>
+
+                                    <input id="end" type="text" placeholder="Ex : Aéroport Charles de Gaulle"
+                                        autocomplete="off">
+                                </div>
+
+                                <div id="endSuggestions" class="suggestions-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="map-frame">
+                            <div class="map-frame__label">
+                                <span></span>
+                                Aperçu du trajet
+                            </div>
+
+                            <div id="map" aria-label="Carte de votre itinéraire"></div>
+                        </div>
+
+                        <button id="calculateRoute" class="calculate-btn" type="button">
+                            <span>Calculer le trajet</span>
+                            <span aria-hidden="true">→</span>
+                        </button>
+
+                        <div class="trip-summary">
+                            <div class="trip-summary__item">
+                                <span>Distance</span>
+                                <strong id="distanceText">—</strong>
+                            </div>
+
+                            <div class="trip-summary__item">
+                                <span>Durée estimée</span>
+                                <strong id="durationText">—</strong>
+                            </div>
+
+                            <div class="trip-summary__item
+                                       trip-summary__item--price">
+                                <span>Prix estimé</span>
+                                <strong id="priceText">—</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    {# COLONNE FORMULAIRE #}
+
+                    <aside class="booking-card">
+                        <div class="booking-card__corner" aria-hidden="true"></div>
+
+                        <div class="reservation-card-heading booking-heading">
+                            <div>
+                                <span>02 · Réservation</span>
+                                <h2>Finalisez votre course</h2>
+                            </div>
+
+                            <div class="booking-lock" aria-label="Réservation sécurisée">
+                                ✓
+                            </div>
+                        </div>
+
+                        <form id="reservationForm" action="{{ path('app_reservation_create') }}" method="POST">
+                            <input type="hidden" name="pickupAddress" id="hiddenStart">
+
+                            <input type="hidden" name="dropoffAddress" id="hiddenEnd">
+
+                            <input type="hidden" name="pickupLongitude" id="hiddenPickupLongitude">
+
+                            <input type="hidden" name="pickupLatitude" id="hiddenPickupLatitude">
+
+                            <input type="hidden" name="dropoffLongitude" id="hiddenDropoffLongitude">
+
+                            <input type="hidden" name="dropoffLatitude" id="hiddenDropoffLatitude">
+
+                            <input type="hidden" name="distanceKm" id="hiddenDistance">
+
+                            <input type="hidden" name="durationMinutes" id="hiddenDuration">
+
+                            <input type="hidden" name="estimatedPrice" id="hiddenPrice">
+
+                            <input type="hidden" name="reservation_type" value="{{ reservationType.value }}">
+
+                            <div class="form-group">
+                                <label for="customerName">
+                                    Nom complet
+                                </label>
+
+                                <div class="input-with-icon">
+                                    <span class="input-character" aria-hidden="true">
+                                        ◯
+                                    </span>
+
+                                    <input id="customerName" type="text" name="name" placeholder="Votre nom complet"
+                                        autocomplete="name" required>
+                                </div>
+                            </div>
+
+                            <div class="contact-grid">
+                                <div class="form-group">
+                                    <label for="customerEmail">
+                                        Email
+                                    </label>
+
+                                    <input id="customerEmail" type="email" name="email" placeholder="vous@exemple.fr"
+                                        autocomplete="email" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customerPhone">
+                                        Téléphone
+                                    </label>
+
+                                    <input id="customerPhone" type="tel" name="phone" placeholder="06 12 34 56 78"
+                                        autocomplete="tel" required>
+                                </div>
+                            </div>
+
+                            <div class="booking-section-heading">
+                                <h3>Choisissez votre véhicule</h3>
+                                <span>Tarif estimatif</span>
+                            </div>
+
+                            <div class="vehicle-options">
+                                <label class="vehicle-option active">
+                                    <input type="radio" name="vehicle" value="eco" data-rate="1.70" checked>
+
+                                    <span class="vehicle-option__number">
+                                        01
+                                    </span>
+
+                                    <span class="vehicle-option__content">
+                                        <strong>Éco</strong>
+                                        <small>
+                                            4 passagers · 2 bagages
+                                        </small>
+                                    </span>
+
+                                    <span class="vehicle-option__price">
+                                        1,70 €
+                                        <small>/ km</small>
+                                    </span>
+                                </label>
+
+                                <label class="vehicle-option">
+                                    <input type="radio" name="vehicle" value="berline" data-rate="2.00">
+
+                                    <span class="vehicle-option__number">
+                                        02
+                                    </span>
+
+                                    <span class="vehicle-option__content">
+                                        <strong>Berline</strong>
+                                        <small>
+                                            4 passagers · 3 bagages
+                                        </small>
+                                    </span>
+
+                                    <span class="vehicle-option__price">
+                                        2,00 €
+                                        <small>/ km</small>
+                                    </span>
+                                </label>
+
+                                <label class="vehicle-option">
+                                    <input type="radio" name="vehicle" value="van" data-rate="2.50">
+
+                                    <span class="vehicle-option__number">
+                                        03
+                                    </span>
+
+                                    <span class="vehicle-option__content">
+                                        <strong>Van</strong>
+                                        <small>
+                                            7 passagers · 5 bagages
+                                        </small>
+                                    </span>
+
+                                    <span class="vehicle-option__price">
+                                        2,50 €
+                                        <small>/ km</small>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <fieldset class="schedule-fieldset">
+                                <legend>Quand est la course ?</legend>
+
+                                <div class="time-choice">
+                                    <button type="button" class="choice-btn active" id="nowBtn">
+                                        Maintenant
+                                    </button>
+
+                                    <button type="button" class="choice-btn" id="laterBtn">
+                                        Plus tard
+                                    </button>
+                                </div>
+                            </fieldset>
+
+                            <div class="date-time-box" id="dateTimeBox">
+                                <div class="form-group">
+                                    <label for="date">Date</label>
+
+                                    <input type="date" id="date" name="date">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="heure">Heure</label>
+
+                                    <input type="time" id="heure" name="heure">
+                                </div>
+                            </div>
+
+                            <div class="small-grid">
+                                <div class="form-group">
+                                    <label for="passengers">
+                                        Passagers
+                                    </label>
+
+                                    <input id="passengers" type="number" name="passengers" min="1" max="7" value="1">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="luggage">
+                                        Bagages
+                                    </label>
+
+                                    <input id="luggage" type="number" name="luggage" min="0" max="6" value="0">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="submit-btn">
+                                <span>Confirmer la réservation</span>
+                                <span aria-hidden="true">→</span>
+                            </button>
+
+                            <p class="booking-reassurance">
+                                <span aria-hidden="true">✓</span>
+                                Aucun paiement en ligne · Confirmation rapide
+                            </p>
+                        </form>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section class="legal-notice-strip" aria-labelledby="legal-notice-title">
+        <div class="legal-notice-strip__glow" aria-hidden="true"></div>
+
+        <div class="home-container legal-notice-strip__inner">
+            <div class="legal-notice-strip__icon" aria-hidden="true">
+                !
+            </div>
+
+            <div class="legal-notice-strip__content">
+                <h2 id="legal-notice-title">
+                    Information importante
+                </h2>
+
+                <p>
+                    Le site
+                    <strong>taxiparisservice24.fr</strong>
+                    est spécialisé dans les services de transport
+                    de personnes.
+                </p>
+
+                <p>
+                    Notre activité est totalement autonome et ne bénéficie
+                    d’aucun lien de partenariat, d’agrément, de mandat ou
+                    d’affiliation avec Performance G7, les Taxis G7 ou
+                    toute autre plateforme de réservation de taxis
+                    parisienne.
+                </p>
+            </div>
+
+            <div class="legal-notice-strip__mark" aria-hidden="true">
+                TPS<span>24</span>
+            </div>
+        </div>
+    </section>
+
+    {# FOOTER IDENTIQUE À LA PAGE D’ACCUEIL #}
+
+    <footer class="site-footer" id="contact">
+        <div class="footer-glow" aria-hidden="true"></div>
+
+        <div class="home-container">
+            <div class="footer-cta">
+                <div class="footer-cta__copy">
+                    <p class="footer-label">
+                        Votre chauffeur vous attend
+                    </p>
+
+                    <h2>
+                        Besoin d’un taxi<br>
+                        maintenant ?
+                    </h2>
+
+                    <p>
+                        Réservez votre trajet en quelques clics
+                        ou appelez directement votre chauffeur.
+                    </p>
+                </div>
+
+                <div class="footer-cta__actions">
+                    <a class="footer-button footer-button--primary" href="/reservation.html">
+                        Réserver maintenant
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                    <a class="footer-button footer-button--call" href="tel:+33184802305">
+                        <span aria-hidden="true">☎</span>
+                        01 84 80 23 05
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="{{ path('app_home') }}">
+                        <strong>Taxi Paris</strong>
+                        <span>Service 24</span>
+                    </a>
+
+                    <p>
+                        Taxi premium à Paris et en Île-de-France.
+                    </p>
+
+                    <div class="footer-status">
+                        <span></span>
+                        Service disponible
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <p class="footer-column__title">
+                        Contact
+                    </p>
+
+                    <a href="tel:+33184802305">
+                        01 84 80 23 05
+                    </a>
+
+                    <a href="mailto:taxiparisservice24@gmail.com">
+                        taxiparisservice24@gmail.com
+                    </a>
+                </div>
+
+                <div class="footer-column">
+                    <p class="footer-column__title">
+                        Navigation
+                    </p>
+
+                    <a href="{{ path('app_home') }}">Accueil</a>
+                    <a href="{{ path('app_home') }}#services">Services</a>
+                    <a href="{{ path('app_home') }}#tarifs">Tarifs</a>
+                    <a href="{{ path('app_home') }}#faq">FAQ</a>
+                    <a href="/reservation.html">Réservation</a>
+                </div>
+
+                <div class="footer-column">
+                    <p class="footer-column__title">
+                        Informations
+                    </p>
+
+                    <a href="/mentions-legales.html">
+                        Mentions légales
+                    </a>
+
+                    <a href="/politique-confidentialite.html">
+                        Politique de confidentialité
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    © {{ 'now'|date('Y') }} Taxi Paris Service 24.
+                    Tous droits réservés.
+                </p>
+
+                <p>
+                    Paris · Île-de-France · France
+                </p>
+            </div>
+        </div>
+    </footer>
 </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="{{ asset('reservation.js') }}?v=20260910-2"></script>
+
+<script>
+    (() => {
+        const menuButton = document.querySelector('.site-menu-toggle');
+        const menu = document.querySelector('.site-menu');
+
+        if (menuButton && menu) {
+            menuButton.addEventListener('click', () => {
+                const isOpen = menu.classList.toggle('is-open');
+
+                menuButton.setAttribute(
+                    'aria-expanded',
+                    isOpen ? 'true' : 'false'
+                );
+            });
+        }
+
+        const nowButton = document.getElementById('nowBtn');
+        const laterButton = document.getElementById('laterBtn');
+        const dateTimeBox = document.getElementById('dateTimeBox');
+        const dateInput = document.getElementById('date');
+        const timeInput = document.getElementById('heure');
+
+        if (
+            !nowButton ||
+            !laterButton ||
+            !dateTimeBox ||
+            !dateInput ||
+            !timeInput
+        ) {
+            console.error(
+                'Les éléments Maintenant / Plus tard sont introuvables.'
+            );
+
+            return;
+        }
+
+        function selectNow() {
+            nowButton.classList.add('active');
+            laterButton.classList.remove('active');
+            dateTimeBox.classList.remove('is-visible');
+
+            dateInput.required = false;
+            timeInput.required = false;
+            dateInput.value = '';
+            timeInput.value = '';
+        }
+
+        function selectLater() {
+            laterButton.classList.add('active');
+            nowButton.classList.remove('active');
+            dateTimeBox.classList.add('is-visible');
+
+            dateInput.required = true;
+            timeInput.required = true;
+
+            const now = new Date();
+
+            const localDate = new Date(
+                now.getTime() - now.getTimezoneOffset() * 60000
+            );
+
+            dateInput.min = localDate
+                .toISOString()
+                .split('T')[0];
+        }
+
+        nowButton.addEventListener('click', selectNow);
+        laterButton.addEventListener('click', selectLater);
+
+        selectNow();
+    })();
+</script>
+
 {% endblock %}

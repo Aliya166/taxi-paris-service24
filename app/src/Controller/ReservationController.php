@@ -24,6 +24,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ReservationController extends AbstractController
 {
+    #[Route(
+        '/reservation.html',
+        name: 'app_reservation',
+        methods: ['GET']
+    )]
+    public function index(): Response
+    {
+        return $this->renderReservationPage(
+            ReservationType::STANDARD
+        );
+    }
 
     #[Route(
         '/reservation/aeroport',
