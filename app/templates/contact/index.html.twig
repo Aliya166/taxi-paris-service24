@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - Taxi Paris Service 24{% endblock %}
+
+{% block meta_description %}Contactez Taxi Paris Service 24 pour une réservation, un devis ou une demande professionnelle.{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+<div class="home-page contact-page">
+    {% include 'reservation/_site_header.html.twig' with {active_page: 'contact'} %}
+
+    <main>
+        <section class="contact-hero" aria-labelledby="contact-title">
+            <div class="contact-hero__grid" aria-hidden="true"></div>
+            <div class="home-container contact-hero__inner">
+                <div>
+                    <p class="contact-kicker">Contact direct · 24h/24</p>
+                    <h1 id="contact-title">Parlons de<br><span>votre trajet.</span></h1>
+                </div>
+                <p class="contact-hero__copy">
+                    Une question, un devis ou une demande particulière ?
+                    Écrivez-nous. Notre équipe vous répond dans les meilleurs délais.
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="home-container contact-layout">
+                <aside class="contact-details" aria-label="Coordonnées de Taxi Paris Service 24">
+                    <p class="contact-section-label">Nous joindre</p>
+                    <h2>Une équipe disponible<br>pour vous répondre</h2>
+
+                    <a class="contact-detail-card" href="tel:+33184802305">
+                        <span class="contact-detail-card__icon" aria-hidden="true">☎</span>
+                        <span>
+                            <small>Téléphone</small>
+                            <strong>01 84 80 23 05</strong>
+                            <em>Disponible 24h/24 et 7j/7</em>
+                        </span>
+                    </a>
+
+                    <a class="contact-detail-card" href="mailto:taxiparisservice24@gmail.com">
+                        <span class="contact-detail-card__icon" aria-hidden="true">@</span>
+                        <span>
+                            <small>Email</small>
+                            <strong>taxiparisservice24@gmail.com</strong>
+                            <em>Réponse dans les meilleurs délais</em>
+                        </span>
+                    </a>
+
+                    <div class="contact-service-area">
+                        <span aria-hidden="true">●</span>
+                        <div>
+                            <strong>Zone desservie</strong>
+                            <p>Paris · Île-de-France · Aéroports · Gares</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="contact-form-card">
+                    <div class="contact-form-card__heading">
+                        <div>
+                            <p>Message en ligne</p>
+                            <h2>Comment pouvons-nous vous aider ?</h2>
+                        </div>
+                        <span aria-hidden="true">↗</span>
+                    </div>
+
+                    {% for message in app.flashes('contact_success') %}
+                        <div class="contact-alert contact-alert--success" role="status">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% if errors is not empty %}
+                        <div class="contact-alert contact-alert--error" role="alert">
+                            <strong>Veuillez vérifier le formulaire :</strong>
+                            <ul>
+                                {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('app_contact') }}" class="contact-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('contact_message') }}">
+
+                        <div class="contact-honeypot" aria-hidden="true">
+                            <label for="website">Site internet</label>
+                            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="contact-form__grid">
+                            <div class="contact-field">
+                                <label for="contact-name">Nom complet <span>*</span></label>
+                                <input id="contact-name" name="name" type="text" value="{{ contact.name }}" maxlength="120" autocomplete="name" required>
+                            </div>
+
+                            <div class="contact-field">
+                                <label for="contact-email">Email <span>*</span></label>
+                                <input id="contact-email" name="email" type="email" value="{{ contact.email }}" maxlength="180" autocomplete="email" required>
+                            </div>
+
+                            <div class="contact-field">
+                                <label for="contact-phone">Téléphone</label>
+                                <input id="contact-phone" name="phone" type="tel" value="{{ contact.phone }}" maxlength="30" autocomplete="tel">
+                            </div>
+
+                            <div class="contact-field">
+                                <label for="contact-subject">Sujet <span>*</span></label>
+                                <select id="contact-subject" name="subject" required>
+                                    <option value="reservation" {{ contact.subject == 'reservation' ? 'selected' : '' }}>Ma réservation</option>
+                                    <option value="quote" {{ contact.subject == 'quote' ? 'selected' : '' }}>Demande de devis</option>
+                                    <option value="business" {{ contact.subject == 'business' ? 'selected' : '' }}>Trajet professionnel</option>
+                                    <option value="other" {{ contact.subject == 'other' ? 'selected' : '' }}>Autre demande</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="contact-field">
+                            <label for="contact-message">Votre message <span>*</span></label>
+                            <textarea id="contact-message" name="message" rows="7" minlength="10" maxlength="3000" required>{{ contact.message }}</textarea>
+                            <small>Décrivez votre demande sans transmettre de données sensibles.</small>
+                        </div>
+
+                        <p class="contact-privacy">
+                            Les informations saisies sont utilisées uniquement pour répondre à votre demande.
+                            Pour en savoir plus sur vos droits, consultez notre
+                            <a href="/politique-confidentialite.html">politique de confidentialité</a>.
+                        </p>
+
+                        <button class="contact-submit" type="submit">
+                            Envoyer mon message
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'reservation/_legal_notice.html.twig' %}
+    {% include 'reservation/_site_footer.html.twig' %}
+</div>
+{% endblock %}

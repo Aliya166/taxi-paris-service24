@@ -1,3 +1,4 @@
+{% set activePage = active_page|default('reservation') %}
 <header class="site-header">
     <div class="site-header__inner">
         <a class="site-brand" href="{{ path('app_home') }}" aria-label="Taxi Paris Service 24 - Accueil">
@@ -14,12 +15,12 @@
 
         <div class="site-menu" id="main-navigation">
             <nav class="site-nav" aria-label="Navigation principale">
-                <a href="{{ path('app_home') }}">Accueil</a>
+                <a class="{{ activePage == 'home' ? 'is-active' : '' }}" href="{{ path('app_home') }}">Accueil</a>
                 <a href="{{ path('app_home') }}#services">Services</a>
                 <a href="{{ path('app_home') }}#tarifs">Tarifs</a>
                 <a href="{{ path('app_home') }}#faq">FAQ</a>
-                <a class="is-active" href="/reservation.html">Réservation</a>
-                <a href="{{ path('app_home') }}#contact">Contact</a>
+                <a class="{{ activePage == 'reservation' ? 'is-active' : '' }}" href="/reservation.html">Réservation</a>
+                <a class="{{ activePage == 'contact' ? 'is-active' : '' }}" href="{{ path('app_contact') }}">Contact</a>
             </nav>
 
             <div class="site-header__actions">

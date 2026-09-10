@@ -44,7 +44,7 @@ et 7j/7, avec des tarifs fixes et transparents.
                     <a href="/reservation.html">
                         Réservation
                     </a>
-                    <a href="{{ path('app_home') }}#contact">
+                    <a href="{{ path('app_contact') }}">
                         Contact
                     </a>
                 </nav>
@@ -940,6 +940,7 @@ et 7j/7, avec des tarifs fixes et transparents.
                     <a href="{{ path('app_home') }}#tarifs">Tarifs</a>
                     <a href="{{ path('app_home') }}#faq">FAQ</a>
                     <a href="/reservation.html">Réservation</a>
+                    <a href="{{ path('app_contact') }}">Contact</a>
                 </div>
 
                 <div class="footer-column">
@@ -973,11 +974,17 @@ et 7j/7, avec des tarifs fixes et transparents.
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    window.initializeTaxiHome = () => {
         const menuButton = document.querySelector('.site-menu-toggle');
         const menu = document.querySelector('.site-menu');
 
-        if (menuButton && menu) {
+        if (
+            menuButton
+            && menu
+            && menuButton.dataset.menuReady !== 'true'
+        ) {
+            menuButton.dataset.menuReady = 'true';
+
             menuButton.addEventListener('click', () => {
                 const isOpen = menu.classList.toggle('is-open');
 
@@ -993,6 +1000,12 @@ et 7j/7, avec des tarifs fixes et transparents.
         if (!carousel) {
             return;
         }
+
+        if (carousel.dataset.fleetReady === 'true') {
+            return;
+        }
+
+        carousel.dataset.fleetReady = 'true';
 
         const track = carousel.querySelector('.fleet-carousel__track');
         const viewport = carousel.querySelector(
@@ -1119,6 +1132,20 @@ et 7j/7, avec des tarifs fixes et transparents.
         });
 
         displaySlide(0);
-    });
+    };
+
+    if (!window.taxiHomeEventsReady) {
+        window.taxiHomeEventsReady = true;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.initializeTaxiHome?.();
+        });
+
+        document.addEventListener('turbo:load', () => {
+            window.initializeTaxiHome?.();
+        });
+    }
+
+    window.initializeTaxiHome();
 </script>
 {% endblock %}

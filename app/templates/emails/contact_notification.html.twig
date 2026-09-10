@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<body style="margin:0;background:#f4f5f7;font-family:Arial,sans-serif;color:#15171a">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:28px 12px;background:#f4f5f7">
+    <tr><td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:10px;overflow:hidden">
+            <tr><td style="padding:28px 34px;background:#090a0c;color:#ffffff;border-top:4px solid #e50914">
+                <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#ff626a">Taxi Paris Service 24</div>
+                <h1 style="margin:8px 0 0;font-size:27px">Nouveau message</h1>
+            </td></tr>
+            <tr><td style="padding:30px 34px">
+                <p><strong>Nom :</strong> {{ contact.name }}</p>
+                <p><strong>Email :</strong> <a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+                <p><strong>Téléphone :</strong> {{ contact.phone ?: 'Non renseigné' }}</p>
+                <p><strong>Sujet :</strong> {{ contact.subject }}</p>
+                <div style="margin-top:24px;padding:20px;background:#f4f5f7;border-left:3px solid #e50914;white-space:pre-line;line-height:1.6">{{ contact.message }}</div>
+                <p style="margin-top:24px;font-size:13px;color:#60636a">Répondez directement à cet email pour contacter la personne.</p>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</body>
+</html>
