@@ -260,6 +260,17 @@
                     <dd>{{ reservation.luggage }}</dd>
                 </div>
 
+                <div>
+                    <dt>Siège enfant</dt>
+                    <dd>
+                        {% if reservation.childSeatRequested %}
+                            Oui — demandé
+                        {% else %}
+                            Non
+                        {% endif %}
+                    </dd>
+                </div>
+
                 {% if reservation.transportReference %}
                     <div>
                         <dt>Vol ou train</dt>

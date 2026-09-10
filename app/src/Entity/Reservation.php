@@ -95,6 +95,9 @@ class Reservation
     )]
     private int $luggage = 0;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $childSeatRequested = false;
+
     #[ORM\Column(
         type: Types::DECIMAL,
         precision: 8,
@@ -366,6 +369,18 @@ class Reservation
     public function setLuggage(int $luggage): static
     {
         $this->luggage = $luggage;
+
+        return $this;
+    }
+
+    public function isChildSeatRequested(): bool
+    {
+        return $this->childSeatRequested;
+    }
+
+    public function setChildSeatRequested(bool $requested): static
+    {
+        $this->childSeatRequested = $requested;
 
         return $this;
     }

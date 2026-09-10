@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Reservation;
+use App\Enum\PricingMode;
+use App\Enum\ReservationType;
 use App\Service\RouteCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -113,7 +116,7 @@ final class ReservationControllerTest extends WebTestCase
                 'date' => '2026-09-20',
                 'heure' => '14:30',
                 'vehicle' => 'eco',
-                'reservation_type' => 'airport',
+                'reservation_type' => 'standard',
                 'passengers' => '1',
                 'luggage' => '1',
                 'distanceKm' => '117.8 km',
@@ -149,6 +152,88 @@ final class ReservationControllerTest extends WebTestCase
             '241.36',
             $reservation->getFinalPrice()
         );
+    }
+
+    public function testSpecializedReservationDoesNotRequireRouteCalculation(): void
+    {
+        $email = sprintf(
+            'long-distance-%s@example.com',
+            bin2hex(random_bytes(6))
+        );
+
+        $this->client->request(
+            'POST',
+            '/api/reservations',
+            [
+                'name' => 'Client Longue Distance',
+                'email' => $email,
+                'phone' => '0612345678',
+                'pickupAddress' => 'Paris, France',
+                'dropoffAddress' => 'Lyon, France',
+                'date' => '2026-09-21',
+                'heure' => '09:30',
+                'vehicle' => 'berline',
+                'reservation_type' => 'long_distance',
+                'passengers' => '2',
+                'luggage' => '2',
+                'child_seat' => '1',
+            ]
+        );
+
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $reservation = $this->entityManager
+            ?->getRepository(Reservation::class)
+            ->findOneBy(['email' => $email]);
+
+        self::assertInstanceOf(Reservation::class, $reservation);
+        self::assertSame(
+            ReservationType::LONG_DISTANCE,
+            $reservation->getType()
+        );
+        self::assertSame(
+            PricingMode::MANUAL_QUOTE,
+            $reservation->getPricingMode()
+        );
+        self::assertNull($reservation->getDistanceKm());
+        self::assertNull($reservation->getDurationMinutes());
+        self::assertNull($reservation->getBasePrice());
+        self::assertNull($reservation->getFinalPrice());
+        self::assertTrue($reservation->isChildSeatRequested());
+    }
+
+    #[DataProvider('specializedPageProvider')]
+    public function testSpecializedReservationPageIsAvailable(
+        string $url,
+        string $expectedHeading
+    ): void {
+        $this->client->request('GET', $url);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', $expectedHeading);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function specializedPageProvider(): iterable
+    {
+        yield 'airport' => [
+            '/reservation/aeroport',
+            'Votre transfert',
+        ];
+        yield 'station' => [
+            '/reservation/gare',
+            'Votre gare',
+        ];
+        yield 'business' => [
+            '/reservation/professionnelle',
+            'Vos rendez-vous',
+        ];
+        yield 'long distance' => [
+            '/reservation/longue-distance',
+            'Voyagez loin',
+        ];
     }
 
     public function testRouteMustBeCalculatedBeforeReservation(): void

@@ -1,0 +1,293 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ reservationType.label }} | Taxi Paris Service 24{% endblock %}
+
+{% block meta_description %}
+{{ page.description }}
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+<div class="home-page service-reservation-page service-reservation-page--{{ reservationType.value }}">
+    {% include 'reservation/_site_header.html.twig' %}
+
+    <main>
+        <section class="service-booking-hero">
+            <img
+                class="service-booking-hero__image"
+                src="{{ asset(page.image) }}"
+                alt="{{ page.imageAlt }}"
+            >
+            <div class="service-booking-hero__overlay" aria-hidden="true"></div>
+
+            <div class="home-container service-booking-hero__inner">
+                <div class="service-booking-hero__copy">
+                    <p class="service-booking-hero__label">{{ page.label }}</p>
+                    <h1>
+                        {{ page.title }}<br>
+                        <span>{{ page.accent }}</span>
+                    </h1>
+                    <p>{{ page.description }}</p>
+
+                    <div class="service-booking-hero__facts">
+                        <span>24h/24 · 7j/7</span>
+                        <span>Chauffeur confirmé</span>
+                        <span>Tarif sur devis</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-booking-section">
+            <div class="home-container service-booking-layout">
+                <div class="service-booking-intro">
+                    <p class="reservation-section-label">Demande de réservation</p>
+                    <h2>Réservez votre chauffeur</h2>
+                    <p>
+                        Complétez les informations du trajet. Notre équipe vous
+                        contactera rapidement pour confirmer la disponibilité
+                        et le tarif.
+                    </p>
+
+                    <div class="service-booking-promise">
+                        <div><strong>01</strong><span>Votre demande</span></div>
+                        <div><strong>02</strong><span>Notre confirmation</span></div>
+                        <div><strong>03</strong><span>Votre chauffeur</span></div>
+                    </div>
+                </div>
+
+                <div class="service-booking-card">
+                    <div class="service-booking-card__heading">
+                        <div>
+                            <span>{{ reservationType.label }}</span>
+                            <h2>Votre trajet</h2>
+                        </div>
+                        <div class="booking-lock" aria-label="Demande sécurisée">✓</div>
+                    </div>
+
+                    <form
+                        id="specializedReservationForm"
+                        action="{{ path('app_reservation_create') }}"
+                        method="POST"
+                    >
+                        <input type="hidden" name="reservation_type" value="{{ reservationType.value }}">
+
+                        <div class="service-form-grid service-form-grid--route">
+                            <div class="form-group address-field">
+                                <label for="specializedStart">Adresse de départ</label>
+                                <div class="input-with-icon">
+                                    <span class="input-icon input-icon--start" aria-hidden="true"></span>
+                                    <input
+                                        id="specializedStart"
+                                        type="text"
+                                        name="pickupAddress"
+                                        placeholder="{{ page.pickupPlaceholder }}"
+                                        autocomplete="off"
+                                        required
+                                    >
+                                </div>
+                                <div id="specializedStartSuggestions" class="suggestions-list"></div>
+                            </div>
+
+                            <div class="service-route-arrow" aria-hidden="true">→</div>
+
+                            <div class="form-group address-field">
+                                <label for="specializedEnd">Adresse d’arrivée</label>
+                                <div class="input-with-icon">
+                                    <span class="input-icon input-icon--end" aria-hidden="true"></span>
+                                    <input
+                                        id="specializedEnd"
+                                        type="text"
+                                        name="dropoffAddress"
+                                        placeholder="{{ page.dropoffPlaceholder }}"
+                                        autocomplete="off"
+                                        required
+                                    >
+                                </div>
+                                <div id="specializedEndSuggestions" class="suggestions-list"></div>
+                            </div>
+                        </div>
+
+                        {% if page.quickDestinations is not empty %}
+                            <div class="quick-destinations">
+                                <p>Destination rapide</p>
+                                <div>
+                                    {% for destination in page.quickDestinations %}
+                                        <button
+                                            type="button"
+                                            data-quick-address="{{ destination.address }}"
+                                        >
+                                            <span aria-hidden="true">→</span>
+                                            {{ destination.label }}
+                                        </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="service-form-divider">
+                            <span>Vos coordonnées</span>
+                        </div>
+
+                        <div class="service-form-grid service-form-grid--contact">
+                            <div class="form-group">
+                                <label for="serviceCustomerName">Nom complet</label>
+                                <input
+                                    id="serviceCustomerName"
+                                    type="text"
+                                    name="name"
+                                    value="{% if app.user %}{{ app.user.firstName }} {{ app.user.lastName }}{% endif %}"
+                                    placeholder="Votre nom complet"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="serviceCustomerEmail">Email</label>
+                                <input
+                                    id="serviceCustomerEmail"
+                                    type="email"
+                                    name="email"
+                                    value="{{ app.user ? app.user.email : '' }}"
+                                    placeholder="vous@exemple.fr"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="serviceCustomerPhone">Téléphone</label>
+                                <input
+                                    id="serviceCustomerPhone"
+                                    type="tel"
+                                    name="phone"
+                                    value="{{ app.user ? app.user.phone : '' }}"
+                                    placeholder="06 12 34 56 78"
+                                    autocomplete="tel"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="service-form-divider">
+                            <span>Véhicule et horaire</span>
+                        </div>
+
+                        <fieldset class="service-vehicle-fieldset">
+                            <legend>Choisissez votre véhicule</legend>
+
+                            <div class="service-vehicles">
+                                <label class="service-vehicle active">
+                                    <input type="radio" name="vehicle" value="eco" checked>
+                                    <span class="service-vehicle__number">01</span>
+                                    <span><strong>Éco</strong><small>4 passagers · 2 bagages</small></span>
+                                </label>
+
+                                <label class="service-vehicle">
+                                    <input type="radio" name="vehicle" value="berline">
+                                    <span class="service-vehicle__number">02</span>
+                                    <span><strong>Berline</strong><small>4 passagers · 3 bagages</small></span>
+                                </label>
+
+                                <label class="service-vehicle">
+                                    <input type="radio" name="vehicle" value="van">
+                                    <span class="service-vehicle__number">03</span>
+                                    <span><strong>Van</strong><small>7 passagers · 5 bagages</small></span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <div class="service-form-grid service-form-grid--details">
+                            <fieldset class="schedule-fieldset">
+                                <legend>Quand est la course ?</legend>
+                                <div class="time-choice">
+                                    <button type="button" class="choice-btn active" id="specializedNowBtn">
+                                        Maintenant
+                                    </button>
+                                    <button type="button" class="choice-btn" id="specializedLaterBtn">
+                                        Plus tard
+                                    </button>
+                                </div>
+                            </fieldset>
+
+                            <div class="small-grid">
+                                <div class="form-group">
+                                    <label for="servicePassengers">Passagers</label>
+                                    <input id="servicePassengers" type="number" name="passengers" min="1" max="7" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="serviceLuggage">Bagages</label>
+                                    <input id="serviceLuggage" type="number" name="luggage" min="0" max="6" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="date-time-box" id="specializedDateTimeBox">
+                            <div class="form-group">
+                                <label for="specializedDate">Date</label>
+                                <input type="date" id="specializedDate" name="date">
+                            </div>
+                            <div class="form-group">
+                                <label for="specializedTime">Heure</label>
+                                <input type="time" id="specializedTime" name="heure">
+                            </div>
+                        </div>
+
+                        {% if page.childSeat %}
+                            <input type="hidden" id="childSeat" name="child_seat" value="0">
+
+                            <button
+                                class="child-seat-option"
+                                type="button"
+                                data-child-seat-toggle
+                                aria-pressed="false"
+                            >
+                                <span class="child-seat-option__icon" aria-hidden="true">◉</span>
+                                <span>
+                                    <strong>Siège enfant</strong>
+                                    <small>Ajoutez un siège adapté à votre trajet</small>
+                                </span>
+                                <span class="child-seat-option__state" data-child-seat-state>Ajouter</span>
+                            </button>
+                        {% endif %}
+
+                        <div class="service-quote-note">
+                            <span aria-hidden="true">i</span>
+                            <p>
+                                Le tarif sera confirmé par notre équipe avant
+                                la prise en charge. Aucun paiement en ligne.
+                            </p>
+                        </div>
+
+                        <button class="submit-btn service-submit" type="submit">
+                            <span>Envoyer ma demande</span>
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'reservation/_legal_notice.html.twig' %}
+    {% include 'reservation/_site_footer.html.twig' %}
+</div>
+
+<script src="{{ asset('specialized-reservation.js') }}?v=20260910-1"></script>
+
+<script>
+(() => {
+    const menuButton = document.querySelector('.site-menu-toggle');
+    const menu = document.querySelector('.site-menu');
+
+    if (menuButton && menu) {
+        menuButton.addEventListener('click', () => {
+            const isOpen = menu.classList.toggle('is-open');
+            menuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    }
+})();
+</script>
+{% endblock %}

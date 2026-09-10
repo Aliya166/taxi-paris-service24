@@ -1,0 +1,61 @@
+<header class="site-header">
+    <div class="site-header__inner">
+        <a class="site-brand" href="{{ path('app_home') }}" aria-label="Taxi Paris Service 24 - Accueil">
+            <strong>Taxi Paris</strong>
+            <span>Service 24</span>
+        </a>
+
+        <button class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"
+            aria-label="Ouvrir le menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="site-menu" id="main-navigation">
+            <nav class="site-nav" aria-label="Navigation principale">
+                <a href="{{ path('app_home') }}">Accueil</a>
+                <a href="{{ path('app_home') }}#services">Services</a>
+                <a href="{{ path('app_home') }}#tarifs">Tarifs</a>
+                <a href="{{ path('app_home') }}#faq">FAQ</a>
+                <a class="is-active" href="/reservation.html">Réservation</a>
+                <a href="{{ path('app_home') }}#contact">Contact</a>
+            </nav>
+
+            <div class="site-header__actions">
+                <a class="header-phone" href="tel:+33184802305">
+                    <span aria-hidden="true">☎</span>
+                    01 84 80 23 05
+                </a>
+
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="header-button header-button--outline" href="{{ path('app_admin_reservations') }}">
+                            Administration
+                        </a>
+                    {% endif %}
+
+                    <a class="header-button header-button--outline" href="{{ path('app_account') }}">
+                        Mon compte
+                    </a>
+
+                    <a class="header-button header-button--primary" href="{{ path('app_logout') }}">
+                        Déconnexion
+                    </a>
+                {% else %}
+                    <a class="header-button header-button--outline" href="{{ path('app_login') }}">
+                        <span aria-hidden="true">●</span>
+                        Connexion
+                    </a>
+
+                    <div class="register-action">
+                        <div class="register-hint">Nouveau ? Créez votre compte ici</div>
+                        <a class="header-button header-button--primary" href="{{ path('app_register') }}">
+                            Créer un compte
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
