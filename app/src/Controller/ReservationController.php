@@ -10,6 +10,7 @@ use App\Enum\ReservationType;
 use App\Enum\VehicleType;
 use App\Service\LoyaltyDiscountService;
 use App\Service\ReservationConfirmationMailer;
+use App\Service\ReservationPricingService;
 use App\Service\ReservationNotificationMailer;
 use Psr\Log\LoggerInterface;
 use DateTimeImmutable;
@@ -82,6 +83,7 @@ final class ReservationController extends AbstractController
         LoyaltyDiscountService $loyaltyDiscountService,
         ReservationConfirmationMailer $confirmationMailer,
         ReservationNotificationMailer $notificationMailer,
+        ReservationPricingService $pricingService,
         LoggerInterface $logger
     ): JsonResponse {
         $fullName = $this->getValue($request, 'name');
@@ -171,8 +173,18 @@ final class ReservationController extends AbstractController
             $this->getValue($request, 'durationMinutes', 'Durée')
         );
 
-        $estimatedPrice = $this->extractDecimal(
-            $this->getValue($request, 'estimatedPrice', 'Prix estimé')
+        if ($distanceKm === null || $durationMinutes === null) {
+            return $this->errorResponse(
+                'Veuillez calculer votre trajet avant de réserver.'
+            );
+        }
+
+        $basePrice = $pricingService->calculate(
+            $vehicleType,
+            (float) $distanceKm,
+            $durationMinutes,
+            $pickupAddress,
+            $dropoffAddress
         );
 
         $reservation = (new Reservation())
@@ -189,8 +201,8 @@ final class ReservationController extends AbstractController
             ->setLuggage($luggage)
             ->setDistanceKm($distanceKm)
             ->setDurationMinutes($durationMinutes)
-            ->setBasePrice($estimatedPrice)
-            ->setFinalPrice($estimatedPrice)
+            ->setBasePrice($basePrice)
+            ->setFinalPrice($basePrice)
             ->setPriceIsEstimated(true);
 
         $authenticatedUser = $this->getUser();
@@ -201,20 +213,17 @@ final class ReservationController extends AbstractController
 
         $loyaltyDiscountService->applyTo($reservation);
 
-        if (
-            $estimatedPrice !== null
-            && $reservation->getDiscountPercentage() > 0
-        ) {
-            $basePrice = (float) $estimatedPrice;
+        if ($reservation->getDiscountPercentage() > 0) {
+            $basePriceAmount = (float) $basePrice;
             $percentage = $reservation->getDiscountPercentage();
 
             $discountAmount = round(
-                $basePrice * $percentage / 100,
+                $basePriceAmount * $percentage / 100,
                 2
             );
 
             $finalPrice = round(
-                $basePrice - $discountAmount,
+                $basePriceAmount - $discountAmount,
                 2
             );
 
@@ -265,7 +274,7 @@ final class ReservationController extends AbstractController
         );
     }
 
-        private function renderReservationPage(
+    private function renderReservationPage(
         ReservationType $reservationType
     ): Response {
         return $this->render(

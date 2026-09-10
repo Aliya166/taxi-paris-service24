@@ -30,29 +30,51 @@ final class AddressSearchController extends AbstractController
     public function __invoke(Request $request): JsonResponse
     {
         $query = trim($request->query->getString('q'));
+        $mode = $request->query->getString('mode', 'autocomplete');
 
-        if (mb_strlen($query) < 4) {
+        if (mb_strlen($query) < 3) {
             return $this->json(['features' => []]);
         }
+
+        $normalizedQuery = mb_strtolower($query);
+
+        $airportAliases = [
+            'cdg' => 'Aéroport Paris Charles de Gaulle',
+            'aeroport cdg' => 'Aéroport Paris Charles de Gaulle',
+            'aéroport cdg' => 'Aéroport Paris Charles de Gaulle',
+            'roissy' => 'Aéroport Paris Charles de Gaulle',
+            'orly' => 'Aéroport de Paris Orly',
+            'aeroport orly' => 'Aéroport de Paris Orly',
+            'aéroport orly' => 'Aéroport de Paris Orly',
+            'beauvais' => 'Aéroport Paris Beauvais',
+            'aeroport beauvais' => 'Aéroport Paris Beauvais',
+            'aéroport beauvais' => 'Aéroport Paris Beauvais',
+        ];
+
+        $searchText = $airportAliases[$normalizedQuery] ?? $query;
+
+        $endpoint = $mode === 'search'
+            ? 'search'
+            : 'autocomplete';
 
         try {
             $response = $this->httpClient->request(
                 'GET',
-                'https://api.openrouteservice.org/geocode/search',
+                sprintf(
+                    'https://api.openrouteservice.org/geocode/%s',
+                    $endpoint
+                ),
                 [
                     'query' => [
                         'api_key' => $this->apiKey,
-                        'text' => $query,
+                        'text' => $searchText,
                         'boundary.country' => 'FR',
-                        'boundary.rect.min_lon' => 1.45,
-                        'boundary.rect.min_lat' => 48.10,
-                        'boundary.rect.max_lon' => 3.55,
-                        'boundary.rect.max_lat' => 49.25,
                         'focus.point.lon' => 2.3522,
                         'focus.point.lat' => 48.8566,
-                        'size' => 7,
+                        'size' => 10,
                         'lang' => 'fr',
                     ],
+                    'timeout' => 10,
                 ]
             );
 
@@ -63,7 +85,10 @@ final class AddressSearchController extends AbstractController
             ]);
         } catch (\Throwable) {
             return $this->json(
-                ['features' => []],
+                [
+                    'features' => [],
+                    'error' => 'Le service de recherche est indisponible.',
+                ],
                 JsonResponse::HTTP_BAD_GATEWAY
             );
         }

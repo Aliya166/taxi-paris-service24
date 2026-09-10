@@ -46,7 +46,7 @@ async function searchAddressSuggestions(query, signal) {
 
   try {
     const response = await fetch(
-      `/api/address-suggestions?q=${encodeURIComponent(query)}`,
+      `/api/address-suggestions?q=${encodeURIComponent(query)}&mode=autocomplete`,
       {
         headers: {
           Accept: "application/json",
@@ -161,7 +161,7 @@ async function getCoordinates(address) {
   }
 
   const response = await fetch(
-    `/api/address-suggestions?q=${encodeURIComponent(address)}`,
+    `/api/address-suggestions?q=${encodeURIComponent(address)}&mode=search`,
     {
       headers: {
         Accept: "application/json",
@@ -218,9 +218,16 @@ function getFixedPrice(startAddress, endAddress) {
   const start = startAddress.toLowerCase();
   const end = endAddress.toLowerCase();
 
+  const parisPostalCode =
+    /\b750(?:0[1-9]|1[0-9]|20)\b/.test(start);
+
+  const parisAddressPart = start
+    .split(",")
+    .map((part) => part.trim())
+    .includes("paris");
+
   const isParis75 =
-    start.includes("paris") ||
-    start.includes("750");
+    parisPostalCode || parisAddressPart;
 
   if (isParis75 && end.includes("orly")) {
     return 59;
@@ -274,120 +281,6 @@ async function calculateRoute() {
     const endAddress = endInput.value.trim();
 
     const fixedPrice = getFixedPrice(startAddress, endAddress);
-
-    const allowed = [
-      "paris",
-
-      // Seine-Saint-Denis (93)
-      "saint-denis",
-      "bobigny",
-      "montreuil",
-      "aubervilliers",
-      "pantin",
-      "noisy",
-      "aulnay",
-      "drancy",
-      "bondy",
-      "livry",
-      "rosny",
-
-      // Val-de-Marne (94)
-      "creteil",
-      "vitry",
-      "ivry",
-      "champigny",
-      "choisy",
-      "villejuif",
-      "nogent",
-      "vincennes",
-      "fontenay",
-      "joinville",
-
-      // Hauts-de-Seine (92)
-      "nanterre",
-      "boulogne",
-      "courbevoie",
-      "colombes",
-      "asnieres",
-      "levallois",
-      "puteaux",
-      "clamart",
-      "meudon",
-      "issy",
-
-      // Yvelines (78)
-      "versailles",
-      "saint-germain",
-      "mantes",
-      "poissy",
-      "sartrouville",
-      "chatou",
-      "houilles",
-
-      // Essonne (91)
-      "evry",
-      "corbeil",
-      "massy",
-      "palaiseau",
-      "savigny",
-      "viry",
-      "ris-orangis",
-      "grigny",
-      "etampes",
-
-      // Seine-et-Marne (77)
-      "melun",
-      "chelles",
-      "meaux",
-      "pontault",
-      "torcy",
-      "serris",
-      "fontainebleau",
-      "coulommiers",
-
-      // Val-d'Oise (95)
-      "pontoise",
-      "cergy",
-      "argenteuil",
-      "sarcelles",
-      "franconville",
-      "garges",
-      "bezons",
-      "ermont",
-      "noisy-le-grand",
-      "montreuil",
-      "saint-denis",
-      "creteil",
-      "champigny-sur-marne",
-      "bry-sur-marne",
-      "fontenay-sous-bois",
-      "neuilly-plaisance",
-      "bondy",
-      "aulnay-sous-bois",
-      "issy-les-moulineaux",
-      "boulogne-billancourt",
-      "vitry-sur-seine",
-      "saint-maurice",
-      "orly",
-      "roissy",
-      "cdg",
-      "beauvais",
-      "disneyland",
-      "gare de lyon"
-    ];
-
-    const isValid =
-      allowed.some(city =>
-        startAddress.toLowerCase().includes(city)
-      ) &&
-      allowed.some(city =>
-        endAddress.toLowerCase().includes(city)
-      );
-
-    if (!isValid) {
-      alert("Veuillez choisir une adresse en Île-de-France");
-      return;
-    }
 
     if (!startAddress || !endAddress) {
       alert("Veuillez renseigner les deux adresses.");
