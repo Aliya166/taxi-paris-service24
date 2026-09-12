@@ -2,241 +2,499 @@
 
 {% block title %}Mon compte | Taxi Paris Service 24{% endblock %}
 
+{% block body_class %}home-body{% endblock %}
+
 {% block body %}
-<main>
-    <header>
-        <p>Espace client</p>
 
-        <h1>Bonjour {{ user.firstName }}</h1>
+<div class="home-page" data-controller="confirm-modal">
 
-        <p>
-            Retrouvez vos informations personnelles,
-            vos réservations et vos avantages fidélité.
-        </p>
+    {% include 'partials/_site_header.html.twig' %}
 
-        <p>
-            <a href="/reservation.html" style="
-            display:inline-block;
-            padding:12px 18px;
-            background:#111827;
-            color:#ffffff;
-            border-radius:8px;
-            text-decoration:none;
-            font-weight:700;
-        ">
-                Réserver un nouveau trajet
-            </a>
-        </p>
+    <main class="account-page">
 
-        <a href="{{ path('app_logout') }}">
-            Se déconnecter
-        </a>
-    </header>
+        <section class="account-hero">
 
-    {% for message in app.flashes('success') %}
-    <div role="status">
-        {{ message }}
-    </div>
-    {% endfor %}
+            <div class="home-container account-hero-inner">
 
-    <section aria-labelledby="profile-title">
-        <h2 id="profile-title">Mes coordonnées</h2>
+                <div>
 
-        <dl>
-            <div>
-                <dt>Prénom</dt>
-                <dd>{{ user.firstName }}</dd>
-            </div>
-
-            <div>
-                <dt>Nom</dt>
-                <dd>{{ user.lastName }}</dd>
-            </div>
-
-            <div>
-                <dt>Adresse email</dt>
-                <dd>{{ user.email }}</dd>
-            </div>
-
-            <div>
-                <dt>Téléphone</dt>
-                <dd>{{ user.phone }}</dd>
-            </div>
-
-            <div>
-                <dt>Statut du compte</dt>
-                <dd>
-                    {% if user.isVerified %}
-                    Adresse email vérifiée
-                    {% else %}
-                    Adresse email à vérifier
-                    {% endif %}
-                </dd>
-            </div>
-        </dl>
-
-        <a href="{{ path('app_account_edit') }}">
-            Modifier mes coordonnées
-        </a>
-    </section>
-
-    <section aria-labelledby="reservations-title">
-        <h2 id="reservations-title">Mes réservations</h2>
-
-        {% if reservations is empty %}
-        <p>
-            Vous n’avez encore aucune réservation enregistrée
-            sur votre compte.
-        </p>
-        {% else %}
-        <div>
-            {% for reservation in reservations %}
-            <article>
-                <header>
-                    <h3>
-                        Réservation {{ reservation.reference }}
-                    </h3>
-
-                    <p>
-                        Statut :
-                        <strong>
-                            {{ reservation.status.label() }}
-                        </strong>
+                    <p class="section-kicker">
+                        Espace client
                     </p>
-                </header>
 
-                <dl>
-                    <div>
-                        <dt>Date du trajet</dt>
-                        <dd>
-                            <time datetime="{{ reservation.scheduledAt|date('c') }}">
-                                {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
-                            </time>
-                        </dd>
-                    </div>
+                    <h1>
+                        Bonjour {{ user.firstName }}
+                    </h1>
 
-                    <div>
-                        <dt>Type de réservation</dt>
-                        <dd>{{ reservation.type.label() }}</dd>
-                    </div>
+                    <p class="account-hero-text">
+                        Retrouvez vos informations personnelles,
+                        vos réservations et vos avantages fidélité.
+                    </p>
 
-                    <div>
-                        <dt>Véhicule</dt>
-                        <dd>{{ reservation.vehicleType.label() }}</dd>
-                    </div>
+                </div>
 
-                    <div>
-                        <dt>Passagers</dt>
-                        <dd>{{ reservation.passengers }}</dd>
-                    </div>
 
-                    <div>
-                        <dt>Bagages</dt>
-                        <dd>{{ reservation.luggage }}</dd>
-                    </div>
+                <div class="account-hero-actions">
 
-                    {% if reservation.childSeatRequested %}
-                    <div>
-                        <dt>Siège enfant</dt>
-                        <dd>Demandé</dd>
-                    </div>
-                    {% endif %}
+                    <a class="account-primary-button" href="{{ path('app_reservation') }}">
+                        Réserver un trajet
+                    </a>
 
-                    <div>
-                        <dt>Adresse de départ</dt>
-                        <dd>{{ reservation.pickupAddress }}</dd>
-                    </div>
+                    <a class="account-secondary-button" href="{{ path('app_logout') }}">
+                        Se déconnecter
+                    </a>
 
-                    <div>
-                        <dt>Adresse d’arrivée</dt>
-                        <dd>{{ reservation.dropoffAddress }}</dd>
-                    </div>
+                </div>
 
-                    {% if reservation.distanceKm is not null %}
-                    <div>
-                        <dt>Distance</dt>
-                        <dd>
-                            {{ reservation.distanceKm|number_format(2, ',', ' ') }} km
-                        </dd>
-                    </div>
-                    {% endif %}
+            </div>
 
-                    {% if reservation.durationMinutes is not null %}
-                    <div>
-                        <dt>Durée estimée</dt>
-                        <dd>{{ reservation.durationMinutes }} minutes</dd>
-                    </div>
-                    {% endif %}
+        </section>
+
+
+        <section class="account-content">
+
+            <div class="home-container">
+
+
+                {% for message in app.flashes('success') %}
+
+                <div class="account-flash account-flash--success" role="status">
+                    {{ message }}
+                </div>
+
+                {% endfor %}
+
+
+                {% if is_granted('ROLE_ADMIN') %}
+
+                <div class="account-admin-banner">
 
                     <div>
-                        <dt>Prix</dt>
-                        <dd>
-                            {% if reservation.finalPrice is not null %}
-                            <strong>
-                                {{ reservation.finalPrice
-                                |number_format(2, ',', ' ') }} €
-                            </strong>
+                        <span class="account-admin-kicker">
+                            Administration
+                        </span>
 
-                            {% if reservation.discountPercentage > 0 %}
-                            <span>
-                                Réduction de
-                                {{ reservation.discountPercentage }} %
-                                appliquée
-                            </span>
-                            {% endif %}
-                            {% else %}
-                            Prix à confirmer
-                            {% endif %}
-                        </dd>
+                        <strong>
+                            Accès à la gestion des réservations
+                        </strong>
                     </div>
-                </dl>
 
-                {% if reservation.status.value in ['pending', 'confirmed'] %}
-                <form method="post" action="{{ path(
-        'app_account_reservation_cancel',
-        {id: reservation.id}
-    ) }}" onsubmit="return confirm(
-        'Voulez-vous vraiment annuler cette réservation ?'
-    );">
-                    <input type="hidden" name="_token" value="{{ csrf_token(
-            'cancel_reservation_' ~ reservation.id
-        ) }}">
+                    <a href="{{ path('app_admin_reservations') }}">
+                        Ouvrir l'administration
+                    </a>
 
-                    <button type="submit">
-                        Annuler cette réservation
-                    </button>
-                </form>
+                </div>
+
                 {% endif %}
 
-            </article>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </section>
 
-    <section aria-labelledby="loyalty-title">
-        <h2 id="loyalty-title">Mon avantage fidélité</h2>
+                <div class="account-layout">
 
-        <p>
-            {{ completedRides }} trajet(s) terminé(s) sur 5.
-        </p>
 
-        <progress value="{{ completedRides > 5 ? 5 : completedRides }}" max="5">
-            {{ completedRides }} sur 5
-        </progress>
+                    <aside class="account-sidebar">
 
-        {% if ridesUntilDiscount > 0 %}
-        <p>
-            Plus que {{ ridesUntilDiscount }} trajet(s) terminé(s)
-            avant de bénéficier de 10 % de réduction.
-        </p>
-        {% else %}
-        <p>
-            Le seuil fidélité a été atteint. Votre réduction de
-            10 % sera appliquée automatiquement lorsqu’elle sera
-            disponible sur votre prochaine réservation.
-        </p>
-        {% endif %}
-    </section>
-</main>
+
+                        <section class="account-card account-profile-card">
+
+                            <div class="account-card-heading">
+
+                                <div>
+                                    <p class="account-card-kicker">
+                                        Profil
+                                    </p>
+
+                                    <h2>
+                                        Mes coordonnées
+                                    </h2>
+                                </div>
+
+                            </div>
+
+
+                            <dl class="account-profile-list">
+
+                                <div>
+                                    <dt>Prénom</dt>
+                                    <dd>{{ user.firstName }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Nom</dt>
+                                    <dd>{{ user.lastName }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Email</dt>
+                                    <dd>{{ user.email }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Téléphone</dt>
+                                    <dd>
+                                        {% if user.phone %}
+                                        {{ user.phone }}
+                                        {% else %}
+                                        Non renseigné
+                                        {% endif %}
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt>Compte</dt>
+
+                                    <dd>
+                                        {% if user.isVerified %}
+
+                                        <span class="account-verification account-verification--ok">
+                                            Email vérifié
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="account-verification account-verification--warning">
+                                            Email à vérifier
+                                        </span>
+
+                                        {% endif %}
+                                    </dd>
+                                </div>
+
+                            </dl>
+
+
+                            <a class="account-edit-link" href="{{ path('app_account_edit') }}">
+                                Modifier mes coordonnées →
+                            </a>
+
+                        </section>
+
+
+                        <section class="account-card account-loyalty-card">
+
+                            <div class="account-card-heading">
+
+                                <div>
+                                    <p class="account-card-kicker">
+                                        Fidélité
+                                    </p>
+
+                                    <h2>
+                                        Mon avantage
+                                    </h2>
+                                </div>
+
+                            </div>
+
+
+                            <div class="account-loyalty-count">
+
+                                <strong>
+                                    {{ completedRides > 5 ? 5 : completedRides }}
+                                </strong>
+
+                                <span>
+                                    / 5 trajets
+                                </span>
+
+                            </div>
+
+
+                            {% set loyaltyProgress = completedRides > 5 ? 100 : completedRides * 20 %}
+
+                            <div class="account-progress">
+
+                                <div class="account-progress-bar account-progress-bar--{{ loyaltyProgress }}"></div>
+
+                            </div>
+
+
+                            {% if ridesUntilDiscount > 0 %}
+
+                            <p class="account-loyalty-text">
+                                Plus que
+                                <strong>{{ ridesUntilDiscount }}</strong>
+                                trajet(s) terminé(s) avant de bénéficier
+                                de 10 % de réduction.
+                            </p>
+
+                            {% else %}
+
+                            <p class="account-loyalty-text">
+                                Votre avantage fidélité est disponible.
+                                La réduction de 10 % sera appliquée
+                                automatiquement lorsqu'elle sera disponible
+                                sur votre prochaine réservation.
+                            </p>
+
+                            {% endif %}
+
+                        </section>
+
+                    </aside>
+
+
+                    <section class="account-main-column" aria-labelledby="reservations-title">
+
+                        <div class="account-section-heading">
+
+                            <div>
+
+                                <p class="account-card-kicker">
+                                    Historique
+                                </p>
+
+                                <h2 id="reservations-title">
+                                    Mes réservations
+                                </h2>
+
+                            </div>
+
+                            <span class="account-reservation-count">
+                                {{ reservations|length }} réservation(s)
+                            </span>
+
+                        </div>
+
+
+                        {% if reservations is empty %}
+
+                        <div class="account-empty">
+
+                            <span class="account-empty-number">
+                                00
+                            </span>
+
+                            <h3>
+                                Aucune réservation
+                            </h3>
+
+                            <p>
+                                Vous n'avez encore aucune réservation
+                                enregistrée sur votre compte.
+                            </p>
+
+                            <a class="account-primary-button" href="{{ path('app_reservation') }}">
+                                Réserver maintenant
+                            </a>
+
+                        </div>
+
+                        {% else %}
+
+
+                        <div class="account-reservations">
+
+                            {% for reservation in reservations %}
+
+                            <article class="account-reservation-card">
+
+
+                                <header class="account-reservation-header">
+
+                                    <div>
+
+                                        <span class="account-reservation-label">
+                                            Réservation
+                                        </span>
+
+                                        <h3>
+                                            {{ reservation.reference }}
+                                        </h3>
+
+                                    </div>
+
+
+                                    <span class="admin-status admin-status--{{ reservation.status.value }}">
+                                        {{ reservation.status.label() }}
+                                    </span>
+
+                                </header>
+
+
+                                <div class="account-route">
+
+                                    <div class="account-route-point">
+
+                                        <span class="account-route-dot"></span>
+
+                                        <div>
+
+                                            <span>
+                                                Départ
+                                            </span>
+
+                                            <strong>
+                                                {{ reservation.pickupAddress }}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="account-route-line"></div>
+
+
+                                    <div class="account-route-point">
+
+                                        <span class="account-route-dot account-route-dot--end"></span>
+
+                                        <div>
+
+                                            <span>
+                                                Arrivée
+                                            </span>
+
+                                            <strong>
+                                                {{ reservation.dropoffAddress }}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="account-reservation-details">
+
+                                    <div>
+                                        <span>Date</span>
+
+                                        <strong>
+                                            {{ reservation.scheduledAt|date('d/m/Y') }}
+                                        </strong>
+
+                                        <small>
+                                            {{ reservation.scheduledAt|date('H:i') }}
+                                        </small>
+                                    </div>
+
+
+                                    <div>
+                                        <span>Type</span>
+
+                                        <strong>
+                                            {{ reservation.type.label() }}
+                                        </strong>
+                                    </div>
+
+
+                                    <div>
+                                        <span>Véhicule</span>
+
+                                        <strong>
+                                            {{ reservation.vehicleType.label() }}
+                                        </strong>
+                                    </div>
+
+
+                                    <div>
+                                        <span>Passagers</span>
+
+                                        <strong>
+                                            {{ reservation.passengers }}
+                                        </strong>
+                                    </div>
+
+
+                                    <div>
+                                        <span>Bagages</span>
+
+                                        <strong>
+                                            {{ reservation.luggage }}
+                                        </strong>
+                                    </div>
+
+
+                                    <div>
+                                        <span>Prix</span>
+
+                                        {% if reservation.finalPrice is not null %}
+
+                                        <strong class="account-reservation-price">
+                                            {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                        </strong>
+
+                                        {% else %}
+
+                                        <strong>
+                                            À confirmer
+                                        </strong>
+
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+
+                                {% if reservation.discountPercentage > 0 %}
+
+                                <div class="account-discount">
+                                    Réduction de
+                                    {{ reservation.discountPercentage }} %
+                                    appliquée
+                                </div>
+
+                                {% endif %}
+
+                                {% if reservation.status.value == 'pending' %}
+
+                                <div class="account-reservation-edit-action">
+
+                                    <a href="{{ path(
+                'app_account_reservation_edit',
+                { id: reservation.id }
+            ) }}" class="account-reservation-edit-button">
+                                        Modifier la réservation
+                                    </a>
+
+                                </div>
+
+                                {% endif %}
+
+                                {% if reservation.status.value in ['pending', 'confirmed'] %}
+
+                                <form class="account-cancel-form" method="post" action="{{ path(
+        'app_account_reservation_cancel',
+        { id: reservation.id }
+    ) }}" data-action="submit->confirm-modal#open" data-confirm-title="Annuler la réservation"
+                                    data-confirm-message="Êtes-vous sûr de vouloir annuler cette réservation ? Cette action ne pourra pas être annulée."
+                                    data-confirm-button="Annuler la réservation">
+
+                                    <input type="hidden" name="_token" value="{{ csrf_token(
+                                                        'cancel_reservation_' ~ reservation.id
+                                                    ) }}">
+
+                                    <button class="account-cancel-button" type="submit">
+                                        Annuler cette réservation
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </article>
+
+                            {% endfor %}
+
+                        </div>
+
+                        {% endif %}
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    {% include 'partials/_confirm_modal.html.twig' %}
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
 {% endblock %}

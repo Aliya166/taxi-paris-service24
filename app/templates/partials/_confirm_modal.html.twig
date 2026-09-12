@@ -1,0 +1,67 @@
+<div
+    class="confirm-modal"
+    data-confirm-modal-target="modal"
+    data-action="click->confirm-modal#backdrop"
+    hidden
+>
+
+    <div
+        class="confirm-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
+        aria-describedby="confirm-modal-message"
+    >
+
+        <div class="confirm-modal__accent"></div>
+
+        <div class="confirm-modal__content">
+
+            <p class="confirm-modal__kicker">
+                Taxi Paris Service 24
+            </p>
+
+            <h2
+                id="confirm-modal-title"
+                data-confirm-modal-target="title"
+            >
+                Confirmer cette action
+            </h2>
+
+            <p
+                id="confirm-modal-message"
+                class="confirm-modal__message"
+                data-confirm-modal-target="message"
+            >
+                Voulez-vous vraiment continuer ?
+            </p>
+
+
+            <div class="confirm-modal__actions">
+
+                <button
+                    type="button"
+                    class="confirm-modal__button confirm-modal__button--secondary"
+                    data-confirm-modal-target="cancelButton"
+                    data-action="confirm-modal#close"
+                >
+                    Retour
+                </button>
+
+
+                <button
+                    type="button"
+                    class="confirm-modal__button confirm-modal__button--danger"
+                    data-confirm-modal-target="confirmButton"
+                    data-action="confirm-modal#confirm"
+                >
+                    Confirmer
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

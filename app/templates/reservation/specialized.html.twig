@@ -10,7 +10,7 @@
 
 {% block body %}
 <div class="home-page service-reservation-page service-reservation-page--{{ reservationType.value }}">
-    {% include 'reservation/_site_header.html.twig' %}
+    {% include 'partials/_site_header.html.twig' %}
 
     <main>
         <section class="service-booking-hero">
@@ -272,7 +272,7 @@
     </main>
 
     {% include 'reservation/_legal_notice.html.twig' %}
-    {% include 'reservation/_site_footer.html.twig' %}
+    {% include 'partials/_site_footer.html.twig' %}
 </div>
 
 <script src="{{ asset('specialized-reservation.js') }}?v=20260910-1"></script>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block email_title %}
+            Taxi Paris Service 24
+        {% endblock %}
+    </title>
+</head>
+
+<body style="
+    margin:0;
+    padding:0;
+    background:#f3f4f6;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#1f2937;
+">
+
+<table
+    role="presentation"
+    width="100%"
+    cellspacing="0"
+    cellpadding="0"
+    style="
+        width:100%;
+        background:#f3f4f6;
+        border-collapse:collapse;
+    "
+>
+    <tr>
+        <td
+            align="center"
+            style="
+                padding:36px 14px;
+            "
+        >
+
+            <table
+                role="presentation"
+                width="100%"
+                cellspacing="0"
+                cellpadding="0"
+                style="
+                    width:100%;
+                    max-width:620px;
+                    overflow:hidden;
+                    background:#ffffff;
+                    border-collapse:collapse;
+                    box-shadow:0 12px 35px rgba(15,17,20,0.08);
+                "
+            >
+
+                {# RED ACCENT #}
+
+                <tr>
+                    <td
+                        style="
+                            height:5px;
+                            padding:0;
+                            background:#e50914;
+                            font-size:0;
+                            line-height:0;
+                        "
+                    >
+                        &nbsp;
+                    </td>
+                </tr>
+
+
+                {# HEADER #}
+
+                <tr>
+                    <td
+                        align="center"
+                        style="
+                            padding:30px 28px;
+                            background:#111317;
+                            color:#ffffff;
+                        "
+                    >
+
+                        <div
+                            style="
+                                color:#e50914;
+                                font-size:11px;
+                                font-weight:700;
+                                letter-spacing:2px;
+                                text-transform:uppercase;
+                            "
+                        >
+                            Taxi Paris Service 24
+                        </div>
+
+
+                        <div
+                            style="
+                                margin-top:9px;
+                                color:#ffffff;
+                                font-size:27px;
+                                font-weight:800;
+                                line-height:1.2;
+                            "
+                        >
+                            {% block email_heading %}
+                                Taxi Paris Service 24
+                            {% endblock %}
+                        </div>
+
+
+                        {% block email_subheading %}
+                        {% endblock %}
+
+                    </td>
+                </tr>
+
+
+                {# CONTENT #}
+
+                <tr>
+                    <td
+                        style="
+                            padding:32px;
+                            background:#ffffff;
+                        "
+                    >
+
+                        {% block email_content %}
+                        {% endblock %}
+
+                    </td>
+                </tr>
+
+
+                {# FOOTER #}
+
+                <tr>
+                    <td
+                        align="center"
+                        style="
+                            padding:24px 28px;
+                            background:#f7f7f8;
+                            color:#858a92;
+                            font-size:11px;
+                            line-height:1.7;
+                        "
+                    >
+
+                        <strong
+                            style="
+                                color:#30343a;
+                            "
+                        >
+                            Taxi Paris Service 24
+                        </strong>
+
+                        <br>
+
+                        Paris et Île-de-France
+
+                        <br>
+
+                        <a
+                            href="tel:+33184802305"
+                            style="
+                                color:#e50914;
+                                text-decoration:none;
+                            "
+                        >
+                            01 84 80 23 05
+                        </a>
+
+                        ·
+
+                        <a
+                            href="mailto:taxiparisservice24@gmail.com"
+                            style="
+                                color:#e50914;
+                                text-decoration:none;
+                            "
+                        >
+                            taxiparisservice24@gmail.com
+                        </a>
+
+
+                        {% block email_footer_extra %}
+                        {% endblock %}
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+
+</html>

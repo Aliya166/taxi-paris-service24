@@ -8,7 +8,7 @@
 
 {% block body %}
 <div class="home-page contact-page">
-    {% include 'reservation/_site_header.html.twig' with {active_page: 'contact'} %}
+    {% include 'partials/_site_header.html.twig' with {active_page: 'contact'} %}
 
     <main>
         <section class="contact-hero" aria-labelledby="contact-title">
@@ -126,7 +126,7 @@
                         <p class="contact-privacy">
                             Les informations saisies sont utilisées uniquement pour répondre à votre demande.
                             Pour en savoir plus sur vos droits, consultez notre
-                            <a href="/politique-confidentialite.html">politique de confidentialité</a>.
+                            <a href="{{ path('app_legal_privacy') }}">politique de confidentialité</a>.
                         </p>
 
                         <button class="contact-submit" type="submit">
@@ -140,6 +140,6 @@
     </main>
 
     {% include 'reservation/_legal_notice.html.twig' %}
-    {% include 'reservation/_site_footer.html.twig' %}
+    {% include 'partials/_site_footer.html.twig' %}
 </div>
 {% endblock %}

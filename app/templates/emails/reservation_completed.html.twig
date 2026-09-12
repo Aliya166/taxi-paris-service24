@@ -1,177 +1,242 @@
-<!DOCTYPE html>
-<html lang="fr">
+{% extends 'emails/_layout.html.twig' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Trajet terminé</title>
-</head>
+{% block email_title %}
+    Course terminée
+{% endblock %}
 
-<body style="margin:0;background:#f3f4f6;font-family:Arial,sans-serif;color:#111827;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+{% block email_heading %}
+    Merci pour votre confiance
+{% endblock %}
+
+{% block email_subheading %}
+    <div
+        style="
+            margin-top:10px;
+            color:#aeb2b8;
+            font-size:12px;
+        "
+    >
+        Votre course est terminée
+    </div>
+{% endblock %}
+
+
+{% block email_content %}
+
+    <p
+        style="
+            margin:0 0 18px;
+            font-size:15px;
+            line-height:1.7;
+        "
+    >
+        Bonjour
+        <strong>{{ reservation.firstName }}</strong>,
+    </p>
+
+    <p
+        style="
+            margin:0 0 24px;
+            color:#5f646c;
+            font-size:14px;
+            line-height:1.7;
+        "
+    >
+        Votre course avec Taxi Paris Service 24 est maintenant terminée.
+        Merci de nous avoir fait confiance pour votre trajet.
+    </p>
+
+
+    <div
+        style="
+            margin-bottom:25px;
+            padding:18px;
+            border-left:3px solid #111317;
+            background:#f7f7f8;
+        "
+    >
+        <div
+            style="
+                color:#777c84;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Réservation
+        </div>
+
+        <div
+            style="
+                margin-top:5px;
+                color:#1b1d21;
+                font-size:18px;
+                font-weight:800;
+            "
+        >
+            {{ reservation.reference }}
+        </div>
+    </div>
+
+
+    <table
+        role="presentation"
+        width="100%"
+        cellspacing="0"
+        cellpadding="10"
+        style="
+            width:100%;
+            border-collapse:collapse;
+        "
+    >
+
         <tr>
-            <td align="center" style="padding:30px 15px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
-                    style="max-width:620px;background:#ffffff;border-radius:14px;overflow:hidden;">
+            <td
+                style="
+                    width:36%;
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Date
+            </td>
 
-                    <tr>
-                        <td style="padding:28px;background:#111827;color:#ffffff;text-align:center;">
-                            <div style="font-size:24px;font-weight:700;">
-                                TAXI PARIS SERVICE24
-                            </div>
-                            <div style="margin-top:8px;color:#d1d5db;">
-                                Votre trajet, notre priorité
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:30px;">
-                            <h1 style="margin:0 0 15px;font-size:24px;">
-                                Trajet terminé
-                            </h1>
-
-                            <p style="margin:0 0 20px;line-height:1.6;">
-                                Bonjour {{ reservation.firstName }},
-                                votre trajet est maintenant terminé.
-                                Merci d'avoir choisi Taxi Paris Service24.
-                            </p>
-
-                            <div style="padding:16px;background:#f3f4f6;border-radius:10px;margin-bottom:24px;">
-                                <strong>Référence :</strong>
-                                {{ reservation.reference }}
-                            </div>
-
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="8"
-                                style="border-collapse:collapse;">
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Date du trajet
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Départ
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.pickupAddress }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Arrivée
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.dropoffAddress }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Type
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.type.label }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Véhicule
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.vehicleType.label }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Passagers
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.passengers }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Bagages
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.luggage }}
-                                    </td>
-                                </tr>
-
-                                {% if reservation.distanceKm is not null %}
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Distance estimée
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.distanceKm|number_format(2, ',', ' ') }} km
-                                    </td>
-                                </tr>
-                                {% endif %}
-
-                                {% if reservation.durationMinutes is not null %}
-                                <tr>
-                                    <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                        Durée estimée
-                                    </td>
-                                    <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                        {{ reservation.durationMinutes }} minutes
-                                    </td>
-                                </tr>
-                                {% endif %}
-                            </table>
-
-                            {% if reservation.discountPercentage > 0 %}
-                            <div
-                                style="margin-top:24px;padding:16px;background:#ecfdf5;color:#065f46;border-radius:10px;">
-                                Avantage fidélité appliqué :
-                                <strong>
-                                    −{{ reservation.discountPercentage }} %
-                                </strong>
-                            </div>
-                            {% endif %}
-
-                            <div
-                                style="margin-top:24px;padding:20px;background:#111827;color:#ffffff;border-radius:10px;text-align:center;">
-                                <div style="font-size:14px;color:#d1d5db;">
-                                    Prix estimé
-                                </div>
-
-                                <div style="margin-top:6px;font-size:28px;font-weight:700;">
-                                    {% if reservation.finalPrice is not null %}
-                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
-                                    {% else %}
-                                    À confirmer
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <p style="margin:24px 0 0;line-height:1.6;color:#4b5563;">
-                                Nous espérons que votre trajet s'est bien déroulé
-                                et serons heureux de vous accompagner à nouveau.
-                            </p>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:20px;background:#f9fafb;text-align:center;color:#6b7280;font-size:13px;">
-                            Taxi Paris Service24 · Paris et Île-de-France
-                        </td>
-                    </tr>
-                </table>
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
             </td>
         </tr>
-    </table>
-</body>
 
-</html>
+        <tr>
+            <td
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Trajet
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.pickupAddress }}
+                →
+                {{ reservation.dropoffAddress }}
+            </td>
+        </tr>
+
+        <tr>
+            <td
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Véhicule
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.vehicleType.label() }}
+            </td>
+        </tr>
+
+    </table>
+
+
+    <div
+        style="
+            margin-top:26px;
+            padding:22px;
+            background:#111317;
+            color:#ffffff;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                color:#afb3ba;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Montant de la course
+        </div>
+
+        <div
+            style="
+                margin-top:7px;
+                font-size:30px;
+                font-weight:800;
+            "
+        >
+            {% if reservation.finalPrice is not null %}
+                {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+            {% else %}
+                —
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div
+        style="
+            margin-top:24px;
+            padding:18px;
+            border:1px solid #e4e6e9;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                color:#e50914;
+                font-size:10px;
+                font-weight:800;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Fidélité
+        </div>
+
+        <p
+            style="
+                margin:8px 0 0;
+                color:#5f646c;
+                font-size:12px;
+                line-height:1.7;
+            "
+        >
+            Chaque course terminée vous rapproche
+            de votre prochain avantage fidélité.
+        </p>
+    </div>
+
+{% endblock %}
+
+
+{% block email_footer_extra %}
+    <br>
+    À bientôt pour votre prochain trajet.
+{% endblock %}

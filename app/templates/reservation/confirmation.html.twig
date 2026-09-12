@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Réservation envoyée | Taxi Paris Service 24
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
+    <main class="reservation-success-page">
+
+        <section class="reservation-success-hero">
+
+            <div class="home-container">
+
+                <div class="reservation-success-hero__content">
+
+                    <p class="section-kicker">
+                        Réservation enregistrée
+                    </p>
+
+                    <div
+                        class="reservation-success-icon"
+                        aria-hidden="true"
+                    >
+                        ✓
+                    </div>
+
+                    <h1>
+                        Votre réservation<br>
+                        a bien été envoyée
+                    </h1>
+
+                    <p class="reservation-success-intro">
+                        Merci pour votre demande.
+                        Notre équipe va vérifier votre réservation
+                        et vous recevrez un email dès qu'elle sera confirmée.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="reservation-success-content">
+
+            <div class="home-container">
+
+                <div class="reservation-success-grid">
+
+                    <section class="reservation-success-main">
+
+                        <div class="reservation-success-heading">
+
+                            <p class="account-card-kicker">
+                                Prochaine étape
+                            </p>
+
+                            <h2>
+                                Votre demande est en cours
+                            </h2>
+
+                            <p>
+                                Votre réservation a été transmise à
+                                Taxi Paris Service 24.
+                                Nous allons maintenant vérifier sa disponibilité.
+                            </p>
+
+                        </div>
+
+
+                        <div class="reservation-success-steps">
+
+                            <div class="reservation-success-step">
+
+                                <span class="reservation-success-step__number">
+                                    01
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Demande reçue
+                                    </strong>
+
+                                    <p>
+                                        Votre réservation est bien enregistrée
+                                        dans notre système.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="reservation-success-step">
+
+                                <span class="reservation-success-step__number">
+                                    02
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Vérification
+                                    </strong>
+
+                                    <p>
+                                        Notre équipe vérifie votre trajet,
+                                        votre horaire et votre véhicule.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="reservation-success-step">
+
+                                <span class="reservation-success-step__number">
+                                    03
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Confirmation
+                                    </strong>
+
+                                    <p>
+                                        Vous recevrez un email lorsque votre
+                                        réservation sera confirmée.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="reservation-success-info">
+
+                            <strong>
+                                Besoin de modifier votre demande ?
+                            </strong>
+
+                            <p>
+                                Si vous avez créé un compte,
+                                vous pouvez retrouver vos réservations
+                                depuis votre espace client.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                    <aside class="reservation-success-aside">
+
+                        <p class="account-card-kicker">
+                            Taxi Paris Service 24
+                        </p>
+
+                        <h2>
+                            Besoin d'aide ?
+                        </h2>
+
+                        <p>
+                            Une question concernant votre trajet
+                            ou une réservation urgente ?
+                            Notre équipe reste disponible.
+                        </p>
+
+
+                        <div class="reservation-success-contact">
+
+                            <span>
+                                Téléphone
+                            </span>
+
+                            <a href="tel:+33184802305">
+                                01 84 80 23 05
+                            </a>
+
+                        </div>
+
+
+                        <div class="reservation-success-actions">
+
+                            <a
+                                href="{{ path('app_home') }}"
+                                class="reservation-success-button reservation-success-button--primary"
+                            >
+                                Retour à l'accueil
+                            </a>
+
+                            {% if app.user %}
+
+                                <a
+                                    href="{{ path('app_account') }}"
+                                    class="reservation-success-button reservation-success-button--secondary"
+                                >
+                                    Voir mes réservations
+                                </a>
+
+                            {% else %}
+
+                                <a
+                                    href="tel:+33184802305"
+                                    class="reservation-success-button reservation-success-button--secondary"
+                                >
+                                    Appeler maintenant
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
+{% endblock %}

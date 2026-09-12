@@ -1,75 +1,306 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier mes coordonnées | Taxi Paris Service 24{% endblock %}
+{% block title %}
+Modifier mes coordonnées | Taxi Paris Service 24
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
 
 {% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
     <main class="account-page">
-        <header class="account-header">
-            <p>Espace client</p>
 
-            <h1>Modifier mes coordonnées</h1>
+        <section class="account-hero">
 
-            <p>
-                Mettez à jour vos informations personnelles
-                et vos préférences de communication.
-            </p>
-        </header>
-
-        <section aria-labelledby="profile-form-title">
-            <h2 id="profile-form-title">Mes informations</h2>
-
-            <p>
-                Adresse email actuelle :
-                <strong>{{ user.email }}</strong>
-            </p>
-
-            {{ form_start(profileForm) }}
-                {{ form_errors(profileForm) }}
+            <div class="home-container account-hero-inner">
 
                 <div>
-                    {{ form_label(profileForm.firstName) }}
-                    {{ form_widget(profileForm.firstName) }}
-                    {{ form_errors(profileForm.firstName) }}
+
+                    <p class="section-kicker">
+                        Espace client
+                    </p>
+
+                    <h1>
+                        Modifier mes coordonnées
+                    </h1>
+
+                    <p class="account-hero-text">
+                        Mettez à jour vos informations personnelles
+                        et vos préférences de communication.
+                    </p>
+
                 </div>
 
-                <div>
-                    {{ form_label(profileForm.lastName) }}
-                    {{ form_widget(profileForm.lastName) }}
-                    {{ form_errors(profileForm.lastName) }}
+
+                <div class="account-hero-actions">
+
+                    <a
+                        class="account-secondary-button"
+                        href="{{ path('app_account') }}"
+                    >
+                        ← Retour à mon compte
+                    </a>
+
                 </div>
 
-                <div>
-                    {{ form_label(profileForm.phone) }}
-                    {{ form_widget(profileForm.phone) }}
-                    {{ form_errors(profileForm.phone) }}
-                </div>
+            </div>
 
-                <fieldset>
-                    <legend>Mes préférences de communication</legend>
-
-                    <div>
-                        {{ form_widget(profileForm.emailMarketingConsent) }}
-                        {{ form_label(profileForm.emailMarketingConsent) }}
-                        {{ form_errors(profileForm.emailMarketingConsent) }}
-                    </div>
-
-                    <div>
-                        {{ form_widget(profileForm.smsMarketingConsent) }}
-                        {{ form_label(profileForm.smsMarketingConsent) }}
-                        {{ form_errors(profileForm.smsMarketingConsent) }}
-                    </div>
-                </fieldset>
-
-                <button type="submit">
-                    Enregistrer mes modifications
-                </button>
-            {{ form_end(profileForm) }}
-
-            <p>
-                <a href="{{ path('app_account') }}">
-                    Annuler et revenir à mon espace
-                </a>
-            </p>
         </section>
+
+
+        <section class="account-edit-content">
+
+            <div class="home-container">
+
+                <div class="account-edit-layout">
+
+
+                    <aside class="account-edit-intro">
+
+                        <p class="account-card-kicker">
+                            Profil
+                        </p>
+
+                        <h2>
+                            Mes informations
+                        </h2>
+
+                        <p>
+                            Ces informations sont utilisées pour simplifier
+                            vos réservations et vous contacter concernant
+                            vos trajets.
+                        </p>
+
+
+                        <div class="account-edit-email">
+
+                            <span>
+                                Adresse email
+                            </span>
+
+                            <strong>
+                                {{ user.email }}
+                            </strong>
+
+                            <p>
+                                Votre adresse email n'est pas modifiable
+                                depuis cet espace.
+                            </p>
+
+                        </div>
+
+
+                        <div class="account-edit-info">
+
+                            <div>
+                                <span>01</span>
+
+                                <div>
+                                    <strong>
+                                        Coordonnées personnelles
+                                    </strong>
+
+                                    <p>
+                                        Mettez à jour votre prénom,
+                                        votre nom et votre téléphone.
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>02</span>
+
+                                <div>
+                                    <strong>
+                                        Préférences
+                                    </strong>
+
+                                    <p>
+                                        Choisissez les communications
+                                        commerciales que vous souhaitez recevoir.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+
+                    <section class="account-edit-card">
+
+                        <div class="account-edit-card-heading">
+
+                            <p class="account-card-kicker">
+                                Modification
+                            </p>
+
+                            <h2>
+                                Mes coordonnées
+                            </h2>
+
+                            <p>
+                                Modifiez les informations nécessaires
+                                puis enregistrez vos changements.
+                            </p>
+
+                        </div>
+
+
+                        {{ form_start(profileForm, {
+                            attr: {
+                                class: 'account-edit-form'
+                            }
+                        }) }}
+
+
+                        <div class="account-edit-errors">
+                            {{ form_errors(profileForm) }}
+                        </div>
+
+
+                        <div class="account-edit-form-row">
+
+                            <div class="account-edit-field">
+
+                                {{ form_label(
+                                    profileForm.firstName
+                                ) }}
+
+                                {{ form_widget(
+                                    profileForm.firstName
+                                ) }}
+
+                                {{ form_errors(
+                                    profileForm.firstName
+                                ) }}
+
+                            </div>
+
+
+                            <div class="account-edit-field">
+
+                                {{ form_label(
+                                    profileForm.lastName
+                                ) }}
+
+                                {{ form_widget(
+                                    profileForm.lastName
+                                ) }}
+
+                                {{ form_errors(
+                                    profileForm.lastName
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="account-edit-field">
+
+                            {{ form_label(
+                                profileForm.phone
+                            ) }}
+
+                            {{ form_widget(
+                                profileForm.phone
+                            ) }}
+
+                            {{ form_errors(
+                                profileForm.phone
+                            ) }}
+
+                        </div>
+
+
+                        <fieldset class="account-edit-consents">
+
+                            <legend>
+                                Préférences de communication
+                            </legend>
+
+                            <p>
+                                Ces communications sont facultatives.
+                                Vous pouvez modifier vos choix à tout moment.
+                            </p>
+
+
+                            <div class="account-edit-checkbox">
+
+                                {{ form_widget(
+                                    profileForm.emailMarketingConsent
+                                ) }}
+
+                                {{ form_label(
+                                    profileForm.emailMarketingConsent
+                                ) }}
+
+                                {{ form_errors(
+                                    profileForm.emailMarketingConsent
+                                ) }}
+
+                            </div>
+
+
+                            <div class="account-edit-checkbox">
+
+                                {{ form_widget(
+                                    profileForm.smsMarketingConsent
+                                ) }}
+
+                                {{ form_label(
+                                    profileForm.smsMarketingConsent
+                                ) }}
+
+                                {{ form_errors(
+                                    profileForm.smsMarketingConsent
+                                ) }}
+
+                            </div>
+
+                        </fieldset>
+
+
+                        <div class="account-edit-actions">
+
+                            <button
+                                class="account-edit-submit"
+                                type="submit"
+                            >
+                                Enregistrer mes modifications
+                            </button>
+
+
+                            <a
+                                class="account-edit-cancel"
+                                href="{{ path('app_account') }}"
+                            >
+                                Annuler
+                            </a>
+
+                        </div>
+
+
+                        {{ form_end(profileForm) }}
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
 {% endblock %}

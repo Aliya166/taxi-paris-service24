@@ -270,6 +270,46 @@ class ReservationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Count reservations by status.
+     */
+    public function countByStatus(ReservationStatus $status): int
+    {
+        return (int) $this->createQueryBuilder('reservation')
+            ->select('COUNT(reservation.id)')
+            ->andWhere('reservation.status = :status')
+            ->setParameter('status', $status->value)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Count all reservations.
+     */
+    public function countAllReservations(): int
+    {
+        return (int) $this->createQueryBuilder('reservation')
+            ->select('COUNT(reservation.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<Reservation>
+     */
+    public function findRecentForAdmin(int $limit = 5): array
+    {
+        if ($limit < 1) {
+            $limit = 5;
+        }
+
+        return $this->createQueryBuilder('reservation')
+            ->orderBy('reservation.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     private function normalizeEmail(string $email): string
     {
         $normalizedEmail = mb_strtolower(trim($email));

@@ -1,0 +1,403 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Modifier la réservation | Taxi Paris Service 24
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
+    <main class="reservation-edit-page">
+
+        <section class="reservation-edit-hero">
+
+            <div class="home-container">
+
+                <p class="section-kicker">
+                    Espace client
+                </p>
+
+                <h1>
+                    Modifier ma réservation
+                </h1>
+
+                <p>
+                    Réservation
+                    <strong>{{ reservation.reference }}</strong>.
+                    Vous pouvez modifier votre trajet tant qu'il
+                    n'a pas encore été confirmé.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="reservation-edit-content">
+
+            <div
+                class="home-container reservation-edit-layout"
+                data-controller="reservation-edit"
+            >
+
+                <aside class="reservation-edit-summary">
+
+                    <p class="account-card-kicker">
+                        Réservation
+                    </p>
+
+                    <h2>
+                        {{ reservation.reference }}
+                    </h2>
+
+                    <span
+                        class="admin-status admin-status--{{ reservation.status.value }}"
+                    >
+                        {{ reservation.status.label() }}
+                    </span>
+
+
+                    <div class="reservation-edit-current">
+
+                        <div>
+                            <span>Type</span>
+                            <strong>
+                                {{ reservation.type.label() }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Prix actuel</span>
+
+                            <strong>
+                                {% if reservation.finalPrice is not null %}
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                {% else %}
+                                    À confirmer
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="reservation-edit-notice">
+
+                        <strong>
+                            Important
+                        </strong>
+
+                        <p>
+                            Si vous modifiez le trajet ou le véhicule,
+                            le tarif peut être recalculé.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        class="reservation-edit-back"
+                        href="{{ path('app_account') }}"
+                    >
+                        ← Retour à mon compte
+                    </a>
+
+                </aside>
+
+
+                <section class="reservation-edit-card">
+
+                    <div class="reservation-edit-heading">
+
+                        <p class="account-card-kicker">
+                            Modification
+                        </p>
+
+                        <h2>
+                            Informations du trajet
+                        </h2>
+
+                        <p>
+                            Modifiez uniquement les informations nécessaires.
+                        </p>
+
+                    </div>
+
+
+                    {% for message in app.flashes('warning') %}
+
+                        <div
+                            class="reservation-edit-alert"
+                            role="alert"
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+
+                    {{ form_start(
+                        reservationEditForm,
+                        {
+                            attr: {
+                                class: 'reservation-edit-form'
+                            }
+                        }
+                    ) }}
+
+
+                    {{ form_errors(reservationEditForm) }}
+
+
+                    <div class="reservation-edit-route">
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.pickupAddress
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.pickupAddress,
+                                {
+                                    attr: {
+                                        autocomplete: 'off',
+                                        'data-reservation-edit-target': 'pickup',
+                                        'data-action': 'input->reservation-edit#searchPickup'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.pickupAddress
+                            ) }}
+
+                            <div
+                                class="reservation-edit-suggestions"
+                                data-reservation-edit-target="pickupSuggestions"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="reservation-edit-route-arrow">
+                            →
+                        </div>
+
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.dropoffAddress
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.dropoffAddress,
+                                {
+                                    attr: {
+                                        autocomplete: 'off',
+                                        'data-reservation-edit-target': 'dropoff',
+                                        'data-action': 'input->reservation-edit#searchDropoff'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.dropoffAddress
+                            ) }}
+
+                            <div
+                                class="reservation-edit-suggestions"
+                                data-reservation-edit-target="dropoffSuggestions"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="reservation-edit-grid">
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.scheduledAt
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.scheduledAt
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.scheduledAt
+                            ) }}
+
+                        </div>
+
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.vehicleType
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.vehicleType
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.vehicleType
+                            ) }}
+
+                        </div>
+
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.passengers
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.passengers
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.passengers
+                            ) }}
+
+                        </div>
+
+
+                        <div class="reservation-edit-field">
+
+                            {{ form_label(
+                                reservationEditForm.luggage
+                            ) }}
+
+                            {{ form_widget(
+                                reservationEditForm.luggage
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.luggage
+                            ) }}
+
+                        </div>
+
+                    </div>
+
+
+                    {% if reservation.type.value == 'long_distance' %}
+
+                        <div class="reservation-edit-checkbox">
+
+                            {{ form_widget(
+                                reservationEditForm.childSeatRequested
+                            ) }}
+
+                            {{ form_label(
+                                reservationEditForm.childSeatRequested
+                            ) }}
+
+                            {{ form_errors(
+                                reservationEditForm.childSeatRequested
+                            ) }}
+
+                        </div>
+
+                    {% else %}
+
+                        <div hidden>
+                            {{ form_widget(
+                                reservationEditForm.childSeatRequested
+                            ) }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="reservation-edit-hidden">
+
+                        {{ form_widget(
+                            reservationEditForm.pickupLongitude,
+                            {
+                                attr: {
+                                    'data-reservation-edit-target':
+                                        'pickupLongitude'
+                                }
+                            }
+                        ) }}
+
+                        {{ form_widget(
+                            reservationEditForm.pickupLatitude,
+                            {
+                                attr: {
+                                    'data-reservation-edit-target':
+                                        'pickupLatitude'
+                                }
+                            }
+                        ) }}
+
+                        {{ form_widget(
+                            reservationEditForm.dropoffLongitude,
+                            {
+                                attr: {
+                                    'data-reservation-edit-target':
+                                        'dropoffLongitude'
+                                }
+                            }
+                        ) }}
+
+                        {{ form_widget(
+                            reservationEditForm.dropoffLatitude,
+                            {
+                                attr: {
+                                    'data-reservation-edit-target':
+                                        'dropoffLatitude'
+                                }
+                            }
+                        ) }}
+
+                    </div>
+
+
+                    <div class="reservation-edit-actions">
+
+                        <button
+                            class="reservation-edit-submit"
+                            type="submit"
+                        >
+                            Enregistrer les modifications
+                        </button>
+
+                        <a
+                            class="reservation-edit-cancel"
+                            href="{{ path('app_account') }}"
+                        >
+                            Annuler
+                        </a>
+
+                    </div>
+
+
+                    {{ form_end(reservationEditForm) }}
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
+{% endblock %}

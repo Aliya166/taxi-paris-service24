@@ -1,346 +1,492 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Réservations | Administration{% endblock %}
-{% block stylesheets %}
-<style>
-    .admin-actions {
-        min-width: 170px;
-    }
 
-    .admin-actions form {
-        display: inline-block;
-        margin: 0 5px 7px 0;
-    }
-
-    .admin-actions button {
-        padding: 7px 10px;
-        border: 0;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-    }
-
-    .button-confirm {
-        background: #2563eb;
-        color: #ffffff;
-    }
-
-    .button-complete {
-        background: #059669;
-        color: #ffffff;
-    }
-
-    .button-cancel {
-        background: #dc2626;
-        color: #ffffff;
-    }
-
-    .flash-success {
-        padding: 12px;
-        margin-bottom: 15px;
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .flash-warning {
-        padding: 12px;
-        margin-bottom: 15px;
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .admin-filters {
-        display: grid;
-        grid-template-columns: minmax(240px, 1fr) 190px 155px 155px auto auto;
-        align-items: end;
-        gap: 12px;
-        margin: 24px 0;
-        padding: 18px;
-        border-radius: 12px;
-        background: #ffffff;
-    }
-
-    .admin-filter-field {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    .admin-filter-field label {
-        font-weight: 600;
-    }
-
-    .admin-filter-field input,
-    .admin-filter-field select {
-        min-height: 42px;
-        padding: 9px 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 7px;
-        background: #ffffff;
-        font: inherit;
-    }
-
-    .admin-filter-submit,
-    .admin-filter-reset {
-        min-height: 42px;
-        padding: 10px 16px;
-        border: 0;
-        border-radius: 7px;
-        font-weight: 700;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .admin-filter-submit {
-        color: #ffffff;
-        background: #2563eb;
-    }
-
-    .admin-filter-reset {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #334155;
-        background: #e2e8f0;
-    }
-
-    @media (max-width: 1200px) {
-        .admin-filters {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 850px) {
-        .admin-filters {
-            grid-template-columns: 1fr;
-            align-items: stretch;
-        }
-    }
-</style>
-{% endblock %}
+{% block body_class %}admin-body{% endblock %}
 
 {% block body %}
-<main class="admin-container">
-    <header class="admin-header">
-        <div>
-            <h1>Gestion des réservations</h1>
-            <p>
-                {{ reservations|length }} réservation(s)
-            </p>
+
+<main class="admin-page" data-controller="confirm-modal">
+
+    <div class="admin-shell">
+
+        {# =========================
+        HEADER
+        ========================= #}
+
+        <header class="admin-page-header">
+
+            <div>
+                <p class="admin-kicker">
+                    Taxi Paris Service 24 · Administration
+                </p>
+
+                <h1>Gestion des réservations</h1>
+
+                <p class="admin-page-description">
+                    Consultez, recherchez et gérez les demandes de réservation.
+                </p>
+            </div>
+
+            <a class="admin-back-link" href="{{ path('app_account') }}">
+                ← Retour à mon compte
+            </a>
+
+        </header>
+
+
+        {# =========================
+        STATISTICS
+        ========================= #}
+
+        <section class="admin-stats">
+
+            <article class="admin-stat-card">
+                <span class="admin-stat-label">
+                    Résultats affichés
+                </span>
+
+                <strong class="admin-stat-value">
+                    {{ reservations|length }}
+                </strong>
+
+                <span class="admin-stat-text">
+                    Réservations correspondant aux filtres
+                </span>
+            </article>
+
+
+            <article class="admin-stat-card">
+                <span class="admin-stat-label">
+                    En attente
+                </span>
+
+                <strong class="admin-stat-value">
+                    {{ reservations|filter(r => r.status.value == 'pending')|length }}
+                </strong>
+
+                <span class="admin-stat-text">
+                    Demandes à traiter
+                </span>
+            </article>
+
+
+            <article class="admin-stat-card">
+                <span class="admin-stat-label">
+                    Confirmées
+                </span>
+
+                <strong class="admin-stat-value">
+                    {{ reservations|filter(r => r.status.value == 'confirmed')|length }}
+                </strong>
+
+                <span class="admin-stat-text">
+                    Courses confirmées
+                </span>
+            </article>
+
+        </section>
+
+
+        {# =========================
+        FILTERS
+        ========================= #}
+
+        <section class="admin-panel">
+
+            <div class="admin-panel-heading">
+                <div>
+                    <p class="admin-panel-kicker">
+                        Recherche
+                    </p>
+
+                    <h2>
+                        Rechercher une réservation
+                    </h2>
+                </div>
+            </div>
+
+
+            <form class="admin-filters" method="get" action="{{ path('app_admin_reservations') }}">
+
+                <div class="admin-filter-field admin-filter-field--search">
+
+                    <label for="reservation-search">
+                        Rechercher
+                    </label>
+
+                    <input id="reservation-search" type="search" name="q" value="{{ search }}"
+                        placeholder="Référence, client, email ou téléphone">
+
+                </div>
+
+
+                <div class="admin-filter-field">
+
+                    <label for="reservation-status">
+                        Statut
+                    </label>
+
+                    <select id="reservation-status" name="status">
+
+                        <option value="" {% if selectedStatus is null %}selected{% endif %}>
+                            Tous les statuts
+                        </option>
+
+                        {% for status in statuses %}
+
+                        <option value="{{ status.value }}" {% if selectedStatus==status.value %}selected{% endif %}>
+                            {{ status.label() }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="admin-filter-field">
+
+                    <label for="reservation-date-from">
+                        Du
+                    </label>
+
+                    <input id="reservation-date-from" type="date" name="date_from" value="{{ selectedDateFrom }}" {% if
+                        selectedDateTo %} max="{{ selectedDateTo }}" {% endif %}>
+
+                </div>
+
+
+                <div class="admin-filter-field">
+
+                    <label for="reservation-date-to">
+                        Au
+                    </label>
+
+                    <input id="reservation-date-to" type="date" name="date_to" value="{{ selectedDateTo }}" {% if
+                        selectedDateFrom %} min="{{ selectedDateFrom }}" {% endif %}>
+
+                </div>
+
+
+                <button class="admin-button admin-button--dark" type="submit">
+                    Rechercher
+                </button>
+
+
+                <a class="admin-button admin-button--secondary" href="{{ path('app_admin_reservations') }}">
+                    Réinitialiser
+                </a>
+
+            </form>
+
+        </section>
+
+
+        {# =========================
+        FLASH MESSAGES
+        ========================= #}
+
+        {% for label, messages in app.flashes %}
+
+        {% for message in messages %}
+
+        <div class="admin-flash admin-flash--{{ label }}" role="alert">
+            {{ message }}
         </div>
 
-        <a href="{{ path('app_account') }}">
-            Retour à mon compte
-        </a>
-    </header>
+        {% endfor %}
 
-    <form class="admin-filters" method="get" action="{{ path('app_admin_reservations') }}">
-        <div class="admin-filter-field">
-            <label for="reservation-search">
-                Rechercher
-            </label>
+        {% endfor %}
 
-            <input id="reservation-search" type="search" name="q" value="{{ search }}"
-                placeholder="Référence, client, email ou téléphone">
-        </div>
 
-        <div class="admin-filter-field">
-            <label for="reservation-status">
-                Statut
-            </label>
+        {# =========================
+        RESERVATIONS TABLE
+        ========================= #}
 
-            <select id="reservation-status" name="status">
-                <option value="" {% if selectedStatus is null %}selected{% endif %}>
-                    Tous les statuts
-                </option>
+        <section class="admin-panel admin-reservations-panel">
 
-                {% for status in statuses %}
-                <option value="{{ status.value }}" {% if selectedStatus==status.value %} selected {% endif %}>
-                    {{ status.label() }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="admin-panel-heading">
 
-        <div class="admin-filter-field">
-            <label for="reservation-date-from">
-                Du
-            </label>
+                <div>
+                    <p class="admin-panel-kicker">
+                        Activité
+                    </p>
 
-            <input id="reservation-date-from" type="date" name="date_from" value="{{ selectedDateFrom }}" {% if
-                selectedDateTo %} max="{{ selectedDateTo }}" {% endif %}>
-        </div>
+                    <h2>
+                        Réservations
+                    </h2>
+                </div>
 
-        <div class="admin-filter-field">
-            <label for="reservation-date-to">
-                Au
-            </label>
+                <span class="admin-result-count">
+                    {{ reservations|length }} résultat(s)
+                </span>
 
-            <input id="reservation-date-to" type="date" name="date_to" value="{{ selectedDateTo }}" {% if
-                selectedDateFrom %} min="{{ selectedDateFrom }}" {% endif %}>
-        </div>
+            </div>
 
-        <button class="admin-filter-submit" type="submit">
-            Rechercher
-        </button>
 
-        <a class="admin-filter-reset" href="{{ path('app_admin_reservations') }}">
-            Réinitialiser
-        </a>
-    </form>
+            {% if reservations is empty %}
 
-    {% for label, messages in app.flashes %}
-    {% for message in messages %}
-    <div class="flash-{{ label }}" role="alert">
-        {{ message }}
+            <div class="admin-empty-state">
+
+                <div class="admin-empty-symbol">
+                    —
+                </div>
+
+                <h3>
+                    Aucune réservation trouvée
+                </h3>
+
+                <p>
+                    Modifiez vos critères de recherche ou réinitialisez les filtres.
+                </p>
+
+            </div>
+
+            {% else %}
+
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Référence</th>
+                            <th>Statut</th>
+                            <th>Client</th>
+                            <th>Trajet</th>
+                            <th>Date</th>
+                            <th>Véhicule</th>
+                            <th>Prix</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for reservation in reservations %}
+
+                        <tr>
+
+                            <td>
+
+                                <a class="admin-reference" href="{{ path(
+                                                'app_admin_reservation_show',
+                                                { id: reservation.id }
+                                            ) }}">
+                                    {{ reservation.reference }}
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="admin-status admin-status--{{ reservation.status.value }}">
+                                    {{ reservation.status.label() }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong class="admin-client-name">
+                                    {{ reservation.firstName }}
+                                    {{ reservation.lastName }}
+                                </strong>
+
+                                <a class="admin-contact-link" href="mailto:{{ reservation.email }}">
+                                    {{ reservation.email }}
+                                </a>
+
+                                <a class="admin-contact-link" href="tel:{{ reservation.phone }}">
+                                    {{ reservation.phone }}
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="admin-route">
+
+                                    <div class="admin-route-point">
+
+                                        <span class="admin-route-dot"></span>
+
+                                        <span>
+                                            {{ reservation.pickupAddress }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <span class="admin-route-line"></span>
+
+
+                                    <div class="admin-route-point">
+
+                                        <span class="admin-route-dot admin-route-dot--end"></span>
+
+                                        <span>
+                                            {{ reservation.dropoffAddress }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="admin-date">
+                                    {{ reservation.scheduledAt|date('d/m/Y') }}
+                                </span>
+
+                                <strong class="admin-time">
+                                    {{ reservation.scheduledAt|date('H:i') }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ reservation.vehicleType.label() }}
+                            </td>
+
+
+                            <td>
+
+                                {% if reservation.finalPrice is not null %}
+
+                                <strong class="admin-price">
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                </strong>
+
+                                {% else %}
+
+                                <span class="admin-muted">
+                                    À confirmer
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td class="admin-actions">
+
+
+                                {% if reservation.status.value == 'pending' %}
+
+                                <form method="post" action="{{ path(
+                                                    'app_admin_reservation_status',
+                                                    {
+                                                        id: reservation.id,
+                                                        action: 'confirm'
+                                                    }
+                                                ) }}">
+
+                                    <input type="hidden" name="_token" value="{{ csrf_token(
+                                                        'admin_reservation_status_'
+                                                        ~ reservation.id
+                                                        ~ '_confirm'
+                                                    ) }}">
+
+                                    <button type="submit" class="admin-action-button admin-action-button--confirm">
+                                        Confirmer
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+
+                                {% if reservation.status.value == 'confirmed' %}
+
+                                <form method="post" action="{{ path(
+                                                    'app_admin_reservation_status',
+                                                    {
+                                                        id: reservation.id,
+                                                        action: 'complete'
+                                                    }
+                                                ) }}">
+
+                                    <input type="hidden" name="_token" value="{{ csrf_token(
+                                                        'admin_reservation_status_'
+                                                        ~ reservation.id
+                                                        ~ '_complete'
+                                                    ) }}">
+
+                                    <button type="submit" class="admin-action-button admin-action-button--complete">
+                                        Terminer
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+
+                                {% if reservation.status.value in ['pending', 'confirmed'] %}
+
+                                <form method="post" action="{{ path(
+        'app_admin_reservation_status',
+        {
+            id: reservation.id,
+            action: 'cancel'
+        }
+    ) }}" data-action="submit->confirm-modal#open" data-confirm-title="Annuler la réservation"
+                                    data-confirm-message="Confirmez-vous l’annulation de cette réservation ? Le client sera informé de cette modification."
+                                    data-confirm-button="Confirmer l’annulation">
+
+                                    <input type="hidden" name="_token" value="{{ csrf_token(
+                                                        'admin_reservation_status_'
+                                                        ~ reservation.id
+                                                        ~ '_cancel'
+                                                    ) }}">
+
+                                    <button type="submit" class="admin-action-button admin-action-button--cancel">
+                                        Annuler
+                                    </button>
+
+                                </form>
+
+                                {% else %}
+
+                                <span class="admin-muted">
+                                    Aucune action
+                                </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
     </div>
-    {% endfor %}
-    {% endfor %}
 
-    {% if reservations is empty %}
-    <p>Aucune réservation ne correspond à votre recherche.</p>
-    {% else %}
-    <div class="admin-table-wrapper">
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Référence</th>
-                    <th>Statut</th>
-                    <th>Client</th>
-                    <th>Trajet</th>
-                    <th>Date</th>
-                    <th>Véhicule</th>
-                    <th>Prix</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+    {% include 'partials/_confirm_modal.html.twig' %}
 
-            <tbody>
-                {% for reservation in reservations %}
-                <tr>
-                    <td>
-                        <a href="{{ path(
-                            'app_admin_reservation_show',
-                            { id: reservation.id }
-                        ) }}">
-                            <strong>{{ reservation.reference }}</strong>
-                        </a>
-                    </td>
-
-                    <td>
-                        <span class="status status--{{ reservation.status.value }}">
-                            {{ reservation.status.label() }}
-                        </span>
-                    </td>
-
-                    <td>
-                        {{ reservation.firstName }}
-                        {{ reservation.lastName }}
-                        <br>
-                        <a href="mailto:{{ reservation.email }}">
-                            {{ reservation.email }}
-                        </a>
-                        <br>
-                        <a href="tel:{{ reservation.phone }}">
-                            {{ reservation.phone }}
-                        </a>
-                    </td>
-
-                    <td>
-                        {{ reservation.pickupAddress }}
-                        <br>
-                        →
-                        {{ reservation.dropoffAddress }}
-                    </td>
-
-                    <td>
-                        {{ reservation.scheduledAt
-                        |date('d/m/Y à H:i') }}
-                    </td>
-
-                    <td>
-                        {{ reservation.vehicleType.label() }}
-                    </td>
-
-                    <td>
-                        {% if reservation.finalPrice is not null %}
-                        <strong>
-                            {{ reservation.finalPrice
-                            |number_format(2, ',', ' ') }} €
-                        </strong>
-                        {% else %}
-                        À confirmer
-                        {% endif %}
-                    </td>
-                    <td class="admin-actions">
-                        {% if reservation.status.value == 'pending' %}
-                        <form method="post" action="{{ path(
-                'app_admin_reservation_status',
-                {
-                    id: reservation.id,
-                    action: 'confirm'
-                }
-            ) }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token(
-                    'admin_reservation_status_'
-                    ~ reservation.id
-                    ~ '_confirm'
-                ) }}">
-
-                            <button type="submit" class="button-confirm">
-                                Confirmer
-                            </button>
-                        </form>
-                        {% endif %}
-
-                        {% if reservation.status.value == 'confirmed' %}
-                        <form method="post" action="{{ path(
-                'app_admin_reservation_status',
-                {
-                    id: reservation.id,
-                    action: 'complete'
-                }
-            ) }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token(
-                    'admin_reservation_status_'
-                    ~ reservation.id
-                    ~ '_complete'
-                ) }}">
-
-                            <button type="submit" class="button-complete">
-                                Terminer
-                            </button>
-                        </form>
-                        {% endif %}
-
-                        {% if reservation.status.value in ['pending', 'confirmed'] %}
-                        <form method="post" action="{{ path(
-                'app_admin_reservation_status',
-                {
-                    id: reservation.id,
-                    action: 'cancel'
-                }
-            ) }}" onsubmit="return confirm(
-                'Voulez-vous vraiment annuler cette réservation ?'
-            )">
-                            <input type="hidden" name="_token" value="{{ csrf_token(
-                    'admin_reservation_status_'
-                    ~ reservation.id
-                    ~ '_cancel'
-                ) }}">
-
-                            <button type="submit" class="button-cancel">
-                                Annuler
-                            </button>
-                        </form>
-                        {% else %}
-                        <span>Aucune action</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
 </main>
+
 {% endblock %}

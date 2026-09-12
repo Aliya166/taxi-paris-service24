@@ -4,65 +4,308 @@
     Créer un compte | Taxi Paris Service 24
 {% endblock %}
 
+{% block body_class %}home-body{% endblock %}
+
 {% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
     <main class="auth-page">
-        <section class="auth-card">
-            <header class="auth-header">
-                <p class="auth-eyebrow">Espace client</p>
 
-                <h1>Créer votre compte</h1>
+        <section class="auth-hero">
 
-                <p>
-                    Retrouvez vos réservations, gérez vos coordonnées
-                    et profitez de vos avantages fidélité.
-                </p>
-            </header>
+            <div class="home-container auth-hero-inner">
 
-            {{ form_start(registrationForm, {
-                attr: {
-                    class: 'auth-form'
-                }
-            }) }}
-                {{ form_errors(registrationForm) }}
+                <div>
+                    <p class="section-kicker">
+                        Espace client
+                    </p>
 
-                <div class="auth-form__row">
-                    {{ form_row(registrationForm.firstName) }}
-                    {{ form_row(registrationForm.lastName) }}
+                    <h1>
+                        Créer votre compte
+                    </h1>
+
+                    <p class="auth-hero-text">
+                        Centralisez vos réservations, gérez vos coordonnées
+                        et profitez automatiquement de vos avantages fidélité.
+                    </p>
                 </div>
 
-                {{ form_row(registrationForm.email) }}
-                {{ form_row(registrationForm.phone) }}
+                <div class="auth-hero-benefits">
 
-                {{ form_row(registrationForm.plainPassword.first) }}
-                {{ form_row(registrationForm.plainPassword.second) }}
+                    <div>
+                        <strong>01</strong>
+                        <span>Suivi de vos réservations</span>
+                    </div>
 
-                <fieldset class="auth-consents">
-                    <legend>Vos préférences de communication</legend>
+                    <div>
+                        <strong>02</strong>
+                        <span>Coordonnées enregistrées</span>
+                    </div>
 
-                    {{ form_row(
-                        registrationForm.emailMarketingConsent
-                    ) }}
+                    <div>
+                        <strong>03</strong>
+                        <span>Programme fidélité</span>
+                    </div>
 
-                    {{ form_row(
-                        registrationForm.smsMarketingConsent
-                    ) }}
-                </fieldset>
-
-                <div class="auth-terms">
-                    {{ form_row(registrationForm.agreeTerms) }}
                 </div>
 
-                <button class="auth-submit" type="submit">
-                    Créer mon compte
-                </button>
-            {{ form_end(registrationForm) }}
+            </div>
 
-            <p class="auth-switch">
-                Vous avez déjà un compte ?
-                <a href="{{ path('app_login') }}">
-                    Se connecter
-                </a>
-            </p>
         </section>
+
+
+        <section class="auth-content">
+
+            <div class="home-container">
+
+                <div class="auth-layout">
+
+                    <div class="auth-intro">
+
+                        <p class="auth-section-kicker">
+                            Inscription
+                        </p>
+
+                        <h2>
+                            Votre espace personnel
+                        </h2>
+
+                        <p>
+                            Créez votre compte en quelques instants.
+                            Vos informations pourront ensuite être utilisées
+                            pour simplifier vos prochaines réservations.
+                        </p>
+
+                        <div class="auth-info-list">
+
+                            <div>
+                                <span>01</span>
+
+                                <div>
+                                    <strong>
+                                        Réservations
+                                    </strong>
+
+                                    <p>
+                                        Consultez l'historique et le statut
+                                        de vos trajets.
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>02</span>
+
+                                <div>
+                                    <strong>
+                                        Fidélité
+                                    </strong>
+
+                                    <p>
+                                        Suivez votre progression vers votre
+                                        prochaine réduction.
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>03</span>
+
+                                <div>
+                                    <strong>
+                                        Gestion simplifiée
+                                    </strong>
+
+                                    <p>
+                                        Retrouvez vos informations dans
+                                        un espace client unique.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-form-card">
+
+                        <div class="auth-form-heading">
+
+                            <p class="auth-section-kicker">
+                                Nouveau client
+                            </p>
+
+                            <h2>
+                                Créer mon compte
+                            </h2>
+
+                            <p>
+                                Tous les champs nécessaires permettent
+                                de sécuriser et personnaliser votre espace.
+                            </p>
+
+                        </div>
+
+
+                        {{ form_start(registrationForm, {
+                            attr: {
+                                class: 'auth-form'
+                            }
+                        }) }}
+
+
+                        <div class="auth-form-errors">
+                            {{ form_errors(registrationForm) }}
+                        </div>
+
+
+                        <div class="auth-form__row">
+
+                            <div class="auth-field">
+                                {{ form_row(registrationForm.firstName) }}
+                            </div>
+
+                            <div class="auth-field">
+                                {{ form_row(registrationForm.lastName) }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="auth-field">
+                            {{ form_row(registrationForm.email) }}
+                        </div>
+
+
+                        <div class="auth-field">
+                            {{ form_row(registrationForm.phone) }}
+                        </div>
+
+
+                        <div class="auth-password-section">
+
+                            <div class="auth-subheading">
+                                <span>02</span>
+
+                                <div>
+                                    <strong>
+                                        Sécurité du compte
+                                    </strong>
+
+                                    <p>
+                                        Choisissez un mot de passe
+                                        d'au moins 10 caractères.
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="auth-form__row">
+
+                                <div class="auth-field">
+                                    {{ form_row(
+                                        registrationForm.plainPassword.first
+                                    ) }}
+                                </div>
+
+                                <div class="auth-field">
+                                    {{ form_row(
+                                        registrationForm.plainPassword.second
+                                    ) }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <fieldset class="auth-consents">
+
+                            <legend>
+                                Préférences de communication
+                            </legend>
+
+                            <p class="auth-consents-description">
+                                Ces communications sont facultatives
+                                et peuvent être modifiées ultérieurement.
+                            </p>
+
+
+                            <div class="auth-checkbox">
+                                {{ form_row(
+                                    registrationForm.emailMarketingConsent
+                                ) }}
+                            </div>
+
+
+                            <div class="auth-checkbox">
+                                {{ form_row(
+                                    registrationForm.smsMarketingConsent
+                                ) }}
+                            </div>
+
+                        </fieldset>
+
+
+                        <div class="auth-terms">
+
+                            {{ form_row(registrationForm.agreeTerms) }}
+
+                            <p>
+                                Consultez notre
+                                <a href="{{ path('app_legal_privacy') }}">
+                                    politique de confidentialité
+                                </a>
+                                et nos
+                                <a href="{{ path('app_legal_mentions') }}">
+                                    mentions légales
+                                </a>.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="auth-submit"
+                            type="submit"
+                        >
+                            Créer mon compte
+                        </button>
+
+
+                        {{ form_end(registrationForm) }}
+
+
+                        <div class="auth-switch">
+
+                            <span>
+                                Vous avez déjà un compte ?
+                            </span>
+
+                            <a href="{{ path('app_login') }}">
+                                Se connecter →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
 {% endblock %}

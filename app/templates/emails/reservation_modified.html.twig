@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Réservation modifiée</title>
+</head>
+
+<body style="
+    margin:0;
+    padding:0;
+    background:#f3f4f6;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#1f2937;
+">
+
+<table
+    role="presentation"
+    width="100%"
+    cellspacing="0"
+    cellpadding="0"
+    style="background:#f3f4f6;"
+>
+    <tr>
+        <td
+            align="center"
+            style="padding:35px 15px;"
+        >
+
+            <table
+                role="presentation"
+                width="100%"
+                cellspacing="0"
+                cellpadding="0"
+                style="
+                    max-width:620px;
+                    background:#ffffff;
+                    border-collapse:collapse;
+                "
+            >
+
+                <tr>
+                    <td
+                        style="
+                            height:5px;
+                            background:#e50914;
+                            font-size:0;
+                        "
+                    >
+                        &nbsp;
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td
+                        style="
+                            padding:32px;
+                            background:#111317;
+                            text-align:center;
+                        "
+                    >
+
+                        <div
+                            style="
+                                color:#e50914;
+                                font-size:12px;
+                                font-weight:700;
+                                letter-spacing:2px;
+                                text-transform:uppercase;
+                            "
+                        >
+                            Taxi Paris Service 24
+                        </div>
+
+                        <div
+                            style="
+                                margin-top:8px;
+                                color:#ffffff;
+                                font-size:26px;
+                                font-weight:800;
+                            "
+                        >
+                            RÉSERVATION MODIFIÉE
+                        </div>
+
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td style="padding:32px;">
+
+                        <p
+                            style="
+                                margin:0 0 18px;
+                                font-size:15px;
+                                line-height:1.7;
+                            "
+                        >
+                            Bonjour
+                            <strong>{{ reservation.firstName }}</strong>,
+                        </p>
+
+                        <p
+                            style="
+                                margin:0 0 24px;
+                                color:#4b5563;
+                                font-size:14px;
+                                line-height:1.7;
+                            "
+                        >
+                            Les modifications apportées à votre réservation
+                            ont bien été enregistrées.
+                        </p>
+
+
+                        <div
+                            style="
+                                margin-bottom:24px;
+                                padding:17px;
+                                border-left:3px solid #e50914;
+                                background:#f7f7f8;
+                            "
+                        >
+                            <div
+                                style="
+                                    color:#6b7280;
+                                    font-size:11px;
+                                    text-transform:uppercase;
+                                "
+                            >
+                                Référence
+                            </div>
+
+                            <div
+                                style="
+                                    margin-top:5px;
+                                    font-size:18px;
+                                    font-weight:700;
+                                "
+                            >
+                                {{ reservation.reference }}
+                            </div>
+                        </div>
+
+
+                        <table
+                            role="presentation"
+                            width="100%"
+                            cellspacing="0"
+                            cellpadding="9"
+                            style="border-collapse:collapse;"
+                        >
+
+                            <tr>
+                                <td
+                                    style="
+                                        width:38%;
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Statut
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                        font-weight:700;
+                                    "
+                                >
+                                    {{ reservation.status.label() }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Date
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Départ
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.pickupAddress }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Arrivée
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.dropoffAddress }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Véhicule
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.vehicleType.label() }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Passagers
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.passengers }}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        color:#6b7280;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Bagages
+                                </td>
+
+                                <td
+                                    align="right"
+                                    style="
+                                        border-bottom:1px solid #e5e7eb;
+                                        font-size:13px;
+                                    "
+                                >
+                                    {{ reservation.luggage }}
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <div
+                            style="
+                                margin-top:26px;
+                                padding:22px;
+                                background:#111317;
+                                color:#ffffff;
+                                text-align:center;
+                            "
+                        >
+
+                            <div
+                                style="
+                                    color:#b9bdc4;
+                                    font-size:12px;
+                                    text-transform:uppercase;
+                                "
+                            >
+                                Prix estimé
+                            </div>
+
+                            <div
+                                style="
+                                    margin-top:7px;
+                                    font-size:30px;
+                                    font-weight:800;
+                                "
+                            >
+                                {% if reservation.finalPrice is not null %}
+                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+                                {% else %}
+                                    À confirmer
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                margin-top:24px;
+                                padding:17px;
+                                background:#fff7ed;
+                                color:#92400e;
+                                font-size:13px;
+                                line-height:1.6;
+                            "
+                        >
+                            Votre réservation reste en attente de confirmation.
+                            Vous recevrez un nouvel email lorsqu'elle sera confirmée.
+                        </div>
+
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td
+                        style="
+                            padding:24px 32px;
+                            background:#f7f7f8;
+                            color:#8b8f96;
+                            font-size:11px;
+                            line-height:1.6;
+                            text-align:center;
+                        "
+                    >
+                        Cet email concerne directement votre réservation
+                        et n'est pas un message publicitaire.
+                        <br>
+                        Taxi Paris Service 24
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

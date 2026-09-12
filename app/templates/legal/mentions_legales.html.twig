@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales | Taxi Paris Service 24{% endblock %}
+
+{% block meta_description %}
+Mentions légales de Taxi Paris Service 24 : éditeur, contact,
+hébergement, données personnelles et propriété intellectuelle.
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
+    <main class="legal-site-page">
+
+        <section class="legal-site-hero">
+            <div class="home-container">
+
+                <p class="section-kicker">
+                    Informations juridiques
+                </p>
+
+                <h1>Mentions légales</h1>
+
+                <p class="legal-site-intro">
+                    Retrouvez les informations juridiques relatives
+                    à Taxi Paris Service 24 et à l'utilisation du site.
+                </p>
+
+            </div>
+        </section>
+
+
+        <section class="legal-site-content">
+            <div class="home-container">
+
+                <div class="legal-site-grid">
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">01</span>
+
+                        <div>
+                            <h2>Informations de l’entreprise</h2>
+
+                            <dl class="legal-site-details">
+                                <div>
+                                    <dt>Nom</dt>
+                                    <dd>KHAMADOV Mansour</dd>
+                                </div>
+
+                                <div>
+                                    <dt>SIREN</dt>
+                                    <dd>927 544 817</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Adresse</dt>
+                                    <dd>
+                                        22 rue des arbousiers,
+                                        06510 Carros, France
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt>Activité</dt>
+                                    <dd>Coursier indépendant en vélo</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Code APE</dt>
+                                    <dd>5320Z</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">02</span>
+
+                        <div>
+                            <h2>Contact</h2>
+
+                            <dl class="legal-site-details">
+                                <div>
+                                    <dt>Email</dt>
+                                    <dd>
+                                        <a href="mailto:taxiparisservice24@gmail.com">
+                                            taxiparisservice24@gmail.com
+                                        </a>
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt>Téléphone</dt>
+                                    <dd>
+                                        <a href="tel:+33184802305">
+                                            01 84 80 23 05
+                                        </a>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">03</span>
+
+                        <div>
+                            <h2>Hébergement</h2>
+
+                            <div class="legal-site-warning">
+                                <strong>
+                                    À compléter avant la mise en ligne
+                                </strong>
+
+                                <p>
+                                    Nom et coordonnées de l'hébergeur.
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">04</span>
+
+                        <div>
+                            <h2>Données personnelles</h2>
+
+                            <p>
+                                Les informations collectées via le site
+                                sont utilisées uniquement pour le traitement
+                                des réservations et la relation avec le client.
+                            </p>
+
+                            <p>
+                                Consultez notre
+                                <a href="{{ path('app_legal_privacy') }}">
+                                    politique de confidentialité
+                                </a>
+                                pour plus d'informations.
+                            </p>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">05</span>
+
+                        <div>
+                            <h2>Propriété intellectuelle</h2>
+
+                            <p>
+                                Les textes, éléments graphiques et contenus
+                                présents sur le site sont protégés.
+                            </p>
+
+                            <p>
+                                Toute reproduction ou utilisation non autorisée
+                                est interdite.
+                            </p>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="legal-site-update">
+                    Dernière mise à jour :
+                    {{ 'now'|date('d/m/Y') }}
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
+{% endblock %}

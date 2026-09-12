@@ -374,9 +374,21 @@ final class ReservationController extends AbstractController
                 'success' => true,
                 'reference' => $reservation->getReference(),
                 'message' => 'Votre réservation a bien été enregistrée.',
-                'redirect' => '/confirmation.html',
+                'redirect' => $this->generateUrl('app_reservation_confirmation'),
             ],
             Response::HTTP_CREATED
+        );
+    }
+
+    #[Route(
+        '/reservation/confirmation',
+        name: 'app_reservation_confirmation',
+        methods: ['GET']
+    )]
+    public function confirmation(): Response
+    {
+        return $this->render(
+            'reservation/confirmation.html.twig'
         );
     }
 

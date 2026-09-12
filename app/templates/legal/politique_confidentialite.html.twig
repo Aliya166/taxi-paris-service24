@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Politique de confidentialité | Taxi Paris Service 24
+{% endblock %}
+
+{% block meta_description %}
+Politique de confidentialité de Taxi Paris Service 24 :
+collecte, utilisation et protection des données personnelles.
+{% endblock %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block body %}
+
+<div class="home-page">
+
+    {% include 'partials/_site_header.html.twig' %}
+
+    <main class="legal-site-page">
+
+        <section class="legal-site-hero">
+            <div class="home-container">
+
+                <p class="section-kicker">
+                    Protection de vos données
+                </p>
+
+                <h1>Politique de confidentialité</h1>
+
+                <p class="legal-site-intro">
+                    Taxi Paris Service 24 accorde une importance particulière
+                    à la confidentialité et à la protection des données
+                    personnelles de ses clients.
+                </p>
+
+            </div>
+        </section>
+
+
+        <section class="legal-site-content">
+            <div class="home-container">
+
+                <div class="legal-site-grid">
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">01</span>
+
+                        <div>
+                            <h2>Données collectées</h2>
+
+                            <p>
+                                Lors d'une réservation, nous pouvons collecter
+                                votre nom, téléphone, adresse email,
+                                adresse de départ, adresse d'arrivée,
+                                date, heure et type de véhicule demandé.
+                            </p>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">02</span>
+
+                        <div>
+                            <h2>Utilisation des données</h2>
+
+                            <p>
+                                Les informations sont utilisées pour traiter
+                                votre réservation, vous contacter et organiser
+                                le trajet demandé.
+                            </p>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">03</span>
+
+                        <div>
+                            <h2>Partage des données</h2>
+
+                            <p>
+                                Les données personnelles ne sont pas vendues.
+                                Elles peuvent uniquement être transmises aux
+                                personnes nécessaires à la réalisation
+                                de la prestation.
+                            </p>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">04</span>
+
+                        <div>
+                            <h2>Durée de conservation</h2>
+
+                            <p>
+                                Les données sont conservées pendant la durée
+                                nécessaire au traitement de votre demande
+                                et au suivi de la relation client.
+                            </p>
+                        </div>
+                    </article>
+
+
+                    <article class="legal-site-card">
+                        <span class="legal-site-number">05</span>
+
+                        <div>
+                            <h2>Vos droits</h2>
+
+                            <p>
+                                Vous pouvez demander l'accès, la rectification
+                                ou la suppression de vos données personnelles.
+                            </p>
+
+                            <p>
+                                Contact :
+                                <a href="mailto:taxiparisservice24@gmail.com">
+                                    taxiparisservice24@gmail.com
+                                </a>
+                            </p>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="legal-site-update">
+                    Dernière mise à jour :
+                    {{ 'now'|date('d/m/Y') }}
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+</div>
+
+{% endblock %}
