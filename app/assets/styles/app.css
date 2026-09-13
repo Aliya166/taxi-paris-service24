@@ -9266,3 +9266,70 @@ body.modal-open {
         padding: 24px 21px;
     }
 }
+
+/* MARKETING UNSUBSCRIBE */
+
+.marketing-unsubscribe-page {
+    min-height: 70vh;
+    padding: 90px 20px;
+    background: #f5f5f5;
+}
+
+.marketing-unsubscribe-card {
+    width: min(100%, 680px);
+    margin: 0 auto;
+    padding: 55px 40px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.marketing-unsubscribe-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: #111317;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.marketing-unsubscribe-kicker {
+    margin-bottom: 10px;
+    color: #e50914;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.marketing-unsubscribe-card h1 {
+    margin: 0 0 20px;
+    color: #111317;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: clamp(38px, 6vw, 56px);
+    line-height: 1;
+}
+
+.marketing-unsubscribe-card p {
+    margin: 0 auto 16px;
+    max-width: 520px;
+    color: #666a72;
+    line-height: 1.7;
+}
+
+.marketing-unsubscribe-button {
+    display: inline-flex;
+    margin-top: 18px;
+    padding: 14px 24px;
+    background: #e50914;
+    color: #ffffff;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.marketing-unsubscribe-button:hover {
+    background: #bf0710;
+}

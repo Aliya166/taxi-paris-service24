@@ -1,0 +1,74 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{% block email_title %}
+    Bienvenue chez Taxi Paris Service 24
+{% endblock %}
+
+{% block email_heading %}
+    Bienvenue à bord !
+{% endblock %}
+
+{% block email_subheading %}
+    Votre service de chauffeur à Paris et en Île-de-France
+{% endblock %}
+
+{% block email_content %}
+
+    <p style="margin: 0 0 20px; color: #444; font-size: 16px; line-height: 1.7;">
+        Bonjour {{ user.firstName ?? 'cher client' }},
+    </p>
+
+    <p style="margin: 0 0 24px; color: #444; font-size: 16px; line-height: 1.7;">
+        Merci de faire confiance à
+        <strong>Taxi Paris Service 24</strong>.
+        Vous pouvez réserver simplement vos trajets à Paris,
+        vers les aéroports, les gares et partout en Île-de-France.
+    </p>
+
+    <div style="
+        background: #f6f6f6;
+        border-left: 4px solid #e50914;
+        padding: 20px;
+        margin: 24px 0;
+    ">
+        <p style="margin: 0 0 10px; font-size: 16px; font-weight: 700; color: #111317;">
+            Votre fidélité est récompensée
+        </p>
+
+        <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">
+            Après 5 courses terminées, profitez automatiquement
+            de <strong>10 % de réduction sur votre 6e réservation</strong>.
+        </p>
+    </div>
+
+    <p style="margin: 24px 0 0; color: #444; font-size: 15px; line-height: 1.7;">
+        Merci de nous avoir donné votre accord pour recevoir
+        nos actualités et offres par email.
+    </p>
+
+{% endblock %}
+
+{% block email_footer_extra %}
+
+    <p style="
+        margin: 18px 0 0;
+        padding-top: 18px;
+        border-top: 1px solid #dddddd;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #777777;
+        text-align: center;
+    ">
+        Vous recevez cet email car vous avez accepté de recevoir
+        nos communications commerciales.
+        <br>
+
+        <a
+            href="{{ unsubscribeUrl }}"
+            style="color: #e50914; text-decoration: underline;"
+        >
+            Se désinscrire des emails marketing
+        </a>
+    </p>
+
+{% endblock %}

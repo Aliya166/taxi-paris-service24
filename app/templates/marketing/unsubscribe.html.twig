@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Désinscription | Taxi Paris Service 24
+{% endblock %}
+
+{% block body %}
+
+    {% include 'partials/_site_header.html.twig' %}
+
+    <main class="marketing-unsubscribe-page">
+
+        <section class="marketing-unsubscribe-card">
+
+            <div class="marketing-unsubscribe-icon">
+                ✓
+            </div>
+
+            <p class="marketing-unsubscribe-kicker">
+                PRÉFÉRENCES EMAIL
+            </p>
+
+            <h1>
+                Vous êtes désabonné(e)
+            </h1>
+
+            <p>
+                Vous ne recevrez plus nos emails commerciaux.
+            </p>
+
+            <p>
+                Les emails importants liés à vos réservations,
+                confirmations ou annulations continueront à vous être envoyés.
+            </p>
+
+            <a
+                href="{{ path('app_home') }}"
+                class="marketing-unsubscribe-button"
+            >
+                Retour à l'accueil
+            </a>
+
+        </section>
+
+    </main>
+
+    {% include 'partials/_site_footer.html.twig' %}
+
+{% endblock %}
