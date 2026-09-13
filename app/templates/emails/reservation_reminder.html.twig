@@ -1,70 +1,245 @@
-</td>
-                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                    {{ reservation.vehicleType.label }}
-                                </td>
-                            </tr>
+{% extends 'emails/_layout.html.twig' %}
 
-                            <tr>
-                                <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                    Passagers
-                                </td>
-                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                    {{ reservation.passengers }}
-                                </td>
-                            </tr>
+{% block email_title %}
+    Rappel de réservation
+{% endblock %}
 
-                            <tr>
-                                <td style="border-bottom:1px solid #e5e7eb;color:#6b7280;">
-                                    Bagages
-                                </td>
-                                <td align="right" style="border-bottom:1px solid #e5e7eb;">
-                                    {{ reservation.luggage }}
-                                </td>
-                            </tr>
-                        </table>
+{% block email_heading %}
+    Votre trajet approche
+{% endblock %}
 
-                        {% if reservation.discountPercentage > 0 %}
-                            <div style="margin-top:22px;padding:15px;background:#ecfdf5;color:#065f46;border-radius:10px;">
-                                Votre avantage fidélité de
-                                <strong>
-                                    {{ reservation.discountPercentage }} %
-                                </strong>
-                                est bien appliqué.
-                            </div>
-                        {% endif %}
+{% block email_subheading %}
+    <div
+        style="
+            margin-top:10px;
+            color:#aeb2b8;
+            font-size:12px;
+            line-height:1.5;
+        "
+    >
+        Pensez à vérifier les informations de votre réservation
+    </div>
+{% endblock %}
 
-                        <div style="margin-top:22px;padding:20px;background:#111827;color:#ffffff;border-radius:10px;text-align:center;">
-                            <div style="font-size:14px;color:#d1d5db;">
-                                Prix estimé
-                            </div>
-                            <div style="margin-top:6px;font-size:28px;font-weight:700;">
-                                {% if reservation.finalPrice is not null %}
-                                    {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
-                                {% else %}
-                                    À confirmer
-                                {% endif %}
-                            </div>
-                        </div>
 
-                        <div style="margin-top:24px;padding:16px;background:#fffbeb;color:#92400e;border-radius:10px;line-height:1.5;">
-                            En cas de changement ou d’annulation,
-                            merci de prévenir notre équipe dès que possible.
-                        </div>
+{% block email_content %}
 
-                        <p style="margin:24px 0 0;line-height:1.6;color:#4b5563;">
-                            Merci pour votre confiance et à très bientôt.
-                        </p>
-                    </td>
-                </tr>
+    <p
+        style="
+            margin:0 0 18px;
+            font-size:15px;
+            line-height:1.7;
+        "
+    >
+        Bonjour
+        <strong>{{ reservation.firstName }}</strong>,
+    </p>
 
-                <tr>
-                    <td style="padding:20px;background:#f9fafb;text-align:center;color:#6b7280;font-size:13px;">
-                        Taxi Paris Service24 · Paris et Île-de-France
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-</body>
-</html>
+    <p
+        style="
+            margin:0 0 24px;
+            color:#5f646c;
+            font-size:14px;
+            line-height:1.7;
+        "
+    >
+        Votre trajet avec Taxi Paris Service 24 approche.
+        Voici un rappel des principales informations.
+    </p>
+
+
+    <div
+        style="
+            margin-bottom:26px;
+            padding:18px;
+            border-left:3px solid #e50914;
+            background:#f7f7f8;
+        "
+    >
+        <div
+            style="
+                color:#777c84;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Référence
+        </div>
+
+        <div
+            style="
+                margin-top:5px;
+                color:#1b1d21;
+                font-size:19px;
+                font-weight:800;
+            "
+        >
+            {{ reservation.reference }}
+        </div>
+    </div>
+
+
+    <table
+        role="presentation"
+        width="100%"
+        cellspacing="0"
+        cellpadding="10"
+        style="
+            width:100%;
+            border-collapse:collapse;
+        "
+    >
+
+        <tr>
+            <td
+                style="
+                    width:36%;
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Date
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                    font-weight:700;
+                "
+            >
+                {{ reservation.scheduledAt|date('d/m/Y à H:i') }}
+            </td>
+        </tr>
+
+        <tr>
+            <td
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Départ
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.pickupAddress }}
+            </td>
+        </tr>
+
+        <tr>
+            <td
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Arrivée
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.dropoffAddress }}
+            </td>
+        </tr>
+
+        <tr>
+            <td
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    color:#777c84;
+                    font-size:12px;
+                "
+            >
+                Véhicule
+            </td>
+
+            <td
+                align="right"
+                style="
+                    border-bottom:1px solid #e6e8eb;
+                    font-size:12px;
+                "
+            >
+                {{ reservation.vehicleType.label() }}
+            </td>
+        </tr>
+
+    </table>
+
+
+    <div
+        style="
+            margin-top:26px;
+            padding:22px;
+            background:#111317;
+            color:#ffffff;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                color:#afb3ba;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Prix
+        </div>
+
+        <div
+            style="
+                margin-top:7px;
+                font-size:30px;
+                font-weight:800;
+            "
+        >
+            {% if reservation.finalPrice is not null %}
+                {{ reservation.finalPrice|number_format(2, ',', ' ') }} €
+            {% else %}
+                À confirmer
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div
+        style="
+            margin-top:24px;
+            padding:16px;
+            background:#f7f7f8;
+            color:#686d75;
+            font-size:12px;
+            line-height:1.7;
+        "
+    >
+        Pensez à être disponible quelques minutes avant l'heure prévue
+        et à vérifier que votre téléphone reste joignable.
+    </div>
+
+{% endblock %}
+
+
+{% block email_footer_extra %}
+    <br>
+    Message automatique lié à votre réservation.
+{% endblock %}

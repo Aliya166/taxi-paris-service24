@@ -1,22 +1,122 @@
-<!DOCTYPE html>
-<html lang="fr">
-<body style="margin:0;background:#f4f5f7;font-family:Arial,sans-serif;color:#15171a">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:28px 12px;background:#f4f5f7">
-    <tr><td align="center">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:10px;overflow:hidden">
-            <tr><td style="padding:28px 34px;background:#090a0c;color:#ffffff;border-top:4px solid #e50914">
-                <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#ff626a">Taxi Paris Service 24</div>
-                <h1 style="margin:8px 0 0;font-size:27px">Message bien reçu</h1>
-            </td></tr>
-            <tr><td style="padding:30px 34px;line-height:1.65">
-                <p>Bonjour {{ contact.name }},</p>
-                <p>Nous avons bien reçu votre message. Notre équipe vous répondra dans les meilleurs délais.</p>
-                <div style="margin:22px 0;padding:18px;background:#f4f5f7;border-left:3px solid #e50914;white-space:pre-line">{{ contact.message }}</div>
-                <p>Pour une demande urgente, vous pouvez nous appeler au <strong>01 84 80 23 05</strong>.</p>
-                <p style="margin-top:28px">À bientôt,<br><strong>Taxi Paris Service 24</strong></p>
-            </td></tr>
-        </table>
-    </td></tr>
-</table>
-</body>
-</html>
+{% extends 'emails/_layout.html.twig' %}
+
+{% block email_title %}
+    Message bien reçu
+{% endblock %}
+
+{% block email_heading %}
+    Message bien reçu
+{% endblock %}
+
+{% block email_subheading %}
+    <div
+        style="
+            margin-top:10px;
+            color:#aeb2b8;
+            font-size:12px;
+            line-height:1.5;
+        "
+    >
+        Merci d'avoir contacté Taxi Paris Service 24
+    </div>
+{% endblock %}
+
+
+{% block email_content %}
+
+    <p
+        style="
+            margin:0 0 18px;
+            font-size:15px;
+            line-height:1.7;
+        "
+    >
+        Bonjour
+        <strong>{{ contact.name }}</strong>,
+    </p>
+
+    <p
+        style="
+            margin:0 0 24px;
+            color:#5f646c;
+            font-size:14px;
+            line-height:1.7;
+        "
+    >
+        Nous avons bien reçu votre message.
+        Notre équipe vous répondra dans les meilleurs délais.
+    </p>
+
+
+    <div
+        style="
+            margin-bottom:24px;
+            padding:18px;
+            border-left:3px solid #e50914;
+            background:#f7f7f8;
+        "
+    >
+        <div
+            style="
+                margin-bottom:8px;
+                color:#777c84;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Votre message
+        </div>
+
+        <div
+            style="
+                color:#4f545b;
+                font-size:12px;
+                line-height:1.8;
+                white-space:pre-line;
+            "
+        >
+            {{ contact.message }}
+        </div>
+    </div>
+
+
+    <div
+        style="
+            padding:22px;
+            background:#111317;
+            color:#ffffff;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                color:#afb3ba;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:1px;
+                text-transform:uppercase;
+            "
+        >
+            Besoin d'une réponse urgente ?
+        </div>
+
+        <div
+            style="
+                margin-top:7px;
+                font-size:24px;
+                font-weight:800;
+            "
+        >
+            01 84 80 23 05
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block email_footer_extra %}
+    <br>
+    Cet email confirme uniquement la réception de votre message.
+{% endblock %}
