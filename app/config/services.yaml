@@ -25,3 +25,8 @@ services:
     App\Service\MarketingUnsubscribeTokenService:
         arguments:
             $appSecret: '%kernel.secret%'
+
+    App\Service\TelegramReservationNotifier:
+        arguments:
+            $telegramBotToken: '%env(TELEGRAM_BOT_TOKEN)%'
+            $telegramChatId: '%env(TELEGRAM_CHAT_ID)%'

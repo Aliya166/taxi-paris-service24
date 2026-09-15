@@ -16,6 +16,12 @@
         <env name="APP_ENV" value="test" force="true" />
         <env name="MAILER_DSN" value="null://null" force="true" />
         <server name="MAILER_DSN" value="null://null" force="true" />
+        
+        <env name="TELEGRAM_BOT_TOKEN" value="test-token" force="true" />
+        <server name="TELEGRAM_BOT_TOKEN" value="test-token" force="true" />
+
+        <env name="TELEGRAM_CHAT_ID" value="123456789" force="true" />
+        <server name="TELEGRAM_CHAT_ID" value="123456789" force="true" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
     </php>

@@ -9,6 +9,7 @@ use App\Enum\VehicleType;
 final class ReservationPricingService
 {
     private const MINIMUM_PRICE = 39.00;
+    private const VAN_MINIMUM_PRICE = 65.00;
     private const RESERVATION_FEE = 15.00;
     private const PRICE_PER_MINUTE = 0.30;
 
@@ -31,7 +32,16 @@ final class ReservationPricingService
         );
 
         if ($fixedPrice !== null) {
-            return number_format($fixedPrice, 2, '.', '');
+            $minimumPrice = $vehicleType === VehicleType::VAN
+                ? self::VAN_MINIMUM_PRICE
+                : self::MINIMUM_PRICE;
+
+            return number_format(
+                max($minimumPrice, $fixedPrice),
+                2,
+                '.',
+                ''
+            );
         }
 
         $rate = self::VEHICLE_RATES[$vehicleType->value];
@@ -41,8 +51,12 @@ final class ReservationPricingService
             + ($durationMinutes * self::PRICE_PER_MINUTE)
             + self::RESERVATION_FEE;
 
+        $minimumPrice = $vehicleType === VehicleType::VAN
+            ? self::VAN_MINIMUM_PRICE
+            : self::MINIMUM_PRICE;
+
         $finalPrice = max(
-            self::MINIMUM_PRICE,
+            $minimumPrice,
             round($calculatedPrice, 2)
         );
 

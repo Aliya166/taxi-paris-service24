@@ -14,6 +14,7 @@ use App\Service\ReservationConfirmationMailer;
 use App\Service\ReservationPricingService;
 use App\Service\RouteCalculationService;
 use App\Service\ReservationNotificationMailer;
+use App\Service\TelegramReservationNotifier;
 use Psr\Log\LoggerInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -98,6 +99,7 @@ final class ReservationController extends AbstractController
         ReservationNotificationMailer $notificationMailer,
         ReservationPricingService $pricingService,
         RouteCalculationService $routeCalculationService,
+        TelegramReservationNotifier $telegramNotifier,
         LoggerInterface $logger
     ): JsonResponse {
         $fullName = $this->getValue($request, 'name');
@@ -362,6 +364,18 @@ final class ReservationController extends AbstractController
         } catch (\Throwable $exception) {
             $logger->error(
                 'Reservation owner notification could not be sent.',
+                [
+                    'reservationReference' => $reservation->getReference(),
+                    'exception' => $exception,
+                ]
+            );
+        }
+
+        try {
+            $telegramNotifier->sendReservationCreated($reservation);
+        } catch (\Throwable $exception) {
+            $logger->error(
+                'Reservation Telegram notification could not be sent.',
                 [
                     'reservationReference' => $reservation->getReference(),
                     'exception' => $exception,

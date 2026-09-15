@@ -212,24 +212,31 @@ function getSelectedRate() {
 
 // 6. Обновить цену
 function updatePrice() {
+    const selectedVehicle = document.querySelector(
+        'input[name="vehicle"]:checked'
+    );
 
-  const rate = getSelectedRate();
+    const rate = Number(selectedVehicle.dataset.rate);
 
-  const minimumFinalPrice = 39;
+    const minimumFinalPrice =
+        selectedVehicle.value === "van"
+            ? 65
+            : 39;
 
-  const reservationFee = 15;
-  const pricePerMinute = 0.30;
+    const reservationFee = 15;
+    const pricePerMinute = 0.30;
 
-  const ridePrice = currentDistanceKm * rate;
-  const durationPrice = currentDurationMin * pricePerMinute;
+    const ridePrice = currentDistanceKm * rate;
+    const durationPrice =
+        currentDurationMin * pricePerMinute;
 
-  const finalPrice = Math.max(
-    ridePrice + durationPrice + reservationFee,
-    minimumFinalPrice
-  );
+    const finalPrice = Math.max(
+        ridePrice + durationPrice + reservationFee,
+        minimumFinalPrice
+    );
 
-  priceText.textContent =
-    `${finalPrice.toFixed(2).replace(".", ",")} €`;
+    priceText.textContent =
+        `${finalPrice.toFixed(2).replace(".", ",")} €`;
 }
 
 function getFixedPrice(startAddress, endAddress) {

@@ -10,7 +10,6 @@ services:
     environment:
       APP_ENV: dev
       DATABASE_URL: "mysql://taxi_app:taxi_dev_password@database:3306/taxi_service24?serverVersion=mariadb-10.6.0&charset=utf8mb4"
-      MAILER_DSN: "smtp://mailpit:1025"
       TAXI_NOTIFICATION_EMAIL: "owner@example.com"
     depends_on:
       database:
@@ -37,7 +36,6 @@ services:
     environment:
       APP_ENV: dev
       DATABASE_URL: "mysql://taxi_app:taxi_dev_password@database:3306/taxi_service24?serverVersion=mariadb-10.6.0&charset=utf8mb4"
-      MAILER_DSN: "smtp://mailpit:1025"
       TAXI_NOTIFICATION_EMAIL: "owner@example.com"
     depends_on:
       database:
@@ -63,7 +61,6 @@ services:
     environment:
       APP_ENV: dev
       DATABASE_URL: "mysql://taxi_app:taxi_dev_password@database:3306/taxi_service24?serverVersion=mariadb-10.6.0&charset=utf8mb4"
-      MAILER_DSN: "smtp://mailpit:1025"
       TAXI_NOTIFICATION_EMAIL: "owner@example.com"
     depends_on:
       database:

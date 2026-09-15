@@ -112,4 +112,19 @@ final class ReservationPricingServiceTest extends TestCase
         self::assertSame('87.00', $berlinePrice);
         self::assertSame('102.00', $vanPrice);
     }
+
+    public function testVanMinimumPriceIsSixtyFiveEuros(): void
+    {
+        $service = new ReservationPricingService();
+
+        $price = $service->calculate(
+            VehicleType::VAN,
+            1.0,
+            1,
+            '10 rue de la Paix, Colombes',
+            '20 rue Victor Hugo, Colombes'
+        );
+
+        self::assertSame('65.00', $price);
+    }
 }
